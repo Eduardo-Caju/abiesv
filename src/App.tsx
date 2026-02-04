@@ -19,6 +19,7 @@ import Biblioteca from "./pages/Biblioteca";
 import NumerosDoSetor from "./pages/NumerosDoSetor";
 import Noticias from "./pages/Noticias";
 import Contato from "./pages/Contato";
+import Parceiros from "./pages/Parceiros";
 import Privacidade from "./pages/Privacidade";
 import Termos from "./pages/Termos";
 import NotFound from "./pages/NotFound";
@@ -65,6 +66,9 @@ const App = () => (
           
           {/* Contato */}
           <Route path="/contato" element={<Contato />} />
+          
+          {/* Parceiros */}
+          <Route path="/parceiros" element={<Parceiros />} />
           
           {/* Legal */}
           <Route path="/privacidade" element={<Privacidade />} />
