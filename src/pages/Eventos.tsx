@@ -1,78 +1,88 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { SEOHead, createBreadcrumbSchema, createEventSchema } from "@/components/seo/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, MapPin, Users, ArrowRight, Video, Presentation } from "lucide-react";
-
-const featuredEvent = {
-  title: "Backstage do Varejo — São Paulo",
-  date: "15 de Março de 2024",
-  location: "São Paulo, SP",
-  description: "O principal evento da ABIESV que leva profissionais para conhecer os bastidores das maiores operações de varejo do Brasil.",
-  slug: "2024-03-sao-paulo",
-};
-
-const upcomingEvents = [
-  {
-    title: "Backstage do Varejo — Rio de Janeiro",
-    date: "10 de Abril de 2024",
-    isoDate: "2024-04-10",
-    location: "Rio de Janeiro, RJ",
-    type: "Presencial",
-    slug: "2024-04-rio-de-janeiro",
-    series: "backstage",
-  },
-  {
-    title: "Workshop: Visual Merchandising na Prática",
-    date: "22 de Março de 2024",
-    isoDate: "2024-03-22",
-    location: "Online",
-    type: "Workshop",
-    slug: "workshop-vm-marco-2024",
-    series: "workshop",
-  },
-  {
-    title: "Backstage do Varejo — Belo Horizonte",
-    date: "15 de Maio de 2024",
-    isoDate: "2024-05-15",
-    location: "Belo Horizonte, MG",
-    type: "Presencial",
-    slug: "2024-05-belo-horizonte",
-    series: "backstage",
-  },
-  {
-    title: "Trilha: Tecnologia no PDV",
-    date: "05 de Abril de 2024",
-    isoDate: "2024-04-05",
-    location: "Online",
-    type: "Trilha Online",
-    slug: "trilha-tecnologia-pdv",
-    series: "workshop",
-  },
-];
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Calendar, MapPin, Users, ArrowRight, Video, Presentation, ExternalLink, Star } from "lucide-react";
+import { 
+  events, 
+  eventTypes, 
+  eventSectors, 
+  getAbiestEvents, 
+  formatEventDate,
+  type EventType,
+  type EventSector 
+} from "@/data/events";
 
 const Eventos = () => {
+  const [selectedType, setSelectedType] = useState<string>("Todos");
+  const [selectedSector, setSelectedSector] = useState<string>("Todos");
+  const [selectedMonth, setSelectedMonth] = useState<string>("Todos");
+
+  // Filtrar eventos (excluindo feriados por padrão)
+  const filteredEvents = events
+    .filter(e => !e.isHoliday)
+    .filter(e => selectedType === "Todos" || e.type === selectedType)
+    .filter(e => selectedSector === "Todos" || e.sector === selectedSector)
+    .filter(e => {
+      if (selectedMonth === "Todos") return true;
+      const month = parseInt(selectedMonth);
+      return new Date(e.startDate).getMonth() + 1 === month;
+    })
+    .sort((a, b) => {
+      // Eventos ABIESV primeiro, depois por data
+      if (a.isAbiestEvent && !b.isAbiestEvent) return -1;
+      if (!a.isAbiestEvent && b.isAbiestEvent) return 1;
+      return a.startDate.localeCompare(b.startDate);
+    });
+
+  const abiestEvents = getAbiestEvents();
+  const featuredEvent = abiestEvents[0];
+
+  const months = [
+    { value: "1", label: "Janeiro" },
+    { value: "2", label: "Fevereiro" },
+    { value: "3", label: "Março" },
+    { value: "4", label: "Abril" },
+    { value: "5", label: "Maio" },
+    { value: "6", label: "Junho" },
+    { value: "7", label: "Julho" },
+    { value: "8", label: "Agosto" },
+    { value: "9", label: "Setembro" },
+    { value: "10", label: "Outubro" },
+    { value: "11", label: "Novembro" },
+    { value: "12", label: "Dezembro" },
+  ];
+
   const pageSchema = [
     createBreadcrumbSchema([
       { name: "Home", url: "https://abiesv.org.br/" },
       { name: "Eventos", url: "https://abiesv.org.br/eventos" },
     ]),
-    ...upcomingEvents.map(event => createEventSchema({
-      name: event.title,
-      description: `${event.type} da ABIESV em ${event.location}`,
-      startDate: event.isoDate,
-      location: event.location,
-      url: `https://abiesv.org.br/eventos/${event.series === "backstage" ? "backstage-do-varejo/" : "workshops/"}${event.slug}`,
+    ...filteredEvents.slice(0, 5).map(event => createEventSchema({
+      name: event.name,
+      description: event.description || `${event.type} em ${event.city || event.location}`,
+      startDate: event.startDate,
+      endDate: event.endDate,
+      location: event.location || event.city || "A definir",
+      url: event.registrationUrl || `https://abiesv.org.br/eventos`,
     })),
   ];
 
   return (
     <Layout>
       <SEOHead
-        title="Eventos ABIESV — Backstage do Varejo, Workshops e Agenda"
-        description="Participe dos eventos que conectam o ecossistema do varejo. Inscreva-se."
+        title="Agenda de Eventos 2026 — Feiras, Congressos e Eventos ABIESV"
+        description="Calendário completo de eventos do varejo em 2026. NRF, EuroShop, APAS, Backstage do Varejo e mais. Inscreva-se."
         canonical="https://abiesv.org.br/eventos"
         schema={pageSchema}
       />
@@ -81,58 +91,69 @@ const Eventos = () => {
       <section className="py-20 gradient-subtle">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
+            <Badge variant="secondary" className="mb-4">Agenda 2026</Badge>
             <h1 className="font-heading text-4xl sm:text-5xl font-bold text-foreground mb-6">
-              Eventos e Comunidade ABIESV
+              Eventos do Varejo e PDV
             </h1>
             <p className="text-xl text-muted-foreground leading-relaxed">
-              Conecte-se com profissionais e líderes do ecossistema de varejo em eventos presenciais e online.
+              Calendário completo com as principais feiras, congressos e eventos do ecossistema de varejo. 
+              Destaque para os eventos exclusivos ABIESV.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Featured Event */}
-      <section className="py-12">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <Card className="border-0 shadow-card overflow-hidden">
-            <CardContent className="p-0">
-              <div className="grid lg:grid-cols-2">
-                <div className="p-8 lg:p-12">
-                  <Badge variant="default" className="mb-4">Destaque</Badge>
-                  <h2 className="font-heading text-3xl font-bold text-foreground mb-4">
-                    {featuredEvent.title}
-                  </h2>
-                  <p className="text-muted-foreground mb-6">
-                    {featuredEvent.description}
-                  </p>
-                  <div className="flex flex-wrap gap-4 mb-6">
-                    <div className="flex items-center gap-2 text-sm">
-                      <Calendar className="h-4 w-4 text-primary" />
-                      <span>{featuredEvent.date}</span>
+      {/* Featured ABIESV Event */}
+      {featuredEvent && (
+        <section className="py-12">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <Card className="border-2 border-primary/20 shadow-card overflow-hidden bg-gradient-to-br from-primary/5 to-transparent">
+              <CardContent className="p-0">
+                <div className="grid lg:grid-cols-2">
+                  <div className="p-8 lg:p-12">
+                    <div className="flex items-center gap-2 mb-4">
+                      <Badge className="bg-primary text-primary-foreground">
+                        <Star className="h-3 w-3 mr-1" />
+                        Evento ABIESV
+                      </Badge>
                     </div>
-                    <div className="flex items-center gap-2 text-sm">
-                      <MapPin className="h-4 w-4 text-primary" />
-                      <span>{featuredEvent.location}</span>
+                    <h2 className="font-heading text-3xl font-bold text-foreground mb-4">
+                      {featuredEvent.name}
+                    </h2>
+                    <p className="text-muted-foreground mb-6">
+                      {featuredEvent.description}
+                    </p>
+                    <div className="flex flex-wrap gap-4 mb-6">
+                      <div className="flex items-center gap-2 text-sm">
+                        <Calendar className="h-4 w-4 text-primary" />
+                        <span>{formatEventDate(featuredEvent)}</span>
+                      </div>
+                      {featuredEvent.city && (
+                        <div className="flex items-center gap-2 text-sm">
+                          <MapPin className="h-4 w-4 text-primary" />
+                          <span>{featuredEvent.city}</span>
+                        </div>
+                      )}
+                    </div>
+                    <Button asChild variant="cta" size="lg">
+                      <Link to={featuredEvent.registrationUrl || "#"}>
+                        Inscreva-se
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                      </Link>
+                    </Button>
+                  </div>
+                  <div className="bg-primary/5 lg:min-h-[300px] flex items-center justify-center">
+                    <div className="p-8 text-center">
+                      <Users className="h-16 w-16 text-primary/30 mx-auto mb-4" />
+                      <p className="text-muted-foreground">[Imagem do evento]</p>
                     </div>
                   </div>
-                  <Button asChild variant="cta" size="lg">
-                    <Link to={`/eventos/backstage-do-varejo/${featuredEvent.slug}`}>
-                      Inscreva-se
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Link>
-                  </Button>
                 </div>
-                <div className="bg-muted lg:min-h-[300px] flex items-center justify-center">
-                  <div className="p-8 text-center">
-                    <Users className="h-16 w-16 text-muted-foreground/30 mx-auto mb-4" />
-                    <p className="text-muted-foreground">[Imagem do evento]</p>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+      )}
 
       {/* Event Hubs */}
       <section className="py-12">
@@ -180,42 +201,151 @@ const Eventos = () => {
         </div>
       </section>
 
-      {/* Upcoming Events */}
-      <section className="py-12 bg-muted/30">
+      {/* Filters */}
+      <section className="py-8 border-y border-border sticky top-20 bg-background/95 backdrop-blur-md z-40">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="font-heading text-3xl font-bold text-foreground mb-8">
-            Próximos Eventos
-          </h2>
-          <div className="grid md:grid-cols-2 gap-6">
-            {upcomingEvents.map((event, index) => (
-              <Card key={index} className="border-0 shadow-card hover:shadow-card-hover transition-all duration-300">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <Select value={selectedType} onValueChange={setSelectedType}>
+              <SelectTrigger className="w-full sm:w-48">
+                <SelectValue placeholder="Tipo de Evento" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Todos">Todos os tipos</SelectItem>
+                {eventTypes.map((type) => (
+                  <SelectItem key={type} value={type}>
+                    {type}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={selectedSector} onValueChange={setSelectedSector}>
+              <SelectTrigger className="w-full sm:w-48">
+                <SelectValue placeholder="Setor" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Todos">Todos os setores</SelectItem>
+                {eventSectors.filter(s => s !== "Multisetorial").map((sector) => (
+                  <SelectItem key={sector} value={sector}>
+                    {sector}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={selectedMonth} onValueChange={setSelectedMonth}>
+              <SelectTrigger className="w-full sm:w-40">
+                <SelectValue placeholder="Mês" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Todos">Todos os meses</SelectItem>
+                {months.map((month) => (
+                  <SelectItem key={month.value} value={month.value}>
+                    {month.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      </section>
+
+      {/* Events List */}
+      <section className="py-12">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="font-heading text-2xl font-bold text-foreground">
+              Calendário de Eventos
+            </h2>
+            <span className="text-muted-foreground">
+              {filteredEvents.length} eventos
+            </span>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredEvents.map((event) => (
+              <Card 
+                key={event.id} 
+                className={`border-0 shadow-card hover:shadow-card-hover transition-all duration-300 ${
+                  event.isAbiestEvent ? 'ring-2 ring-primary/20 bg-primary/5' : ''
+                }`}
+              >
                 <CardContent className="p-6">
                   <div className="flex items-center gap-2 mb-3">
                     <Calendar className="h-4 w-4 text-primary" />
-                    <span className="text-sm font-medium text-primary">{event.date}</span>
+                    <span className="text-sm font-medium text-primary">
+                      {formatEventDate(event)}
+                    </span>
                   </div>
-                  <Badge variant="outline" className="mb-3">{event.type}</Badge>
+                  
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {event.isAbiestEvent && (
+                      <Badge className="bg-primary text-primary-foreground text-xs">
+                        <Star className="h-3 w-3 mr-1" />
+                        ABIESV
+                      </Badge>
+                    )}
+                    <Badge variant="outline" className="text-xs">{event.type}</Badge>
+                    <Badge variant="secondary" className="text-xs">{event.sector}</Badge>
+                  </div>
+
                   <h3 className="font-heading font-bold text-lg text-foreground mb-2">
-                    {event.title}
+                    {event.name}
                   </h3>
-                  <p className="text-sm text-muted-foreground mb-4 flex items-center gap-1">
-                    <MapPin className="h-3 w-3" />
-                    {event.location}
-                  </p>
-                  <Button asChild variant="outline" size="sm">
-                    <Link 
-                      to={event.series === "backstage" 
-                        ? `/eventos/backstage-do-varejo/${event.slug}` 
-                        : `/eventos/workshops/${event.slug}`
-                      }
+                  
+                  {event.city && (
+                    <p className="text-sm text-muted-foreground mb-2 flex items-center gap-1">
+                      <MapPin className="h-3 w-3" />
+                      {event.city}
+                    </p>
+                  )}
+
+                  {event.description && (
+                    <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+                      {event.description}
+                    </p>
+                  )}
+
+                  {event.registrationUrl && event.registrationUrl !== "#" && (
+                    <Button 
+                      asChild 
+                      variant={event.isAbiestEvent ? "default" : "outline"} 
+                      size="sm" 
+                      className="w-full"
                     >
-                      Ver detalhes
-                    </Link>
-                  </Button>
+                      {event.registrationUrl.startsWith("/") ? (
+                        <Link to={event.registrationUrl}>
+                          Ver detalhes
+                          <ArrowRight className="ml-2 h-4 w-4" />
+                        </Link>
+                      ) : (
+                        <a href={event.registrationUrl} target="_blank" rel="noopener noreferrer">
+                          Inscreva-se
+                          <ExternalLink className="ml-2 h-4 w-4" />
+                        </a>
+                      )}
+                    </Button>
+                  )}
                 </CardContent>
               </Card>
             ))}
           </div>
+
+          {filteredEvents.length === 0 && (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground mb-4">
+                Nenhum evento encontrado com os filtros selecionados.
+              </p>
+              <Button 
+                variant="outline"
+                onClick={() => {
+                  setSelectedType("Todos");
+                  setSelectedSector("Todos");
+                  setSelectedMonth("Todos");
+                }}
+              >
+                Limpar filtros
+              </Button>
+            </div>
+          )}
         </div>
       </section>
 

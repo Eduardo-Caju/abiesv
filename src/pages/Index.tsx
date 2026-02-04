@@ -67,30 +67,18 @@ const libraryItems = [
   },
 ];
 
-// Upcoming events
-const upcomingEvents = [
-  {
-    title: "Backstage do Varejo — São Paulo",
-    date: "15 de Março de 2024",
-    location: "São Paulo, SP",
-    type: "Evento Presencial",
-    slug: "2024-03-sao-paulo",
-  },
-  {
-    title: "Workshop de Visual Merchandising",
-    date: "22 de Março de 2024",
-    location: "Online",
-    type: "Workshop",
-    slug: "workshop-vm-marco-2024",
-  },
-  {
-    title: "Backstage do Varejo — Rio de Janeiro",
-    date: "10 de Abril de 2024",
-    location: "Rio de Janeiro, RJ",
-    type: "Evento Presencial",
-    slug: "2024-04-rio-de-janeiro",
-  },
-];
+// Importar eventos reais
+import { events, formatEventDate } from "@/data/events";
+
+// Próximos eventos (não-feriados, ordenados por data)
+const upcomingEvents = events
+  .filter(e => !e.isHoliday)
+  .sort((a, b) => {
+    if (a.isAbiestEvent && !b.isAbiestEvent) return -1;
+    if (!a.isAbiestEvent && b.isAbiestEvent) return 1;
+    return a.startDate.localeCompare(b.startDate);
+  })
+  .slice(0, 3);
 
 // Importar associados reais
 import { associates, getLogoInitials } from "@/data/associates";
@@ -314,30 +302,35 @@ const Index = () => {
           </div>
 
           <div className="grid lg:grid-cols-3 gap-6">
-            {upcomingEvents.map((event, index) => (
+            {upcomingEvents.map((event) => (
               <Card 
-                key={index}
-                className="group hover:shadow-card-hover transition-all duration-300 border border-border/50 bg-card"
+                key={event.id}
+                className={`group hover:shadow-card-hover transition-all duration-300 border bg-card ${
+                  event.isAbiestEvent ? 'border-primary/30 bg-primary/5' : 'border-border/50'
+                }`}
               >
                 <CardContent className="p-6">
                   <div className="flex items-center gap-2 mb-4">
                     <Calendar className="h-4 w-4 text-primary" />
                     <span className="text-sm font-medium text-primary">
-                      {event.date}
+                      {formatEventDate(event)}
                     </span>
                   </div>
-                  <Badge variant="outline" className="mb-3">
-                    {event.type}
-                  </Badge>
+                  <div className="flex gap-2 mb-3">
+                    {event.isAbiestEvent && (
+                      <Badge variant="default" className="text-xs">ABIESV</Badge>
+                    )}
+                    <Badge variant="outline">{event.type}</Badge>
+                  </div>
                   <h3 className="font-heading font-bold text-lg text-foreground mb-2 group-hover:text-primary transition-colors">
-                    {event.title}
+                    {event.name}
                   </h3>
                   <p className="text-sm text-muted-foreground mb-4">
-                    📍 {event.location}
+                    📍 {event.city || event.location || "A definir"}
                   </p>
-                  <Button asChild variant="outline" size="sm" className="w-full">
-                    <Link to={`/eventos/backstage-do-varejo/${event.slug}`}>
-                      Inscreva-se
+                  <Button asChild variant={event.isAbiestEvent ? "default" : "outline"} size="sm" className="w-full">
+                    <Link to={event.registrationUrl?.startsWith("/") ? event.registrationUrl : "/eventos"}>
+                      {event.isAbiestEvent ? "Inscreva-se" : "Ver detalhes"}
                     </Link>
                   </Button>
                 </CardContent>
