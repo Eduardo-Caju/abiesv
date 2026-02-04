@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X } from "lucide-react";
+import logoAbiesv from "@/assets/logo-abiesv.png";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -48,14 +49,12 @@ export function Header() {
       <nav className="container mx-auto px-4 sm:px-6 lg:px-8" aria-label="Navegação principal">
         <div className="flex h-20 items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-3" aria-label="ABIESV - Página inicial">
-            <div className="w-12 h-12 rounded-xl gradient-primary flex items-center justify-center">
-              <span className="text-white font-heading font-bold text-lg">AB</span>
-            </div>
-            <div className="hidden sm:block">
-              <span className="font-heading font-bold text-xl text-foreground">ABIESV</span>
-              <p className="text-xs text-muted-foreground">Associação Brasileira da Indústria</p>
-            </div>
+          <Link to="/" className="flex items-center" aria-label="ABIESV - Página inicial">
+            <img 
+              src={logoAbiesv} 
+              alt="ABIESV" 
+              className="h-10 sm:h-12 w-auto"
+            />
           </Link>
 
           {/* Desktop Navigation */}
