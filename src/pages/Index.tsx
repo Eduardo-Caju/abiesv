@@ -22,9 +22,9 @@ const metrics = [
     source: "IPC Maps",
   },
   {
-    value: "+35%",
-    description: "Aumento médio na taxa de conversão em PDVs com boas práticas de Visual Merchandising",
-    source: "Pesquisa ABIESV",
+    value: "2,8x",
+    description: "Aumento no tempo de permanência em lojas com design orientado à experiência",
+    source: "Estudo Setorial ABIESV",
   },
   {
     value: "68%",
