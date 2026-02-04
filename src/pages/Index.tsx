@@ -92,15 +92,11 @@ const upcomingEvents = [
   },
 ];
 
-// Partner logos (placeholders)
-const partners = [
-  { name: "Empresa A", logo: "EA" },
-  { name: "Empresa B", logo: "EB" },
-  { name: "Empresa C", logo: "EC" },
-  { name: "Empresa D", logo: "ED" },
-  { name: "Empresa E", logo: "EE" },
-  { name: "Empresa F", logo: "EF" },
-];
+// Importar associados reais
+import { associates, getLogoInitials } from "@/data/associates";
+
+// Selecionar alguns associados para exibir na Home
+const featuredAssociates = associates.slice(0, 12);
 
 const Index = () => {
   const pageSchema = [
@@ -363,20 +359,33 @@ const Index = () => {
             </p>
           </div>
 
-          {/* Partner Logos */}
-          <div className="grid grid-cols-3 md:grid-cols-6 gap-8 mb-16">
-            {partners.map((partner, index) => (
-              <div
-                key={index}
-                className="flex items-center justify-center p-6 bg-muted/50 rounded-xl hover:bg-muted transition-colors"
+          {/* Associate Logos */}
+          <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-16">
+            {featuredAssociates.map((associate) => (
+              <Link
+                key={associate.slug}
+                to={`/associados/${associate.slug}`}
+                className="flex flex-col items-center justify-center p-4 bg-muted/50 rounded-xl hover:bg-muted hover:shadow-md transition-all group"
               >
-                <div className="w-16 h-16 rounded-lg bg-muted-foreground/10 flex items-center justify-center">
-                  <span className="font-heading font-bold text-xl text-muted-foreground">
-                    {partner.logo}
+                <div className="w-14 h-14 rounded-lg bg-primary/10 flex items-center justify-center mb-2 group-hover:bg-primary/20 transition-colors">
+                  <span className="font-heading font-bold text-lg text-primary">
+                    {getLogoInitials(associate.name)}
                   </span>
                 </div>
-              </div>
+                <span className="text-xs text-center text-muted-foreground group-hover:text-foreground transition-colors line-clamp-2">
+                  {associate.name}
+                </span>
+              </Link>
             ))}
+          </div>
+
+          <div className="text-center mb-12">
+            <Button asChild variant="outline">
+              <Link to="/associados">
+                Ver todos os {associates.length} associados
+                <ChevronRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
           </div>
 
           {/* Testimonial */}
