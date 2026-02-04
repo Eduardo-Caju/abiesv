@@ -16,12 +16,9 @@ import {
   MessageCircle
 } from "lucide-react";
 import {
-  sectorPartners,
-  sectors,
   knowledgeCategories,
   internationalRegions,
   ecosystemStats,
-  getPartnerInitials,
 } from "@/data/partners";
 
 const Parceiros = () => {
@@ -87,119 +84,6 @@ const Parceiros = () => {
                 <span className="text-blue-200 text-sm uppercase tracking-wider">Países</span>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Parceiros Setoriais - Mandala */}
-      <section className="py-20 bg-muted/30 overflow-hidden">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <Badge className="bg-primary/10 text-primary border-primary/20 mb-4">
-              🤝 Nosso Ecossistema
-            </Badge>
-            <h2 className="font-heading text-3xl sm:text-4xl font-bold text-foreground mb-4">
-              Parceiros Setoriais
-            </h2>
-            <p className="text-lg text-muted-foreground">
-              Cobertura completa da cadeia de valor do varejo
-            </p>
-          </div>
-
-          {/* Mandala Container */}
-          <div className="relative w-full max-w-4xl mx-auto aspect-square flex items-center justify-center">
-            {/* Centro da Mandala */}
-            <div className="absolute z-20 w-32 h-32 sm:w-40 sm:h-40 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-xl">
-              <div className="text-center text-white">
-                <span className="block text-3xl sm:text-4xl font-bold">{sectorPartners.length}+</span>
-                <span className="text-xs sm:text-sm opacity-90">Parceiros</span>
-              </div>
-            </div>
-
-            {/* Anéis da Mandala */}
-            {sectors.filter(s => s.id !== "todos").map((sector, sectorIndex) => {
-              const sectorPartnersFiltered = sectorPartners.filter(p => p.sector === sector.id);
-              const ringRadius = 140 + sectorIndex * 90; // Raio progressivo
-              const partnersInRing = sectorPartnersFiltered.slice(0, 8); // Max 8 por anel
-              
-              return (
-                <div key={sector.id} className="absolute inset-0 flex items-center justify-center">
-                  {/* Anel decorativo */}
-                  <div 
-                    className="absolute rounded-full border border-dashed border-primary/20"
-                    style={{ 
-                      width: `${ringRadius * 2}px`, 
-                      height: `${ringRadius * 2}px` 
-                    }}
-                  />
-                  
-                  {/* Parceiros no anel */}
-                  {partnersInRing.map((partner, index) => {
-                    const angle = (index * 360) / partnersInRing.length - 90;
-                    const radian = (angle * Math.PI) / 180;
-                    const x = Math.cos(radian) * ringRadius;
-                    const y = Math.sin(radian) * ringRadius;
-                    
-                    return (
-                      <div
-                        key={partner.id}
-                        className="absolute group cursor-pointer"
-                        style={{
-                          transform: `translate(${x}px, ${y}px)`,
-                        }}
-                      >
-                        <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white shadow-lg border-2 border-transparent hover:border-primary transition-all duration-300 hover:scale-110 flex items-center justify-center overflow-hidden">
-                          {partner.logo ? (
-                            <img 
-                              src={partner.logo} 
-                              alt={partner.name}
-                              className="w-10 h-10 sm:w-12 sm:h-12 object-contain"
-                            />
-                          ) : (
-                            <span className="text-xs sm:text-sm font-bold text-primary/60">
-                              {getPartnerInitials(partner.name)}
-                            </span>
-                          )}
-                        </div>
-                        
-                        {/* Tooltip */}
-                        <div className="absolute left-1/2 -translate-x-1/2 -bottom-12 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-30">
-                          <div className="bg-foreground text-background px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap shadow-lg">
-                            {partner.name}
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                  
-                  {/* Label do setor */}
-                  <div 
-                    className="absolute bg-muted/80 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold text-muted-foreground shadow-sm"
-                    style={{
-                      transform: `translate(${Math.cos((-45 * Math.PI) / 180) * (ringRadius + 40)}px, ${Math.sin((-45 * Math.PI) / 180) * (ringRadius + 40)}px)`,
-                    }}
-                  >
-                    {sector.icon} {sector.name.split(' ')[0]}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Legenda */}
-          <div className="flex flex-wrap justify-center gap-4 mt-16">
-            {sectors.filter(s => s.id !== "todos").map((sector) => (
-              <div 
-                key={sector.id}
-                className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm border"
-              >
-                <span>{sector.icon}</span>
-                <span className="text-sm font-medium text-muted-foreground">{sector.name}</span>
-                <span className="text-xs text-primary font-bold">
-                  ({sectorPartners.filter(p => p.sector === sector.id).length})
-                </span>
-              </div>
-            ))}
           </div>
         </div>
       </section>
