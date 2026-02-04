@@ -11,6 +11,7 @@ import Diretoria from "./pages/Diretoria";
 import BoasPraticas from "./pages/BoasPraticas";
 import AssocieSe from "./pages/AssocieSe";
 import Associados from "./pages/Associados";
+import AssociadoPerfil from "./pages/AssociadoPerfil";
 import Eventos from "./pages/Eventos";
 import BackstageDoVarejo from "./pages/BackstageDoVarejo";
 import Workshops from "./pages/Workshops";
@@ -42,7 +43,7 @@ const App = () => (
           {/* Associação */}
           <Route path="/associe-se" element={<AssocieSe />} />
           <Route path="/associados" element={<Associados />} />
-          {/* <Route path="/associados/:empresa" element={<AssociadoPerfil />} /> */}
+          <Route path="/associados/:slug" element={<AssociadoPerfil />} />
           
           {/* Eventos */}
           <Route path="/eventos" element={<Eventos />} />

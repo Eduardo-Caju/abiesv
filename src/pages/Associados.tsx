@@ -13,102 +13,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Search, ExternalLink, MessageCircle, Mail, MapPin } from "lucide-react";
-
-const categories = [
-  "Todas",
-  "Mobiliário",
-  "Comunicação Visual",
-  "Tecnologia",
-  "Obras e Reforma",
-  "Iluminação",
-  "Refrigeração",
-];
-
-const states = [
-  "Todos",
-  "SP",
-  "RJ",
-  "MG",
-  "RS",
-  "PR",
-  "SC",
-];
-
-const associates = [
-  {
-    slug: "loja-conceito",
-    name: "Loja Conceito",
-    logo: "LC",
-    category: "Mobiliário",
-    state: "SP",
-    description: "Especializada em mobiliário para varejo de moda e lifestyle, com mais de 20 anos de experiência em projetos completos de PDV.",
-    tags: ["Mobiliário", "Varejo de Moda", "Store Design"],
-    website: "https://exemplo.com",
-    email: "contato@lojaconceito.com.br",
-    whatsapp: "5511999999999",
-  },
-  {
-    slug: "tech-retail",
-    name: "Tech Retail",
-    logo: "TR",
-    category: "Tecnologia",
-    state: "SP",
-    description: "Soluções tecnológicas para o PDV: self-checkout, analytics, digital signage e integração omnichannel para varejistas.",
-    tags: ["Tecnologia", "Digital Signage", "Analytics"],
-    website: "https://exemplo.com",
-    email: "contato@techretail.com.br",
-    whatsapp: "5511999999999",
-  },
-  {
-    slug: "visual-store",
-    name: "Visual Store",
-    logo: "VS",
-    category: "Comunicação Visual",
-    state: "RJ",
-    description: "Comunicação visual e sinalização para grandes redes varejistas. Produção, instalação e manutenção em todo o Brasil.",
-    tags: ["Comunicação Visual", "Sinalização", "Produção"],
-    website: "https://exemplo.com",
-    email: "contato@visualstore.com.br",
-    whatsapp: "5521999999999",
-  },
-  {
-    slug: "ilumina-varejo",
-    name: "Ilumina Varejo",
-    logo: "IV",
-    category: "Iluminação",
-    state: "MG",
-    description: "Projetos de iluminação para varejo com foco em eficiência energética e valorização de produtos. LED e automação.",
-    tags: ["Iluminação", "LED", "Eficiência"],
-    website: "https://exemplo.com",
-    email: "contato@iluminavarejo.com.br",
-    whatsapp: "5531999999999",
-  },
-  {
-    slug: "frio-comercial",
-    name: "Frio Comercial",
-    logo: "FC",
-    category: "Refrigeração",
-    state: "RS",
-    description: "Refrigeração comercial para supermercados, farmácias e food service. Projetos turnkey e manutenção preventiva.",
-    tags: ["Refrigeração", "Supermercados", "Food Service"],
-    website: "https://exemplo.com",
-    email: "contato@friocomercial.com.br",
-    whatsapp: "5551999999999",
-  },
-  {
-    slug: "obras-express",
-    name: "Obras Express",
-    logo: "OE",
-    category: "Obras e Reforma",
-    state: "SP",
-    description: "Construção e reforma de lojas com cronograma acelerado. Gestão de obra, acabamentos e entrega no prazo.",
-    tags: ["Obras", "Reforma", "Gestão"],
-    website: "https://exemplo.com",
-    email: "contato@obrasexpress.com.br",
-    whatsapp: "5511999999999",
-  },
-];
+import { Search, ExternalLink, MessageCircle, Mail, MapPin, Building } from "lucide-react";
+import { associates, categories, states, getLogoInitials } from "@/data/associates";
 
 const Associados = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -116,8 +22,10 @@ const Associados = () => {
   const [selectedState, setSelectedState] = useState("Todos");
 
   const filteredAssociates = associates.filter((associate) => {
-    const matchesSearch = associate.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         associate.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const searchLower = searchTerm.toLowerCase();
+    const matchesSearch = associate.name.toLowerCase().includes(searchLower) ||
+                         (associate.shortDescription?.toLowerCase().includes(searchLower) ?? false) ||
+                         associate.category.toLowerCase().includes(searchLower);
     const matchesCategory = selectedCategory === "Todas" || associate.category === selectedCategory;
     const matchesState = selectedState === "Todos" || associate.state === selectedState;
     return matchesSearch && matchesCategory && matchesState;
@@ -139,7 +47,7 @@ const Associados = () => {
         item: {
           "@type": "Organization",
           name: associate.name,
-          description: associate.description,
+          description: associate.shortDescription || `Empresa especializada em ${associate.category}`,
           url: `https://abiesv.org.br/associados/${associate.slug}`,
         },
       })),
@@ -226,9 +134,9 @@ const Associados = () => {
                 <CardContent className="p-0">
                   <div className="p-6">
                     <div className="flex items-start gap-4 mb-4">
-                      <div className="w-14 h-14 rounded-xl bg-muted flex items-center justify-center shrink-0">
-                        <span className="font-heading font-bold text-xl text-muted-foreground">
-                          {associate.logo}
+                      <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                        <span className="font-heading font-bold text-lg text-primary">
+                          {getLogoInitials(associate.name)}
                         </span>
                       </div>
                       <div className="min-w-0">
@@ -238,9 +146,13 @@ const Associados = () => {
                           </Link>
                         </h3>
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <MapPin className="h-3 w-3" />
-                          <span>{associate.state}</span>
-                          <span>•</span>
+                          {associate.state && (
+                            <>
+                              <MapPin className="h-3 w-3" />
+                              <span>{associate.city ? `${associate.city}, ${associate.state}` : associate.state}</span>
+                              <span>•</span>
+                            </>
+                          )}
                           <Badge variant="secondary" className="text-xs">
                             {associate.category}
                           </Badge>
@@ -248,42 +160,48 @@ const Associados = () => {
                       </div>
                     </div>
                     <p className="text-muted-foreground text-sm mb-4 line-clamp-3">
-                      {associate.description}
+                      {associate.shortDescription || `Empresa especializada em ${associate.category.toLowerCase()}.`}
                     </p>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {associate.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="text-xs px-2 py-1 bg-muted rounded-md text-muted-foreground"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
+                    {associate.solutions && associate.solutions.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {associate.solutions.slice(0, 3).map((solution) => (
+                          <span
+                            key={solution}
+                            className="text-xs px-2 py-1 bg-muted rounded-md text-muted-foreground"
+                          >
+                            {solution}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                   <div className="px-6 py-4 bg-muted/30 border-t border-border flex gap-2">
                     <Button asChild variant="outline" size="sm" className="flex-1">
-                      <a href={associate.website} target="_blank" rel="noopener noreferrer">
-                        <ExternalLink className="h-4 w-4 mr-1" />
-                        Site
-                      </a>
+                      <Link to={`/associados/${associate.slug}`}>
+                        <Building className="h-4 w-4 mr-1" />
+                        Perfil
+                      </Link>
                     </Button>
-                    <Button asChild variant="outline" size="sm" className="flex-1">
-                      <a href={`mailto:${associate.email}`}>
-                        <Mail className="h-4 w-4 mr-1" />
-                        E-mail
-                      </a>
-                    </Button>
-                    <Button asChild variant="default" size="sm" className="flex-1">
-                      <a 
-                        href={`https://wa.me/${associate.whatsapp}`} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                      >
-                        <MessageCircle className="h-4 w-4 mr-1" />
-                        WhatsApp
-                      </a>
-                    </Button>
+                    {associate.contacts[0]?.email && (
+                      <Button asChild variant="outline" size="sm" className="flex-1">
+                        <a href={`mailto:${associate.contacts[0].email}`}>
+                          <Mail className="h-4 w-4 mr-1" />
+                          E-mail
+                        </a>
+                      </Button>
+                    )}
+                    {associate.contacts[0]?.mobile && (
+                      <Button asChild variant="default" size="sm" className="flex-1">
+                        <a 
+                          href={`https://wa.me/55${associate.contacts[0].mobile.replace(/\D/g, '')}`} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                        >
+                          <MessageCircle className="h-4 w-4 mr-1" />
+                          WhatsApp
+                        </a>
+                      </Button>
+                    )}
                   </div>
                 </CardContent>
               </Card>
