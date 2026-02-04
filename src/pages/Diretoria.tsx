@@ -32,7 +32,7 @@ const directors: Director[] = [
   { name: "Carolina Tonegutti", role: "Diretoria - Fiscal e Tributário", email: "fiscal@abiesv.org.br" },
   { name: "Eduardo Aguiar", role: "Diretor Administrativo Financeiro", email: "financeiro@abiesv.org.br" },
   { name: "Fernanda Bortoluzzi", role: "Diretoria - Planejamento", email: "planejamento@abiesv.org.br", photo: "/directors/fernanda-bortoluzzi.jpg" },
-  { name: "Fernando Fernandes", role: "Diretor Jurídico", email: "juridico@abiesv.org.br" },
+  { name: "Fernando Fernandes", role: "Diretor Jurídico", email: "juridico@abiesv.org.br", photo: "/directors/fernando-fernandes.jpg" },
   { name: "Karina Duarte", role: "Diretoria - Projetos", email: "projeto@abiesv.org.br", photo: "/directors/karina-duarte.jpg" },
   { name: "Leonardo Blumm", role: "Diretoria - Regional RS", email: "regionalrs@abiesv.org.br" },
   { name: "Raquel Monreal Zeppelini", role: "Diretoria - Criação, Campanhas e Parcerias", photo: "/directors/raquel-monreal.jpg" },
