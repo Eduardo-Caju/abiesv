@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 // Pages
 import Index from "./pages/Index";
 import Sobre from "./pages/Sobre";
+import Historia from "./pages/Historia";
 import Diretoria from "./pages/Diretoria";
 import BoasPraticas from "./pages/BoasPraticas";
 import AssocieSe from "./pages/AssocieSe";
@@ -38,6 +39,7 @@ const App = () => (
           
           {/* Sobre */}
           <Route path="/sobre" element={<Sobre />} />
+          <Route path="/sobre/historia" element={<Historia />} />
           <Route path="/sobre/diretoria" element={<Diretoria />} />
           <Route path="/sobre/boas-praticas" element={<BoasPraticas />} />
           
