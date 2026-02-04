@@ -37,6 +37,7 @@ const navigation = [
   { name: "Biblioteca", href: "/biblioteca" },
   { name: "Números do Setor", href: "/numeros-do-setor" },
   { name: "Notícias", href: "/noticias" },
+  { name: "Parceiros", href: "/parceiros" },
   { name: "Contato", href: "/contato" },
 ];
 
