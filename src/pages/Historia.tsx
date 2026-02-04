@@ -41,12 +41,12 @@ const foundingCompanies = [
 ];
 
 const foundingBoard = [
-  { initials: "MA", name: "Marcos Andrade", role: "Presidente", company: "Expor Manequins" },
-  { initials: "GG", name: "Guglielmo Gafforini", role: "Vice-Presidente", company: "Ariam" },
-  { initials: "JT", name: "Julio Takano", role: "Diretor Administrativo Financeiro", company: "KT Soluções para Varejo" },
-  { initials: "LL", name: "Luis Fernando Lucas", role: "Diretor de Marketing", company: "Meglio Consultoria" },
-  { initials: "FF", name: "Fernando José Fernandes", role: "Diretor Jurídico", company: "FJF Advocacia" },
-  { initials: "MM", name: "Mário Mugnaini", role: "Secretário Geral", company: "Camex" },
+  { number: 1, name: "Marcos Andrade", role: "Presidente", company: "Expor Manequins" },
+  { number: 2, name: "Guglielmo Gafforini", role: "Vice-Presidente", company: "Ariam" },
+  { number: 3, name: "Julio Takano", role: "Diretor Administrativo Financeiro", company: "KT Soluções para Varejo" },
+  { number: 4, name: "Luis Fernando Lucas", role: "Diretor de Marketing", company: "Meglio Consultoria" },
+  { number: 5, name: "Fernando José Fernandes", role: "Diretor Jurídico", company: "FJF Advocacia" },
+  { number: 6, name: "Mário Mugnaini", role: "Secretário Geral", company: "Camex" },
 ];
 
 const objectives = [
@@ -307,15 +307,18 @@ const Historia = () => {
               />
             </div>
 
-            {/* Names in two columns */}
-            <div className="grid md:grid-cols-2 gap-x-8 gap-y-3 max-w-3xl mx-auto">
-              {foundingBoard.map((member, index) => (
-                <div key={index} className="flex items-center gap-2 py-2 border-b border-border/50">
-                  <span className="font-semibold text-foreground">{member.name}</span>
-                  <span className="text-muted-foreground">|</span>
-                  <span className="text-sm text-muted-foreground">{member.role}</span>
-                  <span className="text-muted-foreground">|</span>
-                  <span className="text-sm text-primary font-medium">{member.company}</span>
+            {/* Names in two columns with numbers */}
+            <div className="grid md:grid-cols-2 gap-x-12 gap-y-4 max-w-4xl mx-auto mt-6">
+              {foundingBoard.map((member) => (
+                <div key={member.number} className="flex items-start gap-4 py-3 px-4 bg-card rounded-lg border border-border/50">
+                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground font-bold flex items-center justify-center text-sm">
+                    {member.number}
+                  </span>
+                  <div className="flex flex-col">
+                    <span className="font-semibold text-foreground">{member.name}</span>
+                    <span className="text-sm text-muted-foreground">{member.role}</span>
+                    <span className="text-sm text-primary font-medium">{member.company}</span>
+                  </div>
                 </div>
               ))}
             </div>
