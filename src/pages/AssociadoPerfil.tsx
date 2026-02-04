@@ -88,10 +88,18 @@ const AssociadoPerfil = () => {
 
           <div className="flex flex-col md:flex-row gap-8 items-start">
             {/* Logo */}
-            <div className="w-24 h-24 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
-              <span className="font-heading font-bold text-3xl text-primary">
-                {getLogoInitials(associate.name)}
-              </span>
+            <div className="w-24 h-24 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0 overflow-hidden">
+              {associate.logo ? (
+                <img 
+                  src={associate.logo} 
+                  alt={`Logo ${associate.name}`}
+                  className="w-full h-full object-contain"
+                />
+              ) : (
+                <span className="font-heading font-bold text-3xl text-primary">
+                  {getLogoInitials(associate.name)}
+                </span>
+              )}
             </div>
 
             {/* Info */}
