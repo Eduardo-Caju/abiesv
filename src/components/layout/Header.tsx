@@ -20,6 +20,7 @@ const navigation = [
     href: "/sobre",
     children: [
       { name: "Quem Somos", href: "/sobre" },
+      { name: "Nossa História", href: "/sobre/historia" },
       { name: "Diretoria e Governança", href: "/sobre/diretoria" },
       { name: "Boas Práticas", href: "/sobre/boas-praticas" },
     ],
