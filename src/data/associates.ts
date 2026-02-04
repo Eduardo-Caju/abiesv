@@ -39,6 +39,9 @@ export const associates: Associate[] = [
       { name: "Rafael Cunha", role: "Gerente de Marketing", phone: "11 5666-4857", mobile: "85 9713-5126", email: "marketing@alfalux.com.br" }
     ],
     shortDescription: "Soluções em iluminação LED para ambientes comerciais e varejo, com foco em eficiência energética e valorização de produtos.",
+    website: "https://alfalux.com.br/",
+    instagram: "https://www.instagram.com/alfalux_luminarias/",
+    linkedin: "https://www.linkedin.com/company/alfalux-iluminacao/",
     state: "SP",
     solutions: ["LED", "Iluminação Comercial", "Eficiência Energética"],
     sectors: ["Varejo", "Moda", "Supermercados"],
@@ -54,6 +57,8 @@ export const associates: Associate[] = [
       { name: "Amarilis Formigoni", role: "Especificadora", mobile: "11-98410-9414", email: "amarilis.oliveira@tarkett.com" }
     ],
     shortDescription: "Consultoria especializada em especificação de materiais e soluções para projetos de varejo e ambientes comerciais.",
+    instagram: "https://www.instagram.com/lizformigoni/",
+    linkedin: "https://www.instagram.com/lizformigoni/",
     state: "SP",
     solutions: ["Especificação", "Consultoria", "Projetos"],
     sectors: ["Varejo", "Comercial"],
@@ -70,6 +75,9 @@ export const associates: Associate[] = [
       { name: "Diego Aguiar", role: "Gerente de atendimento", phone: "11 5171-7600" }
     ],
     shortDescription: "Produção de conteúdo digital e soluções multimídia para comunicação visual no ponto de venda e ambientes comerciais.",
+    website: "https://arvoredigital.com.br/",
+    instagram: "https://www.instagram.com/arvoredigital.oficial/",
+    linkedin: "https://www.linkedin.com/company/arvore-digital/",
     state: "SP",
     solutions: ["Digital Signage", "Conteúdo Multimídia", "Comunicação Visual"],
     sectors: ["Varejo", "Shopping Centers", "Redes"],
@@ -87,6 +95,9 @@ export const associates: Associate[] = [
       { name: "Álvaro Taba", role: "Diretor", phone: "11-4646-7500", mobile: "11-99988-7500", email: "alvaro@creativedisplay.com.br" }
     ],
     shortDescription: "Indústria especializada em mobiliário, displays e equipamentos para PDV, com soluções personalizadas para grandes redes varejistas.",
+    website: "https://www.creativedisplay.com.br/",
+    instagram: "https://www.instagram.com/grupocreativebr/",
+    linkedin: "https://www.linkedin.com/company/creativedisplaybr/",
     state: "SP",
     solutions: ["Mobiliário", "Displays", "Expositores", "Equipamentos PDV"],
     sectors: ["Varejo", "Moda", "Cosméticos", "Farmácias"],
@@ -103,6 +114,9 @@ export const associates: Associate[] = [
       { name: "Israel Geraldi", role: "CEO", email: "israel@cyberdoc.com.br" }
     ],
     shortDescription: "Gráfica digital especializada em comunicação visual, impressão de grande formato e soluções gráficas para PDV.",
+    website: "https://www.cyberdoc.com.br/",
+    instagram: "https://www.instagram.com/cyberdoc_oficial/",
+    linkedin: "https://www.linkedin.com/company/cyberdoc-document-center/",
     state: "SP",
     city: "Campinas",
     solutions: ["Impressão Digital", "Comunicação Visual", "Grande Formato"],
@@ -119,6 +133,8 @@ export const associates: Associate[] = [
       { name: "Douglas de Souza", role: "CEO", mobile: "11 98359-2057", email: "estudiosoudoug@gmail.com" }
     ],
     shortDescription: "Consultoria e projetos de visual merchandising para varejo de moda, lifestyle e experiências de marca no PDV.",
+    instagram: "https://www.instagram.com/soudoug/",
+    linkedin: "https://www.linkedin.com/in/soudoug/",
     state: "SP",
     solutions: ["Visual Merchandising", "Vitrinismo", "Store Design"],
     sectors: ["Moda", "Lifestyle", "Luxo"],
@@ -135,6 +151,9 @@ export const associates: Associate[] = [
       { name: "Octaviano Andrade", role: "", phone: "11-3887-3205", mobile: "11-99300-9135", email: "octaviano@expor.com" }
     ],
     shortDescription: "Fabricante de manequins, displays e acessórios para visual merchandising, atendendo grandes redes há mais de 20 anos.",
+    website: "https://expormanequins.com.br/site/",
+    instagram: "https://www.instagram.com/expormanequins/",
+    linkedin: "https://www.linkedin.com/company/expor-mannequins/",
     state: "SP",
     solutions: ["Manequins", "Displays", "Acessórios VM", "Bustos"],
     sectors: ["Moda", "Varejo", "Departamentos"],
@@ -171,6 +190,7 @@ export const associates: Associate[] = [
       { name: "Fernando José Fernandes Junior", role: "Sócio Diretor - Advogado", phone: "11-3032-2144", mobile: "11-99983-3676", email: "fj.fernandes@fjf.com.br" }
     ],
     shortDescription: "Escritório de advocacia especializado em direito empresarial, contratos comerciais e assessoria jurídica para o setor varejista.",
+    linkedin: "https://www.linkedin.com/in/fernando-jose-fernandes-52748b/",
     state: "SP",
     solutions: ["Assessoria Jurídica", "Contratos", "Direito Empresarial"],
     sectors: ["Varejo", "Indústria", "Serviços"],
@@ -186,6 +206,9 @@ export const associates: Associate[] = [
       { name: "Gustavo Motta", role: "Diretor Executivo", mobile: "17 98111-1368", email: "gustavo.motta@atualpdv.com.br" }
     ],
     shortDescription: "Fabricação de móveis e instalações comerciais para PDV, com soluções sob medida para lojas e ambientes de varejo.",
+    website: "https://atualpdv.com.br/",
+    instagram: "https://www.instagram.com/atual.pdv",
+    linkedin: "https://www.linkedin.com/company/atualpdv/",
     state: "SP",
     solutions: ["Móveis Comerciais", "Instalações", "PDV"],
     sectors: ["Varejo", "Lojas", "Franquias"],
@@ -201,6 +224,9 @@ export const associates: Associate[] = [
       { name: "Sérgio Gouveia", role: "CEO", mobile: "11 -99587-7373", email: "sergio@globalledexperience.com" }
     ],
     shortDescription: "Comercialização e instalação de painéis LED e soluções de digital signage para comunicação visual em ambientes comerciais.",
+    website: "https://www.globalledexperience.com/",
+    instagram: "https://www.instagram.com/globalledexperience/",
+    linkedin: "https://www.linkedin.com/company/globalledexperience/",
     state: "SP",
     solutions: ["Painéis LED", "Digital Signage", "Tecnologia Visual"],
     sectors: ["Varejo", "Shopping Centers", "Eventos"],
@@ -216,6 +242,9 @@ export const associates: Associate[] = [
       { name: "Giovanni Maddaloni", role: "Diretor", phone: "19-3251-4742", mobile: "19 98132-7777", email: "gm@gm7.com.br" }
     ],
     shortDescription: "Consultoria especializada em trade marketing, estratégias de PDV e ativação de marca no ambiente de varejo.",
+    website: "https://www.gm7.com.br/",
+    instagram: "https://www.facebook.com/gm7club",
+    linkedin: "https://www.linkedin.com/company/gm7grupo/",
     state: "SP",
     city: "Campinas",
     solutions: ["Trade Marketing", "Consultoria", "Ativação"],
@@ -233,6 +262,9 @@ export const associates: Associate[] = [
       { name: "Rosely Kawahara", role: "Sócia Diretora-Arquiteta", phone: "11-5694-1043", mobile: "11-98122-8054", email: "rosely.kawahara@kt.com.br" }
     ],
     shortDescription: "Escritório de arquitetura especializado em projetos de varejo, store design e ambientes comerciais há mais de 20 anos.",
+    website: "https://kt.com.br/",
+    instagram: "https://www.instagram.com/kt.kawaharatakano/",
+    linkedin: "https://www.linkedin.com/company/ktkawaharatakano/",
     state: "SP",
     solutions: ["Arquitetura", "Store Design", "Projetos Comerciais"],
     sectors: ["Varejo", "Moda", "Shopping Centers"],
@@ -249,6 +281,9 @@ export const associates: Associate[] = [
       { name: "Bruno Cardia", role: "Diretor Comercial", phone: "0800 943 7800", email: "bruno.cardia@ledwave.com.br" }
     ],
     shortDescription: "Fabricante de painéis eletrônicos e soluções de LED para comunicação visual e digital signage no varejo.",
+    website: "https://ledwave.com.br/",
+    instagram: "https://www.instagram.com/ledwave",
+    linkedin: "https://www.linkedin.com/company/ledwave/",
     state: "GO",
     solutions: ["Painéis LED", "Digital Signage", "Comunicação Visual"],
     sectors: ["Varejo", "Publicidade", "Eventos"],
@@ -265,6 +300,9 @@ export const associates: Associate[] = [
       { name: "Carlos Pacheco", role: "Gerente de Vendas", phone: "11-2827-0656", mobile: "11-97329-5011", email: "pacheco@lemca.com.br" }
     ],
     shortDescription: "Especialista em iluminação comercial e industrial, com soluções em LED e projetos luminotécnicos para varejo.",
+    website: "https://www.lemca.com.br/",
+    instagram: "https://www.instagram.com/lemcailuminacao/",
+    linkedin: "https://www.linkedin.com/in/lemca-ilumina%C3%A7%C3%A3o/",
     state: "SP",
     solutions: ["Iluminação LED", "Projetos Luminotécnicos", "Lâmpadas Especiais"],
     sectors: ["Varejo", "Indústria", "Comercial"],
@@ -281,6 +319,9 @@ export const associates: Associate[] = [
       { name: "Thayna Valeriano", role: "Marketing", phone: "41 3059-5100", mobile: "11 95823-0113", email: "thayna.valeriano@leyardgroup.com" }
     ],
     shortDescription: "Líder global em displays LED e soluções de visualização para ambientes comerciais, eventos e espaços públicos.",
+    website: "https://leyard.com.br/",
+    instagram: "https://www.instagram.com/leyardbrasil/",
+    linkedin: "https://www.linkedin.com/company/leyard-brasil-latin-america/",
     state: "PR",
     city: "Curitiba",
     solutions: ["Displays LED", "Videowall", "Visualização Digital"],
@@ -298,6 +339,9 @@ export const associates: Associate[] = [
       { name: "Marcos Fernando Vargas", role: "Diretor", phone: "41-3122-7540", mobile: "41-99153-0161", email: "marcos@maocolorida.com.br" }
     ],
     shortDescription: "Soluções integradas em comunicação visual, mobiliário e expositores para PDV, com atuação nacional e projetos turnkey.",
+    website: "https://maocolorida.com/",
+    instagram: "https://www.instagram.com/maocoloridacv/",
+    linkedin: "https://www.linkedin.com/company/m%C3%A3o-colorida/",
     state: "PR",
     city: "Curitiba",
     solutions: ["Comunicação Visual", "Mobiliário", "Expositores", "Sinalização"],
@@ -315,6 +359,9 @@ export const associates: Associate[] = [
       { name: "Fernando Akira Nagata", role: "Diretor Comercial", phone: "11-5034.1233", mobile: "11-99452-9796", email: "akira@omegalight.com.br" }
     ],
     shortDescription: "Indústria de iluminação com mais de 20 anos, especializada em soluções LED para varejo, arquitetura e projetos especiais.",
+    website: "https://www.omegalight.com.br/pt/",
+    instagram: "https://www.instagram.com/omega_light/",
+    linkedin: "https://www.linkedin.com/company/omega-light/",
     state: "SP",
     solutions: ["Iluminação LED", "Projetos Luminotécnicos", "Iluminação Comercial"],
     sectors: ["Varejo", "Arquitetura", "Residencial"],
@@ -330,6 +377,8 @@ export const associates: Associate[] = [
       { name: "Sonia Paloschi", role: "Diretora", phone: "11-3231-1710", mobile: "11-99930-7008", email: "sonia.paloschi@purchase.com.br" }
     ],
     shortDescription: "Consultoria em visual merchandising e marketing de varejo, com foco em estratégias de PDV e experiência do consumidor.",
+    instagram: "https://www.instagram.com/soniapaloschi/",
+    linkedin: "https://www.linkedin.com/in/sonia-paloschi-30291823/",
     state: "SP",
     solutions: ["Visual Merchandising", "Marketing de Varejo", "Estratégia PDV"],
     sectors: ["Moda", "Varejo", "Lifestyle"],
@@ -346,6 +395,9 @@ export const associates: Associate[] = [
       { name: "Reinaldo Junior", role: "Gerente Comercial", phone: "14-3407-1004", email: "reinaldo.junior@ppa.com.br" }
     ],
     shortDescription: "Fabricante líder em automatizadores de portas e portões, com soluções para segurança e controle de acesso comercial.",
+    website: "https://www.ppa.com.br/brasil",
+    instagram: "https://www.instagram.com/ppa_brasil/",
+    linkedin: "https://www.linkedin.com/company/ppa-brasil/",
     state: "SP",
     city: "Garça",
     solutions: ["Automatização", "Portões Automáticos", "Controle de Acesso"],
@@ -362,6 +414,9 @@ export const associates: Associate[] = [
       { name: "Renan Moraes", role: "Diretor", phone: "11-2028-0816", mobile: "11-94717-1787", email: "renan@renabian.com.br" }
     ],
     shortDescription: "Engenharia especializada em projetos comerciais, instalações elétricas e infraestrutura para ambientes de varejo.",
+    website: "https://www.renabian.com.br/",
+    instagram: "https://www.instagram.com/RENABIAN_PROJ_COMPLEMENTARES",
+    linkedin: "https://www.linkedin.com/company/renabian-projetos-complementares/",
     state: "SP",
     solutions: ["Engenharia", "Instalações", "Infraestrutura"],
     sectors: ["Varejo", "Comercial", "Redes"],
@@ -378,6 +433,9 @@ export const associates: Associate[] = [
       { name: "Marta Alcarde", role: "Gerente de Atendimento", phone: "11-3732-6626", mobile: "11-98200-9833", email: "marta.alcarde@gunnebo.com" }
     ],
     shortDescription: "Soluções em gestão de numerário e prevenção de perdas para varejo, com tecnologia de ponta em cash management.",
+    website: "https://www.sesami.io/pt-br",
+    instagram: "https://www.instagram.com/sesamibrasil/",
+    linkedin: "https://www.linkedin.com/company/sesami-cash-management-technologies-corporation/",
     state: "SP",
     solutions: ["Cash Management", "Prevenção de Perdas", "Segurança"],
     sectors: ["Varejo", "Supermercados", "Bancos"],
@@ -394,6 +452,9 @@ export const associates: Associate[] = [
       { name: "Elaine Dias", role: "Diretora de Marketing", phone: "11-2604-9090", mobile: "11-98929-8759", email: "elaine.dias@theled.com.br" }
     ],
     shortDescription: "Especializada em painéis eletrônicos e soluções LED para comunicação visual, fachadas e digital signage no varejo.",
+    website: "https://theled.com.br/",
+    instagram: "https://www.instagram.com/theledoficial/",
+    linkedin: "https://www.linkedin.com/company/theledoficial/",
     state: "SP",
     solutions: ["Painéis LED", "Fachadas Digitais", "Digital Signage"],
     sectors: ["Varejo", "Publicidade", "Eventos"],
