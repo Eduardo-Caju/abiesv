@@ -134,10 +134,18 @@ const Associados = () => {
                 <CardContent className="p-0">
                   <div className="p-6">
                     <div className="flex items-start gap-4 mb-4">
-                      <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                        <span className="font-heading font-bold text-lg text-primary">
-                          {getLogoInitials(associate.name)}
-                        </span>
+                      <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 overflow-hidden">
+                        {associate.logo ? (
+                          <img 
+                            src={associate.logo} 
+                            alt={`Logo ${associate.name}`}
+                            className="w-full h-full object-contain"
+                          />
+                        ) : (
+                          <span className="font-heading font-bold text-lg text-primary">
+                            {getLogoInitials(associate.name)}
+                          </span>
+                        )}
                       </div>
                       <div className="min-w-0">
                         <h3 className="font-heading font-bold text-lg text-foreground mb-1 truncate">
