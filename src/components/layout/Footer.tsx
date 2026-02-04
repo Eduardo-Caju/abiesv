@@ -10,6 +10,7 @@ import {
   Youtube,
   ArrowRight 
 } from "lucide-react";
+import logoAbieskWhite from "@/assets/logo-abiesv-white.png";
 
 const footerLinks = {
   institucional: [
@@ -73,14 +74,12 @@ export function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 lg:gap-12">
           {/* Brand Column */}
           <div className="col-span-2 md:col-span-3 lg:col-span-2">
-            <Link to="/" className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 rounded-xl gradient-primary flex items-center justify-center">
-                <span className="text-white font-heading font-bold text-lg">AB</span>
-              </div>
-              <div>
-                <span className="font-heading font-bold text-xl">ABIESV</span>
-                <p className="text-xs text-white/60">Associação Brasileira da Indústria</p>
-              </div>
+            <Link to="/" className="flex items-center mb-6">
+              <img 
+                src={logoAbieskWhite} 
+                alt="ABIESV" 
+                className="h-12 w-auto"
+              />
             </Link>
             <p className="text-white/70 text-sm mb-6 max-w-sm">
               Conhecimento, dados e conexões para transformar o ponto de venda no Brasil. 
