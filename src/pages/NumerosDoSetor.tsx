@@ -3,91 +3,48 @@ import { Layout } from "@/components/layout/Layout";
 import { SEOHead, createBreadcrumbSchema } from "@/components/seo/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { 
-  TrendingUp, 
-  TrendingDown, 
-  Minus, 
-  ArrowRight,
-  ShoppingCart,
-  Users,
-  Store,
-  DollarSign,
-  Package,
-  Zap
-} from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 const metrics = [
   {
-    icon: TrendingUp,
+    value: "R$ 532,1 BI",
+    description: "Movimentação projetada pelo varejo brasileiro em 2025",
+    source: "IPC Maps",
+  },
+  {
     value: "+35%",
-    label: "Aumento de conversão",
-    description: "PDVs com boas práticas de VM aplicadas registram aumento médio de 35% na taxa de conversão.",
-    source: "[PLACEHOLDER - Pesquisa ABIESV]",
-    date: "[ANO]",
-    trend: "up",
+    description: "Aumento médio na taxa de conversão em PDVs com boas práticas de Visual Merchandising aplicadas",
+    source: "Pesquisa ABIESV",
   },
   {
-    icon: DollarSign,
-    value: "R$ 127",
-    label: "Ticket médio",
-    description: "Ticket médio do varejo de moda e lifestyle no Brasil, considerando lojas de shopping e rua.",
-    source: "[PLACEHOLDER - IBEVAR]",
-    date: "[ANO]",
-    trend: "neutral",
-  },
-  {
-    icon: Store,
-    value: "15%",
-    label: "Investimento em PDV",
-    description: "Percentual médio do faturamento que varejistas investem em modernização do ponto de venda.",
-    source: "[PLACEHOLDER - Pesquisa ABIESV]",
-    date: "[ANO]",
-    trend: "up",
-  },
-  {
-    icon: Users,
-    value: "2,8x",
-    label: "Tempo de permanência",
-    description: "Lojas com design orientado à experiência aumentam o tempo de permanência do cliente em até 2,8 vezes.",
-    source: "[PLACEHOLDER - Estudo Setorial]",
-    date: "[ANO]",
-    trend: "up",
-  },
-  {
-    icon: ShoppingCart,
     value: "68%",
-    label: "Decisão no PDV",
-    description: "Percentual de decisões de compra que são tomadas dentro do ponto de venda.",
-    source: "[PLACEHOLDER - POPAI Brasil]",
-    date: "[ANO]",
-    trend: "neutral",
+    description: "Das decisões de compra são tomadas dentro do ponto de venda",
+    source: "POPAI Brasil",
   },
   {
-    icon: Package,
+    value: "2,8x",
+    description: "Aumento no tempo de permanência em lojas com design orientado à experiência",
+    source: "Estudo Setorial ABIESV",
+  },
+  {
+    value: "R$ 127",
+    description: "Ticket médio do varejo de moda e lifestyle no Brasil (lojas de shopping e rua)",
+    source: "IBEVAR",
+  },
+  {
+    value: "15%",
+    description: "Percentual médio do faturamento investido em modernização do ponto de venda",
+    source: "Pesquisa ABIESV",
+  },
+  {
     value: "-22%",
-    label: "Custo de operação",
-    description: "Redução média no custo operacional com implementação de tecnologias de automação no PDV.",
-    source: "[PLACEHOLDER - Tech Retail]",
-    date: "[ANO]",
-    trend: "down",
+    description: "Redução média no custo operacional com tecnologias de automação no PDV",
+    source: "Tech Retail",
   },
   {
-    icon: Zap,
-    value: "45%",
-    label: "Eficiência energética",
-    description: "Economia média com modernização de sistemas de iluminação para LED em lojas físicas.",
-    source: "[PLACEHOLDER - ABIESV]",
-    date: "[ANO]",
-    trend: "up",
-  },
-  {
-    icon: TrendingUp,
     value: "+18%",
-    label: "Vendas omnichannel",
-    description: "Crescimento nas vendas de lojas físicas que integraram canais digitais à experiência do cliente.",
-    source: "[PLACEHOLDER - E-commerce Brasil]",
-    date: "[ANO]",
-    trend: "up",
+    description: "Crescimento nas vendas de lojas físicas que integraram canais digitais à experiência",
+    source: "E-commerce Brasil",
   },
 ];
 
@@ -98,16 +55,6 @@ const trends = [
 ];
 
 const NumerosDoSetor = () => {
-  const getTrendIcon = (trend: string) => {
-    switch (trend) {
-      case "up":
-        return <TrendingUp className="h-4 w-4 text-primary" />;
-      case "down":
-        return <TrendingDown className="h-4 w-4 text-destructive" />;
-      default:
-        return <Minus className="h-4 w-4 text-muted-foreground" />;
-    }
-  };
 
   const pageSchema = [
     createBreadcrumbSchema([
@@ -183,36 +130,24 @@ const NumerosDoSetor = () => {
       <section className="py-12 bg-muted/30">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="font-heading text-2xl font-bold text-foreground mb-8">
-            Métricas essenciais
+            O Setor em Números
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {metrics.map((metric, index) => (
-              <Card 
+              <div 
                 key={index} 
-                className="border-0 shadow-card hover:shadow-card-hover transition-all duration-300"
+                className="gradient-primary rounded-xl p-8 text-white shadow-lg hover:-translate-y-1 transition-transform duration-300"
               >
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
-                      <metric.icon className="h-5 w-5 text-muted-foreground" />
-                    </div>
-                    {getTrendIcon(metric.trend)}
-                  </div>
-                  <div className="text-3xl font-heading font-bold text-primary mb-1">
-                    {metric.value}
-                  </div>
-                  <h3 className="font-heading font-semibold text-foreground mb-2">
-                    {metric.label}
-                  </h3>
-                  <p className="text-sm text-muted-foreground mb-3 line-clamp-3">
-                    {metric.description}
-                  </p>
-                  <div className="text-xs text-muted-foreground/70">
-                    <p>Fonte: {metric.source}</p>
-                    <p>Data: {metric.date}</p>
-                  </div>
-                </CardContent>
-              </Card>
+                <div className="text-4xl sm:text-5xl font-heading font-bold mb-4 leading-none">
+                  {metric.value}
+                </div>
+                <p className="text-base leading-relaxed mb-5 opacity-90">
+                  {metric.description}
+                </p>
+                <div className="text-xs opacity-70 italic border-t border-white/30 pt-3">
+                  Fonte: {metric.source}
+                </div>
+              </div>
             ))}
           </div>
         </div>
