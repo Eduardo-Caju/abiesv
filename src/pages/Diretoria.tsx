@@ -1,13 +1,14 @@
 import { Layout } from "@/components/layout/Layout";
 import { SEOHead, createBreadcrumbSchema } from "@/components/seo/SEOHead";
 import { Card, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface Director {
   name: string;
   role: string;
   email?: string;
+  photo?: string;
 }
 
 const leadership: Director[] = [
@@ -19,24 +20,24 @@ const vicePresidents: Director[] = [
   { name: "Claudio Elias Conz", role: "VP - Educação", email: "educacao@abiesv.org.br" },
   { name: "Cristina Souza", role: "VP - Foodservice", email: "foodservice@abiesv.org.br" },
   { name: "Emerson Carrijo", role: "VP - Mobilidade", email: "mobilidade@abiesv.org.br" },
-  { name: "Flávia Montes", role: "VP - Comunicação", email: "comunicacao@abiesv.org.br" },
-  { name: "Francisco José Ritondaro", role: "VP - Malls & Integração" },
-  { name: "Gabriela Jardim", role: "VP - Trade Marketing", email: "trademarketing@abiesv.org.br" },
-  { name: "José Fugice", role: "VP - Varejo", email: "varejo@abiesv.org.br" },
-  { name: "Olegário Araújo", role: "VP - Inteligência de Mercado" },
-  { name: "Vanessa Mendonça", role: "VP - Relações Institucionais" },
+  { name: "Flávia Montes", role: "VP - Comunicação", email: "comunicacao@abiesv.org.br", photo: "/directors/flavia-montes.jpg" },
+  { name: "Francisco José Ritondaro", role: "VP - Malls & Integração", photo: "/directors/francisco-ritondaro.jpg" },
+  { name: "Gabriela Jardim", role: "VP - Trade Marketing", email: "trademarketing@abiesv.org.br", photo: "/directors/gabriela-jardim.jpg" },
+  { name: "José Fugice", role: "VP - Varejo", email: "varejo@abiesv.org.br", photo: "/directors/jose-fugice.jpg" },
+  { name: "Olegário Araújo", role: "VP - Inteligência de Mercado", photo: "/directors/olegario-araujo.jpg" },
+  { name: "Vanessa Mendonça", role: "VP - Relações Institucionais", photo: "/directors/vanessa-mendonca.jpg" },
 ];
 
 const directors: Director[] = [
   { name: "Carolina Tonegutti", role: "Diretoria - Fiscal e Tributário", email: "fiscal@abiesv.org.br" },
   { name: "Eduardo Aguiar", role: "Diretor Administrativo Financeiro", email: "financeiro@abiesv.org.br" },
-  { name: "Fernanda Bortoluzzi", role: "Diretoria - Planejamento", email: "planejamento@abiesv.org.br" },
+  { name: "Fernanda Bortoluzzi", role: "Diretoria - Planejamento", email: "planejamento@abiesv.org.br", photo: "/directors/fernanda-bortoluzzi.jpg" },
   { name: "Fernando Fernandes", role: "Diretor Jurídico", email: "juridico@abiesv.org.br" },
-  { name: "Karina Duarte", role: "Diretoria - Projetos", email: "projeto@abiesv.org.br" },
+  { name: "Karina Duarte", role: "Diretoria - Projetos", email: "projeto@abiesv.org.br", photo: "/directors/karina-duarte.jpg" },
   { name: "Leonardo Blumm", role: "Diretoria - Regional RS", email: "regionalrs@abiesv.org.br" },
-  { name: "Raquel Monreal Zeppelini", role: "Diretoria - Criação, Campanhas e Parcerias" },
+  { name: "Raquel Monreal Zeppelini", role: "Diretoria - Criação, Campanhas e Parcerias", photo: "/directors/raquel-monreal.jpg" },
   { name: "Rubens Nista", role: "Diretor de Processo Industrial e Precificações" },
-  { name: "Sara Elydio", role: "Diretoria - Tendências e Inovações" },
+  { name: "Sara Elydio", role: "Diretoria - Tendências e Inovações", photo: "/directors/sara-elydio.jpg" },
   { name: "Thais Pizzi", role: "Diretoria - Startups", email: "startup@abiesv.org.br" },
   { name: "Wander Miranda", role: "Diretoria - Regional ES", email: "regionales@abiesv.org.br" },
 ];
@@ -55,6 +56,9 @@ function DirectorCard({ director }: { director: Director }) {
     <Card className="border-0 shadow-card hover:shadow-card-hover transition-all duration-300">
       <CardContent className="p-6 text-center">
         <Avatar className="w-20 h-20 mx-auto mb-4">
+          {director.photo ? (
+            <AvatarImage src={director.photo} alt={director.name} className="object-cover" />
+          ) : null}
           <AvatarFallback className="bg-primary/10 text-primary text-xl font-heading font-bold">
             {getInitials(director.name)}
           </AvatarFallback>
