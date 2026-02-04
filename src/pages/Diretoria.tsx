@@ -12,13 +12,13 @@ interface Director {
 }
 
 const leadership: Director[] = [
-  { name: "Roberto Gabrielli", role: "Presidente", email: "presidente@abiesv.org.br" },
-  { name: "Sonia Paloschi", role: "Vice-Presidente", email: "vice-presidente@abiesv.org.br" },
+  { name: "Roberto Gabrielli", role: "Presidente", email: "presidente@abiesv.org.br", photo: "/directors/roberto-gabrielli.jpg" },
+  { name: "Sonia Paloschi", role: "Vice-Presidente", email: "vice-presidente@abiesv.org.br", photo: "/directors/sonia-paloschi.jpg" },
 ];
 
 const vicePresidents: Director[] = [
-  { name: "Claudio Elias Conz", role: "VP - Educação", email: "educacao@abiesv.org.br" },
-  { name: "Cristina Souza", role: "VP - Foodservice", email: "foodservice@abiesv.org.br" },
+  { name: "Claudio Elias Conz", role: "VP - Educação", email: "educacao@abiesv.org.br", photo: "/directors/claudio-conz.jpg" },
+  { name: "Cristina Souza", role: "VP - Foodservice", email: "foodservice@abiesv.org.br", photo: "/directors/cristina-souza.jpg" },
   { name: "Emerson Carrijo", role: "VP - Mobilidade", email: "mobilidade@abiesv.org.br" },
   { name: "Flávia Montes", role: "VP - Comunicação", email: "comunicacao@abiesv.org.br", photo: "/directors/flavia-montes.jpg" },
   { name: "Francisco José Ritondaro", role: "VP - Malls & Integração", photo: "/directors/francisco-ritondaro.jpg" },
