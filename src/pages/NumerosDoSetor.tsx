@@ -153,6 +153,44 @@ const NumerosDoSetor = () => {
         </div>
       </section>
 
+      {/* Shopping Centers Section */}
+      <section className="py-12">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-gradient-to-br from-[#1e3c72] to-[#2a5298] rounded-2xl p-8 text-white shadow-xl">
+            <div className="flex items-center gap-3 mb-8">
+              <span className="text-4xl">🏬</span>
+              <h2 className="font-heading text-2xl font-bold">Shopping Centers</h2>
+            </div>
+            
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
+              <div className="bg-white/10 backdrop-blur-sm p-5 rounded-xl">
+                <span className="block text-3xl sm:text-4xl font-heading font-bold mb-2">R$ 198,4 BI</span>
+                <span className="block text-sm opacity-90">Faturamento 2024</span>
+              </div>
+              
+              <div className="bg-white/10 backdrop-blur-sm p-5 rounded-xl">
+                <span className="block text-3xl sm:text-4xl font-heading font-bold mb-2">648</span>
+                <span className="block text-sm opacity-90">Shoppings em operação</span>
+              </div>
+              
+              <div className="bg-amber-400/20 border-2 border-amber-400 backdrop-blur-sm p-5 rounded-xl">
+                <span className="block text-3xl sm:text-4xl font-heading font-bold mb-2">17</span>
+                <span className="block text-sm opacity-90">Novos em 2026</span>
+              </div>
+              
+              <div className="bg-white/10 backdrop-blur-sm p-5 rounded-xl">
+                <span className="block text-3xl sm:text-4xl font-heading font-bold mb-2">123.266</span>
+                <span className="block text-sm opacity-90">Lojas no Brasil</span>
+              </div>
+            </div>
+            
+            <div className="text-sm opacity-70 italic border-t border-white/20 pt-4">
+              Fonte: Abrasce - Censo Brasileiro 2024/2025
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Methodology */}
       <section className="py-12">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
