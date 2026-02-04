@@ -6,39 +6,30 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { 
   ArrowRight, 
-  TrendingUp, 
   Users, 
   BookOpen, 
   Calendar,
   ChevronRight,
-  BarChart3,
-  ShoppingBag,
-  Lightbulb
+  BarChart3
 } from "lucide-react";
 import heroImage from "@/assets/hero-retail.jpg";
 
 // Metrics data
 const metrics = [
   {
+    value: "R$ 532,1 BI",
+    description: "Movimentação projetada pelo varejo brasileiro em 2025",
+    source: "IPC Maps",
+  },
+  {
     value: "+35%",
-    label: "Aumento médio de conversão",
-    description: "PDVs com boas práticas aplicadas",
-    source: "[FONTE/ANO]",
-    icon: TrendingUp,
-  },
-  {
-    value: "R$ 127",
-    label: "Ticket médio do varejo",
-    description: "Segmento de moda e lifestyle",
-    source: "[PLACEHOLDER]",
-    icon: ShoppingBag,
-  },
-  {
-    value: "3",
-    label: "Top tendências 2024",
-    description: "VM orientado a dados, experiência omnichannel, eficiência operacional",
+    description: "Aumento médio na taxa de conversão em PDVs com boas práticas de Visual Merchandising",
     source: "Pesquisa ABIESV",
-    icon: Lightbulb,
+  },
+  {
+    value: "68%",
+    description: "Das decisões de compra são tomadas dentro do ponto de venda",
+    source: "POPAI Brasil",
   },
 ];
 
@@ -179,28 +170,20 @@ const Index = () => {
 
           <div className="grid md:grid-cols-3 gap-8">
             {metrics.map((metric, index) => (
-              <Card 
+              <div 
                 key={index} 
-                className="group hover:shadow-card-hover transition-all duration-300 border-0 shadow-card"
+                className="gradient-primary rounded-xl p-8 text-white shadow-lg hover:-translate-y-1 transition-transform duration-300"
               >
-                <CardContent className="p-8">
-                  <div className="w-14 h-14 rounded-xl gradient-primary flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                    <metric.icon className="h-7 w-7 text-white" />
-                  </div>
-                  <div className="text-4xl font-heading font-bold text-primary mb-2">
-                    {metric.value}
-                  </div>
-                  <h3 className="font-heading font-semibold text-foreground mb-2">
-                    {metric.label}
-                  </h3>
-                  <p className="text-sm text-muted-foreground mb-3">
-                    {metric.description}
-                  </p>
-                  <span className="text-xs text-muted-foreground/70">
-                    Fonte: {metric.source}
-                  </span>
-                </CardContent>
-              </Card>
+                <div className="text-4xl sm:text-5xl font-heading font-bold mb-4 leading-none">
+                  {metric.value}
+                </div>
+                <p className="text-base leading-relaxed mb-5 opacity-90">
+                  {metric.description}
+                </p>
+                <div className="text-xs opacity-70 italic border-t border-white/30 pt-3">
+                  Fonte: {metric.source}
+                </div>
+              </div>
             ))}
           </div>
 
