@@ -104,14 +104,18 @@ const Index = () => {
 
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center overflow-hidden">
-        {/* Background Image */}
+      {/* Background Video */}
         <div className="absolute inset-0">
-          <img
-            src={heroImage}
-            alt="Ambiente moderno de varejo com pessoas e tecnologia"
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
             className="w-full h-full object-cover"
-            loading="eager"
-          />
+            poster={heroImage}
+          >
+            <source src="/videos/hero-video.mp4" type="video/mp4" />
+          </video>
           <div className="absolute inset-0 bg-gradient-to-r from-primary/95 via-primary/80 to-primary/40" />
         </div>
 
