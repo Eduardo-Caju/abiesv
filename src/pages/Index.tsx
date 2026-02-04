@@ -360,10 +360,18 @@ const Index = () => {
                 to={`/associados/${associate.slug}`}
                 className="flex flex-col items-center justify-center p-4 bg-muted/50 rounded-xl hover:bg-muted hover:shadow-md transition-all group"
               >
-                <div className="w-14 h-14 rounded-lg bg-primary/10 flex items-center justify-center mb-2 group-hover:bg-primary/20 transition-colors">
-                  <span className="font-heading font-bold text-lg text-primary">
-                    {getLogoInitials(associate.name)}
-                  </span>
+                <div className="w-14 h-14 rounded-lg bg-primary/10 flex items-center justify-center mb-2 group-hover:bg-primary/20 transition-colors overflow-hidden">
+                  {associate.logo ? (
+                    <img 
+                      src={associate.logo} 
+                      alt={`Logo ${associate.name}`}
+                      className="w-full h-full object-contain"
+                    />
+                  ) : (
+                    <span className="font-heading font-bold text-lg text-primary">
+                      {getLogoInitials(associate.name)}
+                    </span>
+                  )}
                 </div>
                 <span className="text-xs text-center text-muted-foreground group-hover:text-foreground transition-colors line-clamp-2">
                   {associate.name}

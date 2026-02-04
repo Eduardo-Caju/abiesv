@@ -141,14 +141,14 @@ export const associates: Associate[] = [
   },
   {
     slug: "fast-gerenciamento",
-    name: "Fast Gerenciamento e Construtora",
+    name: "FAST Construtora",
     tradingName: "Fast Qualy Gerenciamento de Obras LTDA",
     cnpj: "11.276.915/0001-40",
     category: "Construção Civil",
     joinedDate: "2011-08-15",
     contacts: [
       { name: "Eduardo Aguiar", role: "Diretor", phone: "11-3034-3210", mobile: "11-98475-0205", email: "eduardo@fastconstrutora.com.br" },
-      { name: "Felipe Magrini", role: "Sócio Diretor", phone: "11-3034-3210", mobile: "11-98475-0195", email: "felipe@fastgerenciadora.com.br" }
+      { name: "Leonardo Pimenta", role: "Comercial", phone: "11-3034-3210", mobile: "11-97632-4378", email: "leonardo@fastconstrutora.com.br" }
     ],
     shortDescription: "Especialista em obras rápidas para varejo e corporativo, a FAST entrega soluções end‑to‑end — do projeto à inauguração — com transparência, pontualidade e cobertura nacional.",
     fullDescription: "A FAST Construtora é referência em obras rápidas para varejo e ambientes corporativos, com 15+ anos de mercado, 1.100+ obras entregues e mais de 1 milhão de m² construídos em todo o Brasil. Atuamos no modelo turnkey, integrando todo o ciclo do projeto à inauguração: projetos técnicos, obra civil completa, instalações elétricas, hidráulicas, HVAC e PCI, mezaninos, acabamentos, mobiliário, comunicação visual e luminárias. Nossa metodologia de transparência garante orçamento detalhado, cronograma realista, relatórios fotográficos semanais, termo de entrega e guia de uso. Entregamos padrão, previsibilidade e velocidade — reduzindo riscos, evitando retrabalhos e preservando o capital de giro do cliente (com opção de parcelamento em até 36x via parceiro financeiro).",
