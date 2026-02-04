@@ -1,45 +1,80 @@
 import { Layout } from "@/components/layout/Layout";
 import { SEOHead, createBreadcrumbSchema } from "@/components/seo/SEOHead";
 import { Card, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-const directors = [
-  {
-    name: "[Nome do Presidente]",
-    role: "Presidente",
-    company: "[Empresa]",
-    bio: "Profissional com mais de 20 anos de experiência no setor de varejo e PDV. Lidera iniciativas de inovação e transformação digital.",
-  },
-  {
-    name: "[Nome do Vice-Presidente]",
-    role: "Vice-Presidente",
-    company: "[Empresa]",
-    bio: "Especialista em visual merchandising e store design, com atuação em grandes redes varejistas nacionais e internacionais.",
-  },
-  {
-    name: "[Nome do Diretor Financeiro]",
-    role: "Diretor Financeiro",
-    company: "[Empresa]",
-    bio: "Responsável pela gestão financeira e sustentabilidade da associação, com background em gestão empresarial.",
-  },
-  {
-    name: "[Nome do Diretor de Eventos]",
-    role: "Diretor de Eventos",
-    company: "[Empresa]",
-    bio: "Coordena a agenda de eventos da ABIESV, incluindo o Backstage do Varejo e workshops técnicos.",
-  },
-  {
-    name: "[Nome do Diretor de Conteúdo]",
-    role: "Diretor de Conteúdo",
-    company: "[Empresa]",
-    bio: "Lidera a produção de conhecimento técnico e a curadoria da biblioteca da associação.",
-  },
-  {
-    name: "[Nome do Diretor de Associados]",
-    role: "Diretor de Associados",
-    company: "[Empresa]",
-    bio: "Responsável pelo relacionamento com associados e prospecção de novas empresas para o ecossistema.",
-  },
+interface Director {
+  name: string;
+  role: string;
+  email?: string;
+}
+
+const leadership: Director[] = [
+  { name: "Roberto Gabrielli", role: "Presidente", email: "presidente@abiesv.org.br" },
+  { name: "Sonia Paloschi", role: "Vice-Presidente", email: "vice-presidente@abiesv.org.br" },
 ];
+
+const vicePresidents: Director[] = [
+  { name: "Claudio Elias Conz", role: "VP - Educação", email: "educacao@abiesv.org.br" },
+  { name: "Cristina Souza", role: "VP - Foodservice", email: "foodservice@abiesv.org.br" },
+  { name: "Emerson Carrijo", role: "VP - Mobilidade", email: "mobilidade@abiesv.org.br" },
+  { name: "Flávia Montes", role: "VP - Comunicação", email: "comunicacao@abiesv.org.br" },
+  { name: "Francisco José Ritondaro", role: "VP - Malls & Integração" },
+  { name: "Gabriela Jardim", role: "VP - Trade Marketing", email: "trademarketing@abiesv.org.br" },
+  { name: "José Fugice", role: "VP - Varejo", email: "varejo@abiesv.org.br" },
+  { name: "Olegário Araújo", role: "VP - Inteligência de Mercado" },
+  { name: "Vanessa Mendonça", role: "VP - Relações Institucionais" },
+];
+
+const directors: Director[] = [
+  { name: "Carolina Tonegutti", role: "Diretoria - Fiscal e Tributário", email: "fiscal@abiesv.org.br" },
+  { name: "Eduardo Aguiar", role: "Diretor Administrativo Financeiro", email: "financeiro@abiesv.org.br" },
+  { name: "Fernanda Bortoluzzi", role: "Diretoria - Planejamento", email: "planejamento@abiesv.org.br" },
+  { name: "Fernando Fernandes", role: "Diretor Jurídico", email: "juridico@abiesv.org.br" },
+  { name: "Karina Duarte", role: "Diretoria - Projetos", email: "projeto@abiesv.org.br" },
+  { name: "Leonardo Blumm", role: "Diretoria - Regional RS", email: "regionalrs@abiesv.org.br" },
+  { name: "Raquel Monreal Zeppelini", role: "Diretoria - Criação, Campanhas e Parcerias" },
+  { name: "Rubens Nista", role: "Diretor de Processo Industrial e Precificações" },
+  { name: "Sara Elydio", role: "Diretoria - Tendências e Inovações" },
+  { name: "Thais Pizzi", role: "Diretoria - Startups", email: "startup@abiesv.org.br" },
+  { name: "Wander Miranda", role: "Diretoria - Regional ES", email: "regionales@abiesv.org.br" },
+];
+
+function getInitials(name: string): string {
+  return name
+    .split(" ")
+    .filter((_, i, arr) => i === 0 || i === arr.length - 1)
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase();
+}
+
+function DirectorCard({ director }: { director: Director }) {
+  return (
+    <Card className="border-0 shadow-card hover:shadow-card-hover transition-all duration-300">
+      <CardContent className="p-6 text-center">
+        <Avatar className="w-20 h-20 mx-auto mb-4">
+          <AvatarFallback className="bg-primary/10 text-primary text-xl font-heading font-bold">
+            {getInitials(director.name)}
+          </AvatarFallback>
+        </Avatar>
+        <h3 className="font-heading font-bold text-lg text-foreground mb-1">
+          {director.name}
+        </h3>
+        <p className="text-primary font-medium text-sm mb-2">{director.role}</p>
+        {director.email && (
+          <a
+            href={`mailto:${director.email}`}
+            className="text-xs text-muted-foreground hover:text-primary transition-colors"
+          >
+            {director.email}
+          </a>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
 
 const Diretoria = () => {
   const pageSchema = [
@@ -66,7 +101,7 @@ const Diretoria = () => {
               Diretoria e Governança
             </h1>
             <p className="text-xl text-muted-foreground leading-relaxed">
-              A ABIESV é conduzida por profissionais experientes do setor, comprometidos com o 
+              A ABIESV é conduzida por profissionais experientes do setor, comprometidos com o
               desenvolvimento do ecossistema de PDV no Brasil.
             </p>
           </div>
@@ -75,27 +110,41 @@ const Diretoria = () => {
 
       <section className="py-20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {directors.map((director, index) => (
-              <Card key={index} className="border-0 shadow-card hover:shadow-card-hover transition-all duration-300">
-                <CardContent className="p-6">
-                  <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center mb-4 mx-auto">
-                    <span className="font-heading font-bold text-2xl text-muted-foreground">
-                      {director.name.split(' ').slice(0, 2).map(n => n[0] || '').join('')}
-                    </span>
-                  </div>
-                  <div className="text-center">
-                    <h3 className="font-heading font-bold text-lg text-foreground mb-1">
-                      {director.name}
-                    </h3>
-                    <p className="text-primary font-medium mb-1">{director.role}</p>
-                    <p className="text-sm text-muted-foreground mb-4">{director.company}</p>
-                    <p className="text-sm text-muted-foreground">{director.bio}</p>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+          {/* Presidência */}
+          <div className="mb-16">
+            <h2 className="font-heading text-2xl font-bold text-foreground mb-8 text-center">
+              Presidência
+            </h2>
+            <div className="grid md:grid-cols-2 gap-8 max-w-2xl mx-auto">
+              {leadership.map((director, index) => (
+                <DirectorCard key={index} director={director} />
+              ))}
+            </div>
           </div>
+
+          {/* Vice-Presidências e Diretorias em Tabs */}
+          <Tabs defaultValue="vps" className="w-full">
+            <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8">
+              <TabsTrigger value="vps">Vice-Presidências</TabsTrigger>
+              <TabsTrigger value="directors">Diretorias</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="vps">
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {vicePresidents.map((director, index) => (
+                  <DirectorCard key={index} director={director} />
+                ))}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="directors">
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {directors.map((director, index) => (
+                  <DirectorCard key={index} director={director} />
+                ))}
+              </div>
+            </TabsContent>
+          </Tabs>
         </div>
       </section>
 
@@ -107,17 +156,17 @@ const Diretoria = () => {
             </h2>
             <div className="prose prose-lg max-w-none text-muted-foreground">
               <p>
-                A ABIESV opera com um modelo de governança participativa, onde as decisões estratégicas 
+                A ABIESV opera com um modelo de governança participativa, onde as decisões estratégicas
                 são tomadas em conjunto pela diretoria e validadas em assembleias com os associados.
               </p>
               <p>
-                Nosso mandato é de [PLACEHOLDER] anos, com possibilidade de reeleição. As eleições 
-                são realizadas de forma transparente, com direito a voto para todos os associados 
-                em dia com suas obrigações.
+                Nosso mandato é de 2 anos, com possibilidade de reeleição. As eleições são realizadas
+                de forma transparente, com direito a voto para todos os associados em dia com suas
+                obrigações.
               </p>
               <p>
-                Acreditamos que a diversidade de perspectivas fortalece nossa atuação e garante 
-                que as iniciativas da associação reflitam as necessidades reais do ecossistema.
+                Acreditamos que a diversidade de perspectivas fortalece nossa atuação e garante que
+                as iniciativas da associação reflitam as necessidades reais do ecossistema.
               </p>
             </div>
           </div>
