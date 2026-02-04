@@ -20,6 +20,7 @@ export interface Associate {
   website?: string;
   linkedin?: string;
   instagram?: string;
+  logo?: string;             // Caminho para o logo
   solutions?: string[];      // Tags de soluções oferecidas
   sectors?: string[];        // Setores atendidos
   city?: string;
@@ -149,10 +150,15 @@ export const associates: Associate[] = [
       { name: "Eduardo Aguiar", role: "Diretor", phone: "11-3034-3210", mobile: "11-98475-0205", email: "eduardo@fastconstrutora.com.br" },
       { name: "Felipe Magrini", role: "Sócio Diretor", phone: "11-3034-3210", mobile: "11-98475-0195", email: "felipe@fastgerenciadora.com.br" }
     ],
-    shortDescription: "Gerenciamento e construção de lojas com cronograma acelerado, especializada em rollouts e reformas para grandes redes.",
+    shortDescription: "Especialista em obras rápidas para varejo e corporativo, a FAST entrega soluções end‑to‑end — do projeto à inauguração — com transparência, pontualidade e cobertura nacional.",
+    fullDescription: "A FAST Construtora é referência em obras rápidas para varejo e ambientes corporativos, com 15+ anos de mercado, 1.100+ obras entregues e mais de 1 milhão de m² construídos em todo o Brasil. Atuamos no modelo turnkey, integrando todo o ciclo do projeto à inauguração: projetos técnicos, obra civil completa, instalações elétricas, hidráulicas, HVAC e PCI, mezaninos, acabamentos, mobiliário, comunicação visual e luminárias. Nossa metodologia de transparência garante orçamento detalhado, cronograma realista, relatórios fotográficos semanais, termo de entrega e guia de uso. Entregamos padrão, previsibilidade e velocidade — reduzindo riscos, evitando retrabalhos e preservando o capital de giro do cliente (com opção de parcelamento em até 36x via parceiro financeiro).",
+    website: "https://www.fastconstrutora.com.br",
+    linkedin: "https://www.linkedin.com/company/fast-construtora/",
+    instagram: "https://www.instagram.com/fastconstrutora/",
+    logo: "/associates/fast-construtora.png",
     state: "SP",
-    solutions: ["Construção", "Reforma", "Gerenciamento de Obras", "Rollout"],
-    sectors: ["Varejo", "Redes", "Franquias"],
+    solutions: ["Obras rápidas", "Turnkey (do projeto à inauguração)", "Projetos técnicos", "Gestão de obras", "Instalações elétricas e HVAC", "Parcelamento em até 36x"],
+    sectors: ["Varejo", "Corporativo", "Shoppings", "Hotéis"],
   },
   {
     slug: "fjf-advogados",
