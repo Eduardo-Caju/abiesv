@@ -297,15 +297,25 @@ const Historia = () => {
             <h3 className="font-heading text-2xl font-bold text-foreground text-center mb-8">
               Diretoria Fundadora
             </h3>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+            
+            {/* Photo */}
+            <div className="mb-8">
+              <img 
+                src="/history/diretoria-fundadora.png" 
+                alt="Diretoria Fundadora da ABIESV no Auditório da FIESP em 2002"
+                className="w-full max-w-4xl mx-auto rounded-xl shadow-lg"
+              />
+            </div>
+
+            {/* Names in two columns */}
+            <div className="grid md:grid-cols-2 gap-x-8 gap-y-3 max-w-3xl mx-auto">
               {foundingBoard.map((member, index) => (
-                <div key={index} className="text-center">
-                  <div className="w-20 h-20 mx-auto mb-3 gradient-primary rounded-full flex items-center justify-center text-white text-xl font-bold">
-                    {member.initials}
-                  </div>
-                  <h4 className="font-semibold text-foreground text-sm">{member.name}</h4>
-                  <p className="text-xs text-muted-foreground">{member.role}</p>
-                  <p className="text-xs text-primary font-medium">{member.company}</p>
+                <div key={index} className="flex items-center gap-2 py-2 border-b border-border/50">
+                  <span className="font-semibold text-foreground">{member.name}</span>
+                  <span className="text-muted-foreground">|</span>
+                  <span className="text-sm text-muted-foreground">{member.role}</span>
+                  <span className="text-muted-foreground">|</span>
+                  <span className="text-sm text-primary font-medium">{member.company}</span>
                 </div>
               ))}
             </div>
