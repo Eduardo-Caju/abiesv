@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { SEOHead, createBreadcrumbSchema } from "@/components/seo/SEOHead";
@@ -17,24 +16,15 @@ import {
   MessageCircle
 } from "lucide-react";
 import {
-  strategicPartners,
   sectorPartners,
   sectors,
   knowledgeCategories,
   internationalRegions,
   ecosystemStats,
-  getBadgeLabel,
-  getBadgeColor,
   getPartnerInitials,
 } from "@/data/partners";
 
 const Parceiros = () => {
-  const [activeFilter, setActiveFilter] = useState("todos");
-
-  const filteredSectorPartners = activeFilter === "todos" 
-    ? sectorPartners 
-    : sectorPartners.filter(p => p.sector === activeFilter);
-
   const pageSchema = [
     createBreadcrumbSchema([
       { name: "Home", url: "https://abiesv.org.br/" },
@@ -101,94 +91,13 @@ const Parceiros = () => {
         </div>
       </section>
 
-      {/* Núcleo Estratégico */}
-      <section className="py-20 bg-muted/30">
+      {/* Parceiros Setoriais - Mandala */}
+      <section className="py-20 bg-muted/30 overflow-hidden">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <Badge className="bg-primary/10 text-primary border-primary/20 mb-4">
-              ⭐ Parceiros Estratégicos
+              🤝 Nosso Ecossistema
             </Badge>
-            <h2 className="font-heading text-3xl sm:text-4xl font-bold text-foreground mb-4">
-              Núcleo Estratégico
-            </h2>
-            <p className="text-lg text-muted-foreground">
-              Empresas que constroem o futuro do varejo brasileiro ao lado da ABIESV
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {strategicPartners.map((partner) => (
-              <Card 
-                key={partner.id} 
-                className="group relative border-0 shadow-card hover:shadow-card-hover transition-all duration-300 hover:-translate-y-2 overflow-visible"
-              >
-                {/* Badge */}
-                <div className="absolute -top-3 right-4 z-10">
-                  <span className={`${getBadgeColor(partner.badge)} px-4 py-1.5 rounded-full text-xs font-semibold shadow-lg`}>
-                    {partner.badge === "fundador" && "🏆 "}
-                    {partner.badge === "estrategico" && "⚡ "}
-                    {partner.badge === "ancora" && "🎯 "}
-                    {getBadgeLabel(partner.badge)}
-                  </span>
-                </div>
-
-                <CardContent className="p-8 pt-10">
-                  {/* Logo */}
-                  <div className="h-28 flex items-center justify-center mb-6 p-4 bg-muted/50 rounded-xl">
-                    {partner.logo ? (
-                      <img 
-                        src={partner.logo} 
-                        alt={`Logo ${partner.name}`}
-                        className="max-h-full max-w-full object-contain"
-                      />
-                    ) : (
-                      <span className="text-3xl font-bold text-primary/40">
-                        {getPartnerInitials(partner.name)}
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Name */}
-                  <h3 className="font-heading text-xl font-bold text-foreground mb-3">
-                    {partner.name}
-                  </h3>
-
-                  {/* Description */}
-                  <p className="text-muted-foreground text-sm leading-relaxed mb-4 min-h-[60px]">
-                    {partner.description}
-                  </p>
-
-                  {/* Category */}
-                  <div className="flex items-center gap-2 p-3 bg-blue-50 dark:bg-blue-950/30 rounded-lg mb-4">
-                    <span className="text-lg">{partner.categoryIcon}</span>
-                    <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
-                      {partner.category}
-                    </span>
-                  </div>
-
-                  {/* Link */}
-                  {partner.website && (
-                    <a 
-                      href={partner.website}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:gap-2 transition-all"
-                    >
-                      Saiba mais
-                      <ExternalLink className="w-4 h-4" />
-                    </a>
-                  )}
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Parceiros Setoriais */}
-      <section className="py-20">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-12">
             <h2 className="font-heading text-3xl sm:text-4xl font-bold text-foreground mb-4">
               Parceiros Setoriais
             </h2>
@@ -197,68 +106,101 @@ const Parceiros = () => {
             </p>
           </div>
 
-          {/* Filtros */}
-          <div className="flex flex-wrap justify-center gap-3 mb-12">
-            {sectors.map((sector) => (
-              <button
-                key={sector.id}
-                onClick={() => setActiveFilter(sector.id)}
-                className={`
-                  px-5 py-3 rounded-full font-semibold text-sm transition-all
-                  ${activeFilter === sector.id 
-                    ? "bg-primary text-primary-foreground shadow-button" 
-                    : "bg-white border-2 border-border text-muted-foreground hover:border-primary hover:text-primary"
-                  }
-                `}
-              >
-                <span className="mr-2">{sector.icon}</span>
-                {sector.name}
-              </button>
-            ))}
-          </div>
+          {/* Mandala Container */}
+          <div className="relative w-full max-w-4xl mx-auto aspect-square flex items-center justify-center">
+            {/* Centro da Mandala */}
+            <div className="absolute z-20 w-32 h-32 sm:w-40 sm:h-40 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-xl">
+              <div className="text-center text-white">
+                <span className="block text-3xl sm:text-4xl font-bold">{sectorPartners.length}+</span>
+                <span className="text-xs sm:text-sm opacity-90">Parceiros</span>
+              </div>
+            </div>
 
-          {/* Grid de Parceiros */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-            {filteredSectorPartners.map((partner) => (
-              <Card 
-                key={partner.id}
-                className="group border hover:border-primary hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer"
-              >
-                <CardContent className="p-5 text-center">
-                  {/* Logo */}
-                  <div className="h-16 flex items-center justify-center mb-4 p-3 bg-muted/50 rounded-lg">
-                    {partner.logo ? (
-                      <img 
-                        src={partner.logo} 
-                        alt={`Logo ${partner.name}`}
-                        className="max-h-full max-w-full object-contain grayscale-[0.3] group-hover:grayscale-0 transition-all"
-                      />
-                    ) : (
-                      <span className="text-xl font-bold text-muted-foreground/40 group-hover:text-primary/60 transition-colors">
-                        {getPartnerInitials(partner.name)}
-                      </span>
-                    )}
+            {/* Anéis da Mandala */}
+            {sectors.filter(s => s.id !== "todos").map((sector, sectorIndex) => {
+              const sectorPartnersFiltered = sectorPartners.filter(p => p.sector === sector.id);
+              const ringRadius = 140 + sectorIndex * 90; // Raio progressivo
+              const partnersInRing = sectorPartnersFiltered.slice(0, 8); // Max 8 por anel
+              
+              return (
+                <div key={sector.id} className="absolute inset-0 flex items-center justify-center">
+                  {/* Anel decorativo */}
+                  <div 
+                    className="absolute rounded-full border border-dashed border-primary/20"
+                    style={{ 
+                      width: `${ringRadius * 2}px`, 
+                      height: `${ringRadius * 2}px` 
+                    }}
+                  />
+                  
+                  {/* Parceiros no anel */}
+                  {partnersInRing.map((partner, index) => {
+                    const angle = (index * 360) / partnersInRing.length - 90;
+                    const radian = (angle * Math.PI) / 180;
+                    const x = Math.cos(radian) * ringRadius;
+                    const y = Math.sin(radian) * ringRadius;
+                    
+                    return (
+                      <div
+                        key={partner.id}
+                        className="absolute group cursor-pointer"
+                        style={{
+                          transform: `translate(${x}px, ${y}px)`,
+                        }}
+                      >
+                        <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white shadow-lg border-2 border-transparent hover:border-primary transition-all duration-300 hover:scale-110 flex items-center justify-center overflow-hidden">
+                          {partner.logo ? (
+                            <img 
+                              src={partner.logo} 
+                              alt={partner.name}
+                              className="w-10 h-10 sm:w-12 sm:h-12 object-contain"
+                            />
+                          ) : (
+                            <span className="text-xs sm:text-sm font-bold text-primary/60">
+                              {getPartnerInitials(partner.name)}
+                            </span>
+                          )}
+                        </div>
+                        
+                        {/* Tooltip */}
+                        <div className="absolute left-1/2 -translate-x-1/2 -bottom-12 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-30">
+                          <div className="bg-foreground text-background px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap shadow-lg">
+                            {partner.name}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                  
+                  {/* Label do setor */}
+                  <div 
+                    className="absolute bg-muted/80 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold text-muted-foreground shadow-sm"
+                    style={{
+                      transform: `translate(${Math.cos((-45 * Math.PI) / 180) * (ringRadius + 40)}px, ${Math.sin((-45 * Math.PI) / 180) * (ringRadius + 40)}px)`,
+                    }}
+                  >
+                    {sector.icon} {sector.name.split(' ')[0]}
                   </div>
-
-                  {/* Name */}
-                  <h4 className="font-semibold text-sm text-foreground mb-2 min-h-[40px] flex items-center justify-center">
-                    {partner.name}
-                  </h4>
-
-                  {/* Tag */}
-                  <span className="inline-block px-3 py-1 bg-muted rounded-full text-xs text-muted-foreground">
-                    {sectors.find(s => s.id === partner.sector)?.name.split(' ')[0] || partner.sector}
-                  </span>
-                </CardContent>
-              </Card>
-            ))}
+                </div>
+              );
+            })}
           </div>
 
-          {filteredSectorPartners.length === 0 && (
-            <p className="text-center text-muted-foreground py-12">
-              Nenhum parceiro encontrado neste setor.
-            </p>
-          )}
+          {/* Legenda */}
+          <div className="flex flex-wrap justify-center gap-4 mt-16">
+            {sectors.filter(s => s.id !== "todos").map((sector) => (
+              <div 
+                key={sector.id}
+                className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm border"
+              >
+                <span>{sector.icon}</span>
+                <span className="text-sm font-medium text-muted-foreground">{sector.name}</span>
+                <span className="text-xs text-primary font-bold">
+                  ({sectorPartners.filter(p => p.sector === sector.id).length})
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
