@@ -23,6 +23,10 @@ import Contato from "./pages/Contato";
 import Parceiros from "./pages/Parceiros";
 import Privacidade from "./pages/Privacidade";
 import Termos from "./pages/Termos";
+import CadastroAssociado from "./pages/CadastroAssociado";
+import AdminLogin from "./pages/admin/AdminLogin";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminSubmissionDetail from "./pages/admin/AdminSubmissionDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -47,6 +51,12 @@ const App = () => (
           <Route path="/associe-se" element={<AssocieSe />} />
           <Route path="/associados" element={<Associados />} />
           <Route path="/associados/:slug" element={<AssociadoPerfil />} />
+          <Route path="/associados/cadastro" element={<CadastroAssociado />} />
+          
+          {/* Admin */}
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/cadastros/:id" element={<AdminSubmissionDetail />} />
           
           {/* Eventos */}
           <Route path="/eventos" element={<Eventos />} />
