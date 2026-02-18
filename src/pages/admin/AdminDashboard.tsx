@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { LogOut, Eye, CheckCircle, XCircle, Clock, Newspaper, Users } from "lucide-react";
+import { LogOut, Eye, CheckCircle, XCircle, Clock, Newspaper, Users, Image } from "lucide-react";
 import logoAbiesv from "@/assets/logo-abiesv.png";
 
 type Submission = {
@@ -108,6 +108,11 @@ const AdminDashboard = () => {
             <Button asChild variant="outline" size="sm">
               <Link to="/admin/equipe">
                 <Users className="h-4 w-4 mr-1" /> Equipe
+              </Link>
+            </Button>
+            <Button asChild variant="outline" size="sm">
+              <Link to="/admin/social-cards">
+                <Image className="h-4 w-4 mr-1" /> Social Cards
               </Link>
             </Button>
             <Button variant="ghost" size="sm" onClick={handleLogout}>
