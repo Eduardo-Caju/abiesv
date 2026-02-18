@@ -27,6 +27,7 @@ import CadastroAssociado from "./pages/CadastroAssociado";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminSubmissionDetail from "./pages/admin/AdminSubmissionDetail";
+import AdminNews from "./pages/admin/AdminNews";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -57,6 +58,7 @@ const App = () => (
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/cadastros/:id" element={<AdminSubmissionDetail />} />
+          <Route path="/admin/noticias" element={<AdminNews />} />
           
           {/* Eventos */}
           <Route path="/eventos" element={<Eventos />} />

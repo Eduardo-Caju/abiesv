@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { LogOut, Eye, CheckCircle, XCircle, Clock } from "lucide-react";
+import { LogOut, Eye, CheckCircle, XCircle, Clock, Newspaper } from "lucide-react";
 import logoAbiesv from "@/assets/logo-abiesv.png";
 
 type Submission = {
@@ -99,9 +99,16 @@ const AdminDashboard = () => {
             <img src={logoAbiesv} alt="ABIESV" className="h-8" />
             <span className="font-heading font-bold text-foreground">Admin</span>
           </div>
-          <Button variant="ghost" size="sm" onClick={handleLogout}>
-            <LogOut className="h-4 w-4 mr-1" /> Sair
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button asChild variant="outline" size="sm">
+              <Link to="/admin/noticias">
+                <Newspaper className="h-4 w-4 mr-1" /> Notícias
+              </Link>
+            </Button>
+            <Button variant="ghost" size="sm" onClick={handleLogout}>
+              <LogOut className="h-4 w-4 mr-1" /> Sair
+            </Button>
+          </div>
         </div>
       </header>
 
