@@ -1,63 +1,35 @@
 
 
-## Criacao do Banco de Dados para o Formulario de Cadastro
+## Criar Usuario Administrador
 
-Vou criar toda a infraestrutura do banco de dados necessaria para o formulario de cadastro de associados com fluxo de aprovacao.
+Para configurar seu acesso ao painel administrativo, vou criar uma funcao backend temporaria que:
 
----
-
-### O que sera criado no banco de dados
-
-**1. Tabela `associate_submissions`**
-- Armazena os dados de cada empresa que preencher o formulario
-- Campos: razao social, nome fantasia, CNPJ, categoria, descricoes, estado, cidade, redes sociais, solucoes, setores, logo
-- Coluna `status` que comeca como "pendente" e pode ser alterada para "aprovado" ou "rejeitado"
-- Campo `observacao_admin` para anotacoes do administrador
-
-**2. Tabela `associate_submission_contacts`**
-- Armazena os contatos de cada empresa (ate 3 pessoas)
-- Campos: nome, cargo, telefone fixo, celular, email
-- Vinculada a tabela principal (quando uma submissao e apagada, os contatos tambem sao)
-
-**3. Sistema de permissoes (admin)**
-- Tabela `user_roles` para definir quem e administrador
-- Funcao `has_role()` para verificar permissoes de forma segura
-
-**4. Regras de acesso (seguranca)**
-- Qualquer pessoa pode enviar o formulario (INSERT publico)
-- Somente administradores podem ver, editar e aprovar cadastros
-- Cadastros aprovados ficam visiveis publicamente (para o Guia)
-
-**5. Armazenamento de logotipos**
-- Bucket `associate-logos` para upload de imagens
-- Acesso publico para leitura (exibir no site) e envio (formulario sem login)
-- Limite de 2MB por arquivo
+1. **Cria sua conta** com o email `eduardo@fastconstrutora.com.br` e uma senha temporaria
+2. **Atribui a role de admin** na tabela `user_roles`
 
 ---
 
-### Apos a aprovacao
+### O que sera feito
 
-Com o banco pronto, vou criar:
-1. A pagina do formulario em `/associados/cadastro`
-2. O painel administrativo em `/admin`
-3. A integracao com o Guia de Associados
+**1. Funcao backend `create-admin`**
+- Cria o usuario no sistema de autenticacao usando o email informado
+- Define uma senha temporaria: `Admin@2026!` (voce podera alterar depois)
+- Insere o registro na tabela `user_roles` com role `admin`
+- Essa funcao sera usada uma unica vez e podera ser removida depois
+
+**2. Execucao e teste**
+- Apos criar a funcao, vou executa-la para criar sua conta
+- Voce podera acessar `/admin/login` com:
+  - Email: `eduardo@fastconstrutora.com.br`
+  - Senha: `Admin@2026!`
 
 ---
 
 ### Detalhes tecnicos
 
-**Enum e tabelas**
-- `submission_status`: enum com valores pendente, aprovado, rejeitado
-- `app_role`: enum com valores admin, user
-- Trigger automatico para atualizar `updated_at` em cada alteracao
-- Foreign key com cascade delete nos contatos
-
-**RLS (Row Level Security)**
-- `associate_submissions`: INSERT para anon/authenticated, SELECT publico apenas status=aprovado, SELECT/UPDATE total para admins
-- `associate_submission_contacts`: INSERT para anon/authenticated, SELECT/UPDATE para admins, SELECT publico vinculado a submissoes aprovadas
-- `user_roles`: SELECT apenas para o proprio usuario ou admins
-
-**Storage policies**
-- Upload publico no bucket `associate-logos`
-- Leitura publica para exibir logos no site
+**Edge function `create-admin`**
+- Usa a chave `SUPABASE_SERVICE_ROLE_KEY` (ja configurada) para criar o usuario via Admin API
+- Chama `supabase.auth.admin.createUser()` com `email_confirm: true` (pula verificacao de email)
+- Insere na tabela `user_roles` o `user_id` retornado com role `admin`
+- Protegida por uma chave de autorizacao (LOVABLE_API_KEY) para evitar uso indevido
 
