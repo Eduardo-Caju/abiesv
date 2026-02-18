@@ -1,70 +1,54 @@
 
 
-## Noticias do Varejo com Banco de Dados e Painel Admin
+## Convite de Administradores pelo Painel Admin
 
-Atualmente as noticias estao fixas no codigo (arquivo `src/data/news.ts`). Para voce poder atualizar diariamente, vamos migrar tudo para o banco de dados e criar uma interface simples no painel admin para adicionar noticias.
-
----
-
-### O que sera feito
-
-**1. Tabela `news_articles` no banco de dados**
-- Campos: titulo, resumo, fonte, URL da fonte, data, categoria, setor, destaque (sim/nao)
-- Slug gerado automaticamente a partir do titulo
-- Acesso publico para leitura (qualquer visitante ve as noticias)
-- Apenas admins podem adicionar, editar ou remover noticias
-
-**2. Gerenciamento de noticias no painel admin**
-- Nova aba ou secao no painel `/admin` para "Noticias"
-- Formulario simples para adicionar noticia com os campos: titulo, resumo, fonte, URL, data, categoria, setor, destaque
-- Lista de noticias existentes com opcao de editar e excluir
-- Pensado para ser rapido: voce cola os dados do clipping e publica em segundos
-
-**3. Pagina de noticias atualizada**
-- A pagina `/noticias` passa a buscar os dados do banco em vez do arquivo estatico
-- Filtros por categoria e setor continuam funcionando normalmente
-- Secao "Em Destaque" continua exibindo as noticias marcadas como destaque
-
-**4. Migracao dos dados existentes**
-- As 12 noticias que ja existem no arquivo `news.ts` serao inseridas no banco de dados
-- O arquivo estatico sera mantido como fallback temporario
+Vamos criar uma funcionalidade para que voce possa convidar novos administradores (como a secretaria) diretamente pelo painel, informando apenas o e-mail.
 
 ---
 
-### Fluxo do dia a dia
+### Como vai funcionar
 
-1. Voce prepara o clipping no WhatsApp normalmente
-2. Acessa o painel admin em `/admin`
-3. Clica em "Nova Noticia"
-4. Preenche titulo, resumo, fonte, URL, categoria e setor
-5. Salva — a noticia aparece imediatamente no site
+1. No painel admin, havera um botao "Convidar Admin"
+2. Voce digita o e-mail da pessoa (ex: secretaria@abiesv.com.br)
+3. O sistema envia um e-mail automatico com link para definir a senha
+4. A pessoa clica no link, define sua senha e ja tem acesso ao painel admin
+
+---
+
+### O que sera criado
+
+**1. Funcao backend `invite-admin`**
+- Recebe o e-mail do novo administrador
+- Cria a conta automaticamente usando a API administrativa
+- Atribui a role `admin` na tabela `user_roles`
+- Envia o e-mail de convite com link para definir senha
+- So pode ser chamada por quem ja e admin (verificacao de seguranca)
+
+**2. Interface no painel admin**
+- Nova pagina `/admin/equipe` com:
+  - Formulario simples com campo de e-mail e botao "Convidar"
+  - Lista dos administradores atuais (e-mail e data de criacao)
+- Botao de acesso no cabecalho do dashboard (ao lado de "Noticias")
+
+**3. Rota no aplicativo**
+- Registro da nova pagina `/admin/equipe` no roteador
 
 ---
 
 ### Detalhes tecnicos
 
-**Tabela `news_articles`**
-```text
-- id (uuid, PK)
-- slug (text, unique)
-- title (text, not null)
-- excerpt (text, not null)
-- source (text, not null)
-- source_url (text, not null)
-- published_date (date, not null)
-- category (text, not null)
-- sector (text, not null)
-- featured (boolean, default false)
-- created_at (timestamptz)
-- updated_at (timestamptz)
-```
+**Edge Function `invite-admin`**
+- Usa `supabase.auth.admin.inviteUserByEmail()` com service role key
+- Insere registro na tabela `user_roles` com role `admin`
+- Valida que o usuario chamando a funcao e admin antes de executar
+- CORS headers configurados para chamadas do frontend
 
-**RLS Policies**
-- SELECT: publico (qualquer pessoa pode ler noticias)
-- INSERT/UPDATE/DELETE: apenas admins (verificado via `has_role()`)
+**Configuracao**
+- Adicionar `[functions.invite-admin] verify_jwt = false` no config.toml (validacao feita manualmente no codigo)
 
 **Frontend**
-- Pagina `/noticias`: query com `supabase.from('news_articles').select()` ordenado por data
-- Admin: nova secao no dashboard com formulario e lista de noticias
-- React Query para cache e atualizacao automatica
+- Pagina `src/pages/admin/AdminTeam.tsx`
+- Usa `supabase.functions.invoke('invite-admin')` para chamar a funcao
+- Rota `/admin/equipe` registrada em `App.tsx`
+- Link no cabecalho do dashboard
 
