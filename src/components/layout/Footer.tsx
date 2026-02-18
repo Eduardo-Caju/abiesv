@@ -174,20 +174,20 @@ export function Footer() {
               </li>
               <li>
                 <a
-                  href="mailto:contato@abiesv.org.br"
+                  href="mailto:secretaria@abiesv.com.br"
                   className="flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors"
                 >
                   <Mail className="h-4 w-4 shrink-0" />
-                  <span>contato@abiesv.org.br</span>
+                  <span>secretaria@abiesv.com.br</span>
                 </a>
               </li>
               <li>
                 <a
-                  href="tel:+551199999999"
+                  href="tel:+5511961744269"
                   className="flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors"
                 >
                   <Phone className="h-4 w-4 shrink-0" />
-                  <span>+55 11 9999-9999</span>
+                  <span>(11) 96174-4269</span>
                 </a>
               </li>
             </ul>

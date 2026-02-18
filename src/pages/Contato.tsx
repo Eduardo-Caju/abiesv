@@ -217,10 +217,10 @@ const Contato = () => {
                   <div>
                     <h3 className="font-heading font-semibold text-foreground mb-1">E-mail</h3>
                     <a 
-                      href="mailto:contato@abiesv.org.br"
+                      href="mailto:secretaria@abiesv.com.br"
                       className="text-primary hover:underline"
                     >
-                      contato@abiesv.org.br
+                      secretaria@abiesv.com.br
                     </a>
                   </div>
                 </div>
@@ -232,10 +232,10 @@ const Contato = () => {
                   <div>
                     <h3 className="font-heading font-semibold text-foreground mb-1">Telefone</h3>
                     <a 
-                      href="tel:+5511999999999"
+                      href="tel:+5511961744269"
                       className="text-primary hover:underline"
                     >
-                      +55 11 9999-9999
+                      (11) 96174-4269
                     </a>
                     <p className="text-sm text-muted-foreground">
                       Segunda a sexta, 9h às 18h
