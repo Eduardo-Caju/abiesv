@@ -1,96 +1,63 @@
 
 
-## Formulario de Cadastro com Fluxo de Aprovacao
+## Criacao do Banco de Dados para o Formulario de Cadastro
 
-A preocupacao e valida. O plano agora inclui um sistema de moderacao: os dados enviados pelo formulario ficam com status "pendente" ate que um administrador aprove a publicacao.
-
----
-
-### Como vai funcionar
-
-1. **Associado** acessa `/associados/cadastro` e preenche o formulario
-2. Os dados sao salvos no banco com status **"pendente"**
-3. O associado ve uma mensagem: "Cadastro enviado com sucesso! Seus dados serao analisados pela equipe ABIESV antes da publicacao."
-4. **Administrador** acessa `/admin` (pagina protegida com login), ve a lista de cadastros pendentes
-5. O admin pode **aprovar**, **rejeitar** ou **editar** cada cadastro
-6. Somente cadastros aprovados aparecem no Guia de Associados
+Vou criar toda a infraestrutura do banco de dados necessaria para o formulario de cadastro de associados com fluxo de aprovacao.
 
 ---
 
-### O que sera criado
+### O que sera criado no banco de dados
 
-**1. Autenticacao e controle de acesso**
-- Sistema de login para administradores (email + senha)
-- Tabela `user_roles` para definir quem e admin
-- Pagina `/admin` protegida -- so acessivel por usuarios com role "admin"
-- Criar seu usuario admin manualmente no banco
+**1. Tabela `associate_submissions`**
+- Armazena os dados de cada empresa que preencher o formulario
+- Campos: razao social, nome fantasia, CNPJ, categoria, descricoes, estado, cidade, redes sociais, solucoes, setores, logo
+- Coluna `status` que comeca como "pendente" e pode ser alterada para "aprovado" ou "rejeitado"
+- Campo `observacao_admin` para anotacoes do administrador
 
-**2. Banco de dados**
-- Tabela `associate_submissions` com coluna `status` (pendente / aprovado / rejeitado)
-- Tabela `associate_submission_contacts` para os contatos
-- Bucket `associate-logos` para upload de logotipos
-- RLS: qualquer pessoa pode inserir (formulario publico), mas somente admins podem visualizar, editar status e aprovar
+**2. Tabela `associate_submission_contacts`**
+- Armazena os contatos de cada empresa (ate 3 pessoas)
+- Campos: nome, cargo, telefone fixo, celular, email
+- Vinculada a tabela principal (quando uma submissao e apagada, os contatos tambem sao)
 
-**3. Pagina do formulario publico** (`/associados/cadastro`)
-- Formulario com todos os campos definidos na especificacao
-- Validacao completa (Zod + react-hook-form)
-- Upload de logo com preview
-- Mensagem de confirmacao apos envio
-- Sem necessidade de login para preencher
+**3. Sistema de permissoes (admin)**
+- Tabela `user_roles` para definir quem e administrador
+- Funcao `has_role()` para verificar permissoes de forma segura
 
-**4. Painel administrativo** (`/admin`)
-- Login com email e senha
-- Lista de cadastros pendentes com filtros por status
-- Visualizacao detalhada de cada cadastro
-- Botoes de Aprovar / Rejeitar com campo de observacao
-- Edicao dos dados antes de aprovar (para correcoes)
+**4. Regras de acesso (seguranca)**
+- Qualquer pessoa pode enviar o formulario (INSERT publico)
+- Somente administradores podem ver, editar e aprovar cadastros
+- Cadastros aprovados ficam visiveis publicamente (para o Guia)
 
-**5. Integracao com o Guia**
-- Migrar o Guia de Associados (`/associados`) para ler do banco de dados
-- Exibir somente cadastros com status "aprovado"
-- Manter os dados atuais do arquivo `associates.ts` como base inicial (migrar para o banco)
+**5. Armazenamento de logotipos**
+- Bucket `associate-logos` para upload de imagens
+- Acesso publico para leitura (exibir no site) e envio (formulario sem login)
+- Limite de 2MB por arquivo
 
 ---
 
-### Fluxo visual
+### Apos a aprovacao
 
-```text
-Associado preenche          Banco de dados           Admin aprova
-o formulario         --->   status: pendente   --->  status: aprovado
-/associados/cadastro                                 /admin
-                                                         |
-                                                         v
-                                                  Aparece no Guia
-                                                  /associados
-```
+Com o banco pronto, vou criar:
+1. A pagina do formulario em `/associados/cadastro`
+2. O painel administrativo em `/admin`
+3. A integracao com o Guia de Associados
 
 ---
 
 ### Detalhes tecnicos
 
-**Tabela `associate_submissions`**
-- Campos: razao_social, nome_fantasia, cnpj, categoria, descricao_curta (200), descricao_completa (800), estado, cidade, website, linkedin, instagram, solucoes (array), setores (array), logo_url, status (enum: pendente/aprovado/rejeitado), observacao_admin, created_at, updated_at
-- RLS: INSERT publico (anon), SELECT/UPDATE somente para admins via funcao `has_role()`
+**Enum e tabelas**
+- `submission_status`: enum com valores pendente, aprovado, rejeitado
+- `app_role`: enum com valores admin, user
+- Trigger automatico para atualizar `updated_at` em cada alteracao
+- Foreign key com cascade delete nos contatos
 
-**Tabela `associate_submission_contacts`**
-- Campos: submission_id (FK), nome, cargo, telefone_fixo, celular, email
-- RLS: INSERT publico (anon), SELECT/UPDATE somente para admins
+**RLS (Row Level Security)**
+- `associate_submissions`: INSERT para anon/authenticated, SELECT publico apenas status=aprovado, SELECT/UPDATE total para admins
+- `associate_submission_contacts`: INSERT para anon/authenticated, SELECT/UPDATE para admins, SELECT publico vinculado a submissoes aprovadas
+- `user_roles`: SELECT apenas para o proprio usuario ou admins
 
-**Autenticacao**
-- Tabela `user_roles` com enum `app_role` (admin, user)
-- Funcao `has_role()` security definer para verificar permissoes sem recursao
-- Pagina de login em `/admin/login`
-- Seu usuario sera criado e definido como admin
-
-**Bucket `associate-logos`**
-- Upload publico (para o formulario funcionar sem login)
-- Leitura publica (para exibir no Guia)
-- Limite de 2MB, apenas PNG e SVG
-
-**Arquivos novos**
-- `src/pages/CadastroAssociado.tsx` -- formulario publico
-- `src/pages/admin/AdminLogin.tsx` -- login do admin
-- `src/pages/admin/AdminDashboard.tsx` -- painel com lista de cadastros
-- `src/pages/admin/AdminSubmissionDetail.tsx` -- detalhe e aprovacao
-- Rotas novas no `App.tsx`
+**Storage policies**
+- Upload publico no bucket `associate-logos`
+- Leitura publica para exibir logos no site
 
