@@ -1,91 +1,96 @@
 
 
-## Especificacoes do Formulario - Guia de Associados ABIESV
+## Formulario de Cadastro com Fluxo de Aprovacao
 
-Documento com todos os campos, limites e formatos para enviar aos associados preencherem.
-
----
-
-### Campos do Formulario
-
-| # | Campo | Obrigatorio | Tipo | Limite | Orientacao |
-|---|-------|-------------|------|--------|------------|
-| 1 | **Razao Social** | Sim | Texto | 120 caracteres | Nome juridico completo da empresa |
-| 2 | **Nome Fantasia** | Sim | Texto | 80 caracteres | Nome comercial como aparecera no site |
-| 3 | **CNPJ** | Sim | Texto | 18 caracteres | Formato: 00.000.000/0001-00 |
-| 4 | **Categoria de atuacao** | Sim | Selecao unica | Lista predefinida | Ex.: Iluminacao, Mobiliario e Equipamentos, Tecnologia para Varejo, Visual Merchandising, Comunicacao Visual, Construcao Civil, Consultoria, Escritorio de Arquitetura, etc. |
-| 5 | **Descricao curta** | Sim | Texto | 200 caracteres | Frase que resume a empresa e aparece no cartao do diretorio |
-| 6 | **Descricao completa** | Nao | Texto | 800 caracteres | Texto institucional mais detalhado, exibido na pagina individual do perfil |
-| 7 | **Logotipo** | Sim | Imagem | Formato: PNG ou SVG, fundo transparente. Dimensao minima: 400x400px. Tamanho maximo: 2 MB | Enviar em alta resolucao, preferencialmente quadrado |
-| 8 | **Estado (UF)** | Sim | Selecao unica | 2 caracteres | Sigla do estado da sede (ex.: SP, RJ, PR) |
-| 9 | **Cidade** | Sim | Texto | 60 caracteres | Cidade da sede |
-| 10 | **Website** | Nao | URL | 200 caracteres | Endereco completo com https:// |
-| 11 | **LinkedIn** | Nao | URL | 200 caracteres | URL da pagina da empresa no LinkedIn |
-| 12 | **Instagram** | Nao | URL | 200 caracteres | URL do perfil no Instagram |
-| 13 | **Solucoes oferecidas** | Sim | Tags (texto) | Ate 6 tags, 40 caracteres cada | Palavras-chave dos servicos/produtos (ex.: "LED", "Store Design", "Mobiliario") |
-| 14 | **Setores atendidos** | Nao | Tags (texto) | Ate 5 tags, 40 caracteres cada | Segmentos de mercado (ex.: "Varejo", "Moda", "Supermercados") |
+A preocupacao e valida. O plano agora inclui um sistema de moderacao: os dados enviados pelo formulario ficam com status "pendente" ate que um administrador aprove a publicacao.
 
 ---
 
-### Contatos (ate 3 pessoas)
+### Como vai funcionar
 
-Para cada contato:
-
-| Campo | Obrigatorio | Limite | Orientacao |
-|-------|-------------|--------|------------|
-| **Nome completo** | Sim | 80 caracteres | Nome da pessoa de contato |
-| **Cargo** | Sim | 60 caracteres | Funcao na empresa |
-| **Telefone fixo** | Nao | 15 caracteres | Formato: 11 1234-5678 (com DDD) |
-| **Celular/WhatsApp** | Sim (ao menos 1 contato) | 15 caracteres | Formato: 11 91234-5678 (com DDD). Sera usado para botao de WhatsApp |
-| **E-mail** | Sim (ao menos 1 contato) | 100 caracteres | E-mail profissional. Sera usado para botao de contato |
+1. **Associado** acessa `/associados/cadastro` e preenche o formulario
+2. Os dados sao salvos no banco com status **"pendente"**
+3. O associado ve uma mensagem: "Cadastro enviado com sucesso! Seus dados serao analisados pela equipe ABIESV antes da publicacao."
+4. **Administrador** acessa `/admin` (pagina protegida com login), ve a lista de cadastros pendentes
+5. O admin pode **aprovar**, **rejeitar** ou **editar** cada cadastro
+6. Somente cadastros aprovados aparecem no Guia de Associados
 
 ---
 
-### Especificacoes do Logotipo
+### O que sera criado
 
-- **Formato**: PNG (com fundo transparente) ou SVG
-- **Dimensao minima**: 400 x 400 pixels
-- **Proporcao**: Preferencialmente quadrado (1:1)
-- **Tamanho maximo do arquivo**: 2 MB
-- **Nomeacao sugerida**: nome-da-empresa.png (sem acentos, sem espacos)
-- Caso a empresa nao envie logo, serao exibidas as iniciais do nome no site
+**1. Autenticacao e controle de acesso**
+- Sistema de login para administradores (email + senha)
+- Tabela `user_roles` para definir quem e admin
+- Pagina `/admin` protegida -- so acessivel por usuarios com role "admin"
+- Criar seu usuario admin manualmente no banco
 
----
+**2. Banco de dados**
+- Tabela `associate_submissions` com coluna `status` (pendente / aprovado / rejeitado)
+- Tabela `associate_submission_contacts` para os contatos
+- Bucket `associate-logos` para upload de logotipos
+- RLS: qualquer pessoa pode inserir (formulario publico), mas somente admins podem visualizar, editar status e aprovar
 
-### Categorias disponiveis (lista atual)
+**3. Pagina do formulario publico** (`/associados/cadastro`)
+- Formulario com todos os campos definidos na especificacao
+- Validacao completa (Zod + react-hook-form)
+- Upload de logo com preview
+- Mensagem de confirmacao apos envio
+- Sem necessidade de login para preencher
 
-1. Iluminacao
-2. Mobiliario e Equipamentos
-3. Tecnologia para Varejo
-4. Visual Merchandising
-5. Comunicacao Visual, Mobiliario e Expositores
-6. Construcao Civil
-7. Consultoria
-8. Escritorio de Arquitetura
-9. Escritorio de Advocacia
-10. Grafica Digital
-11. Conteudo Digital
-12. Fabricacao de Manequins e Displays
-13. Fabricacao de Moveis
-14. Especificadora
-15. Outro (especificar)
+**4. Painel administrativo** (`/admin`)
+- Login com email e senha
+- Lista de cadastros pendentes com filtros por status
+- Visualizacao detalhada de cada cadastro
+- Botoes de Aprovar / Rejeitar com campo de observacao
+- Edicao dos dados antes de aprovar (para correcoes)
 
----
-
-### Observacoes para os associados
-
-- Campos marcados como obrigatorios precisam ser preenchidos para que o perfil seja publicado.
-- A descricao curta (200 caracteres) e o texto que aparece nos cartoes do diretorio -- seja objetivo e direto.
-- A descricao completa (800 caracteres) aparece somente na pagina individual do perfil.
-- O celular informado sera usado para gerar o botao de WhatsApp direto no site.
-- O logotipo com fundo transparente garante melhor apresentacao visual.
+**5. Integracao com o Guia**
+- Migrar o Guia de Associados (`/associados`) para ler do banco de dados
+- Exibir somente cadastros com status "aprovado"
+- Manter os dados atuais do arquivo `associates.ts` como base inicial (migrar para o banco)
 
 ---
 
-### Proximo passo tecnico
+### Fluxo visual
 
-Apos coletar os dados de todos os associados (via Google Forms, planilha ou outro meio), as opcoes para atualizar o site sao:
+```text
+Associado preenche          Banco de dados           Admin aprova
+o formulario         --->   status: pendente   --->  status: aprovado
+/associados/cadastro                                 /admin
+                                                         |
+                                                         v
+                                                  Aparece no Guia
+                                                  /associados
+```
 
-1. **Manual**: Eu atualizo o arquivo de dados diretamente com as informacoes recebidas.
-2. **Automatizado**: Criamos uma tabela no banco de dados do site e um painel administrativo para importar/gerenciar os dados dos associados -- permitindo atualizacoes futuras sem depender de alteracoes no codigo.
+---
+
+### Detalhes tecnicos
+
+**Tabela `associate_submissions`**
+- Campos: razao_social, nome_fantasia, cnpj, categoria, descricao_curta (200), descricao_completa (800), estado, cidade, website, linkedin, instagram, solucoes (array), setores (array), logo_url, status (enum: pendente/aprovado/rejeitado), observacao_admin, created_at, updated_at
+- RLS: INSERT publico (anon), SELECT/UPDATE somente para admins via funcao `has_role()`
+
+**Tabela `associate_submission_contacts`**
+- Campos: submission_id (FK), nome, cargo, telefone_fixo, celular, email
+- RLS: INSERT publico (anon), SELECT/UPDATE somente para admins
+
+**Autenticacao**
+- Tabela `user_roles` com enum `app_role` (admin, user)
+- Funcao `has_role()` security definer para verificar permissoes sem recursao
+- Pagina de login em `/admin/login`
+- Seu usuario sera criado e definido como admin
+
+**Bucket `associate-logos`**
+- Upload publico (para o formulario funcionar sem login)
+- Leitura publica (para exibir no Guia)
+- Limite de 2MB, apenas PNG e SVG
+
+**Arquivos novos**
+- `src/pages/CadastroAssociado.tsx` -- formulario publico
+- `src/pages/admin/AdminLogin.tsx` -- login do admin
+- `src/pages/admin/AdminDashboard.tsx` -- painel com lista de cadastros
+- `src/pages/admin/AdminSubmissionDetail.tsx` -- detalhe e aprovacao
+- Rotas novas no `App.tsx`
 
