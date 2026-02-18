@@ -28,6 +28,7 @@ import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminSubmissionDetail from "./pages/admin/AdminSubmissionDetail";
 import AdminNews from "./pages/admin/AdminNews";
+import AdminTeam from "./pages/admin/AdminTeam";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -59,6 +60,7 @@ const App = () => (
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/cadastros/:id" element={<AdminSubmissionDetail />} />
           <Route path="/admin/noticias" element={<AdminNews />} />
+          <Route path="/admin/equipe" element={<AdminTeam />} />
           
           {/* Eventos */}
           <Route path="/eventos" element={<Eventos />} />
