@@ -121,6 +121,51 @@ export type Database = {
         }
         Relationships: []
       }
+      news_articles: {
+        Row: {
+          category: string
+          created_at: string
+          excerpt: string
+          featured: boolean
+          id: string
+          published_date: string
+          sector: string
+          slug: string
+          source: string
+          source_url: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          excerpt: string
+          featured?: boolean
+          id?: string
+          published_date: string
+          sector: string
+          slug: string
+          source: string
+          source_url: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          excerpt?: string
+          featured?: boolean
+          id?: string
+          published_date?: string
+          sector?: string
+          slug?: string
+          source?: string
+          source_url?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
