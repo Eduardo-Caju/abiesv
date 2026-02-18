@@ -14,16 +14,147 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      associate_submission_contacts: {
+        Row: {
+          cargo: string | null
+          celular: string | null
+          created_at: string
+          email: string
+          id: string
+          nome: string
+          submission_id: string
+          telefone_fixo: string | null
+        }
+        Insert: {
+          cargo?: string | null
+          celular?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          nome: string
+          submission_id: string
+          telefone_fixo?: string | null
+        }
+        Update: {
+          cargo?: string | null
+          celular?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          nome?: string
+          submission_id?: string
+          telefone_fixo?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "associate_submission_contacts_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "associate_submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      associate_submissions: {
+        Row: {
+          categoria: string
+          cidade: string
+          cnpj: string
+          created_at: string
+          descricao_completa: string | null
+          descricao_curta: string
+          estado: string
+          id: string
+          instagram: string | null
+          linkedin: string | null
+          logo_url: string | null
+          nome_fantasia: string
+          observacao_admin: string | null
+          razao_social: string
+          setores: string[] | null
+          solucoes: string[] | null
+          status: Database["public"]["Enums"]["submission_status"]
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          categoria: string
+          cidade: string
+          cnpj: string
+          created_at?: string
+          descricao_completa?: string | null
+          descricao_curta: string
+          estado: string
+          id?: string
+          instagram?: string | null
+          linkedin?: string | null
+          logo_url?: string | null
+          nome_fantasia: string
+          observacao_admin?: string | null
+          razao_social: string
+          setores?: string[] | null
+          solucoes?: string[] | null
+          status?: Database["public"]["Enums"]["submission_status"]
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          categoria?: string
+          cidade?: string
+          cnpj?: string
+          created_at?: string
+          descricao_completa?: string | null
+          descricao_curta?: string
+          estado?: string
+          id?: string
+          instagram?: string | null
+          linkedin?: string | null
+          logo_url?: string | null
+          nome_fantasia?: string
+          observacao_admin?: string | null
+          razao_social?: string
+          setores?: string[] | null
+          solucoes?: string[] | null
+          status?: Database["public"]["Enums"]["submission_status"]
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
+      submission_status: "pendente" | "aprovado" | "rejeitado"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +281,9 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+      submission_status: ["pendente", "aprovado", "rejeitado"],
+    },
   },
 } as const
