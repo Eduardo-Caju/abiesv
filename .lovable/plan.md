@@ -1,24 +1,39 @@
 
 
-## Atualizar noticias no banco de dados
+## Corrigir erro de RLS no cadastro de associados
 
-Vou inserir as 5 novas noticias diretamente no banco de dados com os dados fornecidos.
+### Problema
 
-### Noticias a inserir
+As politicas de INSERT nas tabelas `associate_submissions` e `associate_submission_contacts` estao criadas como **RESTRICTIVE** (Permissive: No). Politicas restritivas exigem que TODAS passem simultaneamente, mas como nao ha nenhuma politica permissiva de INSERT, o Postgres bloqueia a insercao automaticamente.
 
-| # | Titulo | Fonte | Categoria | Setor |
-|---|--------|-------|-----------|-------|
-| 1 | Brasil devera ganhar 11 novos shopping centers em 2026 | Portal In | Expansao | Shopping Centers |
-| 2 | Farmacias do Assai saem do papel e devem ganhar 25 unidades | Mercado e Consumo | Estrategia | Atacarejo |
-| 3 | Setor de shopping centers ultrapassa R$ 201 bilhoes faturados | Sindishopping | Resultados | Shopping Centers |
-| 4 | A pressao por reinventar o modelo de shopping centers | Mercado e Consumo | Artigo | Shopping Centers |
-| 5 | Os maiores shoppings de Pernambuco e o cenario regional | Exame | Ranking | Shopping Centers |
+### Solucao
 
-### O que sera feito
+Recriar as politicas de INSERT como **PERMISSIVE** em ambas as tabelas:
 
-- Inserir 5 registros na tabela `news_articles` usando o Supabase
-- Data de publicacao: 19/02/2026 (data atual)
-- Nenhuma marcada como destaque por padrao
-- Slugs gerados automaticamente a partir dos titulos
-- Nenhuma alteracao de codigo necessaria, apenas insercao de dados
+1. **`associate_submissions`**: Dropar a politica restritiva "Anyone can insert submissions" e recriar como permissiva
+2. **`associate_submission_contacts`**: Dropar a politica restritiva "Anyone can insert contacts" e recriar como permissiva
+
+### Detalhes tecnicos
+
+Uma unica migracao SQL com os seguintes comandos:
+
+```sql
+-- Fix associate_submissions INSERT policy
+DROP POLICY "Anyone can insert submissions" ON public.associate_submissions;
+CREATE POLICY "Anyone can insert submissions"
+  ON public.associate_submissions
+  FOR INSERT
+  TO anon, authenticated
+  WITH CHECK (true);
+
+-- Fix associate_submission_contacts INSERT policy
+DROP POLICY "Anyone can insert contacts" ON public.associate_submission_contacts;
+CREATE POLICY "Anyone can insert contacts"
+  ON public.associate_submission_contacts
+  FOR INSERT
+  TO anon, authenticated
+  WITH CHECK (true);
+```
+
+Nenhuma alteracao de codigo necessaria — apenas correcao no banco de dados.
 
