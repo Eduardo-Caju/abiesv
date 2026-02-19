@@ -1,62 +1,84 @@
 
 
-## Corrigir erro de RLS no cadastro de associados
+## Conectar o Guia de Associados ao banco de dados
 
 ### Problema
 
-As politicas de INSERT ja foram corrigidas (estao PERMISSIVE), porem o erro persiste porque o codigo faz `.select("id").single()` apos o INSERT para obter o ID da submissao recem-criada. As politicas de SELECT so permitem:
-- **Admins** veem tudo
-- **Publico** ve apenas submissoes com status `aprovado`
-
-Como a nova submissao tem status `pendente`, o SELECT falha com erro de RLS.
+A pagina `/associados` exibe dados de um arquivo estatico (`src/data/associates.ts`). Quando um associado e aprovado no admin, os dados ficam apenas no banco de dados (tabela `associate_submissions` com status `aprovado`), mas a pagina nunca os consulta.
 
 ### Solucao
 
-Duas alteracoes necessarias:
+Unificar as duas fontes: manter os dados estaticos como fallback e tambem buscar os associados aprovados no banco de dados. Os dados do banco terao prioridade quando houver duplicata (mesmo slug).
 
-**1. Banco de dados** -- Adicionar politica SELECT que permite o chamador ver a linha recem-inserida durante a mesma transacao. A forma mais simples e criar uma politica permissiva para INSERT com RETURNING:
+### Etapas
 
-```sql
-CREATE POLICY "Submitter can read own insert"
-  ON public.associate_submissions
-  FOR SELECT
-  TO anon, authenticated
-  USING (false);
-```
+**1. Criar um hook `useApprovedAssociates`**
 
-Na verdade, a abordagem mais limpa e **remover o `.select("id")` do codigo** e nao depender de SELECT apos INSERT.
+- Consultar `associate_submissions` com status `aprovado` e seus contatos via `associate_submission_contacts`
+- Mapear os campos do banco para a interface `Associate` existente
+- Gerar slug a partir do `nome_fantasia` (lowercase, hifenizado)
 
-**2. Codigo (CadastroAssociado.tsx)** -- Gerar o UUID no frontend antes do INSERT, eliminando a necessidade do `.select("id").single()`:
+**2. Atualizar a pagina `Associados.tsx`**
 
-- Gerar `const submissionId = crypto.randomUUID()` antes do INSERT
-- Incluir `id: submissionId` no objeto de INSERT para `associate_submissions`
-- Remover `.select("id").single()` do INSERT
-- Usar `submissionId` diretamente para inserir os contatos
+- Importar o novo hook
+- Mesclar os dados estaticos com os dados do banco
+- Dados do banco com mesmo slug sobrescrevem os estaticos
+- Manter filtros e busca funcionando normalmente
+
+**3. Atualizar a pagina `AssociadoPerfil.tsx`**
+
+- Tambem buscar o associado pelo slug no banco de dados
+- Fallback para os dados estaticos se nao encontrado no banco
+
+**4. Tratamento de campos**
+
+Mapeamento dos campos do banco para a interface `Associate`:
+
+| Campo banco (`associate_submissions`) | Campo interface (`Associate`) |
+|---|---|
+| `nome_fantasia` | `name` |
+| `razao_social` | `tradingName` |
+| `cnpj` | `cnpj` |
+| `categoria` | `category` |
+| `descricao_curta` | `shortDescription` |
+| `descricao_completa` | `fullDescription` |
+| `website` | `website` |
+| `linkedin` | `linkedin` |
+| `instagram` | `instagram` |
+| `logo_url` | `logo` |
+| `solucoes` | `solutions` |
+| `setores` | `sectors` |
+| `cidade` | `city` |
+| `estado` | `state` |
+| `created_at` | `joinedDate` |
+
+Contatos vindos de `associate_submission_contacts`:
+
+| Campo banco | Campo interface |
+|---|---|
+| `nome` | `name` |
+| `cargo` | `role` |
+| `telefone_fixo` | `phone` |
+| `celular` | `mobile` |
+| `email` | `email` |
 
 ### Detalhes tecnicos
 
-No arquivo `src/pages/CadastroAssociado.tsx`, a funcao `onSubmit` sera alterada de:
+**Novo arquivo**: `src/hooks/useApprovedAssociates.ts`
 
 ```typescript
-const { data: submission, error: subError } = await supabase
-  .from("associate_submissions")
-  .insert({ ... })
-  .select("id")
-  .single();
-if (subError) throw subError;
-// usa submission.id para contatos
+// Busca associate_submissions com status 'aprovado'
+// JOIN com associate_submission_contacts
+// Retorna dados mapeados para Associate[]
 ```
 
-Para:
+**Alteracoes em `Associados.tsx`**:
+- Chamar `useApprovedAssociates()`
+- Mesclar com array estatico via `useMemo`, priorizando banco
+- Passar lista mesclada para os filtros existentes
 
-```typescript
-const submissionId = crypto.randomUUID();
-const { error: subError } = await supabase
-  .from("associate_submissions")
-  .insert({ id: submissionId, ... });
-if (subError) throw subError;
-// usa submissionId diretamente para contatos
-```
+**Alteracoes em `AssociadoPerfil.tsx`**:
+- Buscar por slug no banco alem do array estatico
+- Priorizar dados do banco quando encontrados
 
-Nenhuma alteracao de banco de dados necessaria -- apenas alteracao de codigo.
-
+Nenhuma alteracao de banco de dados necessaria -- as tabelas e politicas de RLS ja existem e permitem leitura publica de submissoes aprovadas.
