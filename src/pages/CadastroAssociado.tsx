@@ -112,8 +112,8 @@ const CadastroAssociado = () => {
       toast({ title: "Arquivo muito grande", description: "O logo deve ter no máximo 2MB.", variant: "destructive" });
       return;
     }
-    if (!["image/png", "image/svg+xml"].includes(file.type)) {
-      toast({ title: "Formato inválido", description: "Apenas PNG ou SVG.", variant: "destructive" });
+    if (file.type !== "image/png") {
+      toast({ title: "Formato inválido", description: "Apenas PNG com fundo transparente.", variant: "destructive" });
       return;
     }
     setLogoFile(file);
@@ -126,16 +126,21 @@ const CadastroAssociado = () => {
       let logo_url: string | null = null;
 
       if (logoFile) {
-        const ext = logoFile.name.split(".").pop();
-        const path = `${crypto.randomUUID()}.${ext}`;
-        const { error: uploadError } = await supabase.storage
-          .from("associate-logos")
-          .upload(path, logoFile);
-        if (uploadError) throw uploadError;
-        const { data: urlData } = supabase.storage
-          .from("associate-logos")
-          .getPublicUrl(path);
-        logo_url = urlData.publicUrl;
+        const formData = new FormData();
+        formData.append("file", logoFile);
+
+        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+        const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+
+        const uploadRes = await fetch(`${supabaseUrl}/functions/v1/upload-logo`, {
+          method: "POST",
+          headers: { apikey: supabaseKey },
+          body: formData,
+        });
+
+        const uploadData = await uploadRes.json();
+        if (!uploadRes.ok) throw new Error(uploadData.error || "Erro no upload");
+        logo_url = uploadData.url;
       }
 
       const submissionId = crypto.randomUUID();
@@ -377,11 +382,11 @@ const CadastroAssociado = () => {
                     <label className="w-24 h-24 rounded-xl border-2 border-dashed border-border flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-colors">
                       <Upload className="h-6 w-6 text-muted-foreground mb-1" />
                       <span className="text-xs text-muted-foreground">Upload</span>
-                      <input type="file" accept=".png,.svg" className="hidden" onChange={handleLogoChange} />
+                      <input type="file" accept=".png" className="hidden" onChange={handleLogoChange} />
                     </label>
                   )}
                   <div className="text-sm text-muted-foreground">
-                    <p>PNG (fundo transparente) ou SVG</p>
+                    <p>PNG com fundo transparente</p>
                     <p>Mínimo 400×400px, máximo 2MB</p>
                   </div>
                 </div>
