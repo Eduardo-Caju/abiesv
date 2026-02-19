@@ -183,7 +183,7 @@ const CadastroAssociado = () => {
 
       setIsSubmitted(true);
     } catch (err: any) {
-      console.error("Submission error:", err);
+      if (import.meta.env.DEV) console.error("Submission error:", err);
       toast({
         title: "Erro ao enviar",
         description: "Ocorreu um erro ao processar seu cadastro. Tente novamente.",

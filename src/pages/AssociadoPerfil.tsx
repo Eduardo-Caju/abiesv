@@ -6,9 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { 
   ArrowLeft, 
-  Mail, 
-  Phone, 
-  MessageCircle, 
   Globe, 
   Linkedin, 
   Instagram,
@@ -62,11 +59,6 @@ const AssociadoPerfil = () => {
         addressRegion: associate.state,
         addressLocality: associate.city,
         addressCountry: "BR",
-      } : undefined,
-      contactPoint: associate.contacts[0] ? {
-        "@type": "ContactPoint",
-        email: associate.contacts[0].email,
-        telephone: associate.contacts[0].phone || associate.contacts[0].mobile,
       } : undefined,
     },
   ];
@@ -210,57 +202,13 @@ const AssociadoPerfil = () => {
               </Card>
             </div>
 
-            {/* Sidebar - Contato */}
+            {/* Sidebar - Links Públicos */}
             <div className="space-y-6">
               <Card className="border-0 shadow-card sticky top-28">
                 <CardHeader>
-                  <CardTitle>Entre em Contato</CardTitle>
+                  <CardTitle>Links</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  {/* Contatos */}
-                  {associate.contacts.map((contact, index) => (
-                    <div key={index} className="pb-4 border-b border-border last:border-0 last:pb-0">
-                      <p className="font-medium text-foreground">{contact.name}</p>
-                      {contact.role && (
-                        <p className="text-sm text-muted-foreground mb-2">{contact.role}</p>
-                      )}
-                      
-                      <div className="space-y-2 mt-3">
-                        {contact.email && (
-                          <a 
-                            href={`mailto:${contact.email}`}
-                            className="flex items-center text-sm text-muted-foreground hover:text-primary transition-colors"
-                          >
-                            <Mail className="h-4 w-4 mr-2 shrink-0" />
-                            <span className="truncate">{contact.email}</span>
-                          </a>
-                        )}
-                        {contact.phone && (
-                          <a 
-                            href={`tel:${contact.phone.replace(/\D/g, '')}`}
-                            className="flex items-center text-sm text-muted-foreground hover:text-primary transition-colors"
-                          >
-                            <Phone className="h-4 w-4 mr-2 shrink-0" />
-                            {contact.phone}
-                          </a>
-                        )}
-                        {contact.mobile && (
-                          <a 
-                            href={`https://wa.me/55${contact.mobile.replace(/\D/g, '')}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center text-sm text-muted-foreground hover:text-primary transition-colors"
-                          >
-                            <MessageCircle className="h-4 w-4 mr-2 shrink-0" />
-                            {contact.mobile}
-                          </a>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-
-                  {/* Links */}
-                  <div className="pt-4 space-y-3">
+                <CardContent className="space-y-3">
                     {associate.website && (
                       <Button asChild variant="outline" className="w-full justify-start">
                         <a href={associate.website} target="_blank" rel="noopener noreferrer">
@@ -285,21 +233,9 @@ const AssociadoPerfil = () => {
                         </a>
                       </Button>
                     )}
-                  </div>
-
-                  {/* CTA WhatsApp */}
-                  {associate.contacts[0]?.mobile && (
-                    <Button asChild className="w-full mt-4" size="lg">
-                      <a 
-                        href={`https://wa.me/55${associate.contacts[0].mobile.replace(/\D/g, '')}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <MessageCircle className="h-5 w-5 mr-2" />
-                        Falar no WhatsApp
-                      </a>
-                    </Button>
-                  )}
+                    {!associate.website && !associate.linkedin && !associate.instagram && (
+                      <p className="text-sm text-muted-foreground">Nenhum link público disponível.</p>
+                    )}
                 </CardContent>
               </Card>
             </div>
