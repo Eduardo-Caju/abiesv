@@ -26,7 +26,9 @@ const Associados = () => {
   const associates = useMemo(() => {
     const dbSlugs = new Set(dbAssociates.map((a) => a.slug));
     const staticOnly = staticAssociates.filter((a) => !dbSlugs.has(a.slug));
-    return [...dbAssociates, ...staticOnly];
+    return [...dbAssociates, ...staticOnly].sort((a, b) =>
+      a.name.localeCompare(b.name, "pt-BR")
+    );
   }, [dbAssociates]);
 
   const filteredAssociates = associates.filter((associate) => {
