@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
+import { useApprovedAssociates } from "@/hooks/useApprovedAssociates";
 import { Layout } from "@/components/layout/Layout";
 import { SEOHead, createBreadcrumbSchema } from "@/components/seo/SEOHead";
 import { Button } from "@/components/ui/button";
@@ -14,12 +15,19 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Search, ExternalLink, MessageCircle, Mail, MapPin, Building } from "lucide-react";
-import { associates, categories, states, getLogoInitials } from "@/data/associates";
+import { associates as staticAssociates, categories, states, getLogoInitials } from "@/data/associates";
 
 const Associados = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Todas");
   const [selectedState, setSelectedState] = useState("Todos");
+  const { data: dbAssociates = [] } = useApprovedAssociates();
+
+  const associates = useMemo(() => {
+    const dbSlugs = new Set(dbAssociates.map((a) => a.slug));
+    const staticOnly = staticAssociates.filter((a) => !dbSlugs.has(a.slug));
+    return [...dbAssociates, ...staticOnly];
+  }, [dbAssociates]);
 
   const filteredAssociates = associates.filter((associate) => {
     const searchLower = searchTerm.toLowerCase();
