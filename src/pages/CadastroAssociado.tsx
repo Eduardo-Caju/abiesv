@@ -138,9 +138,11 @@ const CadastroAssociado = () => {
         logo_url = urlData.publicUrl;
       }
 
-      const { data: submission, error: subError } = await supabase
+      const submissionId = crypto.randomUUID();
+      const { error: subError } = await supabase
         .from("associate_submissions")
         .insert({
+          id: submissionId,
           razao_social: data.razao_social,
           nome_fantasia: data.nome_fantasia,
           cnpj: data.cnpj,
@@ -155,14 +157,12 @@ const CadastroAssociado = () => {
           solucoes: selectedSolucoes,
           setores: selectedSetores,
           logo_url,
-        })
-        .select("id")
-        .single();
+        });
 
       if (subError) throw subError;
 
       const contactsToInsert = data.contacts.map(c => ({
-        submission_id: submission.id,
+        submission_id: submissionId,
         nome: c.nome,
         cargo: c.cargo || null,
         telefone_fixo: c.telefone_fixo || null,
