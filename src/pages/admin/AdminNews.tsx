@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { LogOut, Plus, Pencil, Trash2, Newspaper, ArrowLeft, Star } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { sanitizeDbError } from "@/lib/sanitizeError";
 import logoAbiesv from "@/assets/logo-abiesv.png";
 import type { NewsArticle } from "@/hooks/useNewsArticles";
 
@@ -144,7 +145,7 @@ const AdminNews = () => {
     }
 
     if (error) {
-      toast({ title: "Erro ao salvar", description: error.message, variant: "destructive" });
+      toast({ title: "Erro ao salvar", description: sanitizeDbError(error), variant: "destructive" });
     } else {
       toast({ title: editingId ? "Notícia atualizada!" : "Notícia publicada!" });
       setDialogOpen(false);
@@ -156,7 +157,7 @@ const AdminNews = () => {
   const handleDelete = async (id: string) => {
     const { error } = await supabase.from("news_articles").delete().eq("id", id);
     if (error) {
-      toast({ title: "Erro ao excluir", description: error.message, variant: "destructive" });
+      toast({ title: "Erro ao excluir", description: sanitizeDbError(error), variant: "destructive" });
     } else {
       toast({ title: "Notícia excluída" });
       fetchArticles();

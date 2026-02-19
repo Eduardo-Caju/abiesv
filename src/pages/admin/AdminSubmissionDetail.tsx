@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { sanitizeDbError } from "@/lib/sanitizeError";
 import { ArrowLeft, CheckCircle, XCircle, ExternalLink } from "lucide-react";
 
 type Submission = {
@@ -82,7 +83,7 @@ const AdminSubmissionDetail = () => {
       .eq("id", id!);
 
     if (error) {
-      toast({ title: "Erro", description: error.message, variant: "destructive" });
+      toast({ title: "Erro", description: sanitizeDbError(error), variant: "destructive" });
     } else {
       toast({ title: newStatus === "aprovado" ? "Aprovado!" : "Rejeitado", description: `Cadastro ${newStatus} com sucesso.` });
       fetchData();

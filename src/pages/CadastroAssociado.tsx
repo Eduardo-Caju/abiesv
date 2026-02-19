@@ -178,9 +178,10 @@ const CadastroAssociado = () => {
 
       setIsSubmitted(true);
     } catch (err: any) {
+      console.error("Submission error:", err);
       toast({
         title: "Erro ao enviar",
-        description: err.message || "Tente novamente.",
+        description: "Ocorreu um erro ao processar seu cadastro. Tente novamente.",
         variant: "destructive",
       });
     } finally {
