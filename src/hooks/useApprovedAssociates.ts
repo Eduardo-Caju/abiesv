@@ -17,22 +17,13 @@ export function useApprovedAssociates() {
     queryFn: async (): Promise<Associate[]> => {
       const { data: submissions, error } = await supabase
         .from("associate_submissions")
-        .select("*, associate_submission_contacts(*)")
+        .select("*")
         .eq("status", "aprovado");
 
       if (error) throw error;
       if (!submissions) return [];
 
-      return submissions.map((s) => {
-        const contacts = (s.associate_submission_contacts ?? []).map((c: any) => ({
-          name: c.nome,
-          role: c.cargo ?? "",
-          phone: c.telefone_fixo ?? undefined,
-          mobile: c.celular ?? undefined,
-          email: c.email ?? undefined,
-        }));
-
-        return {
+      return submissions.map((s) => ({
           slug: toSlug(s.nome_fantasia),
           name: s.nome_fantasia,
           tradingName: s.razao_social,
@@ -49,9 +40,8 @@ export function useApprovedAssociates() {
           city: s.cidade,
           state: s.estado,
           joinedDate: s.created_at,
-          contacts,
-        };
-      });
+          contacts: [],
+      }));
     },
   });
 }
