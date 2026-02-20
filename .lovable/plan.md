@@ -1,69 +1,29 @@
 
 
-## Correções de Segurança
+## Atualizar Seção de Notícias -- 5 novos artigos
 
-Existem 5 problemas identificados, organizados por prioridade.
-
----
-
-### 1. [CRITICO] Dados de contato expostos publicamente
-
-**Problema**: Qualquer pessoa na internet pode ver e-mails, telefones e nomes dos contatos dos associados aprovados. Isso permite que concorrentes ou spammers coletem esses dados.
-
-**Solução**: Remover a política pública de leitura dos contatos. Apenas administradores poderão ver os dados completos. No site público, exibir apenas informações já públicas do associado (website, LinkedIn, Instagram) — sem e-mails ou telefones pessoais.
-
-**Alterações**:
-- Migration SQL: remover a policy "Public can view contacts of approved submissions"
-- Atualizar `useApprovedAssociates.ts` para não buscar contatos (já que não terá permissão)
-- Atualizar `AssociadoPerfil.tsx` para exibir apenas website/LinkedIn/Instagram como formas de contato público
+Inserir 5 novas notícias no banco de dados via migration SQL.
 
 ---
 
-### 2. [MEDIO] Console.error vazando informações em produção
+### Artigos a inserir
 
-**Problema**: Erros completos são logados no console do navegador mesmo em produção, podendo revelar estrutura do banco ou detalhes internos.
-
-**Solução**: Envolver os `console.error` em verificação de ambiente.
-
-**Arquivos afetados**:
-- `src/pages/CadastroAssociado.tsx` — envolver em `if (import.meta.env.DEV)`
-- `src/pages/NotFound.tsx` — mesma correção
-
----
-
-### 3. [MEDIO] Políticas RLS permissivas (WITH CHECK true)
-
-**Problema**: As tabelas `associate_submissions` e `associate_submission_contacts` permitem INSERT com `WITH CHECK (true)`, ou seja, qualquer pessoa pode inserir dados. Isso é intencional (formulário público), mas precisa ser documentado/confirmado.
-
-**Solução**: Isso é esperado para o formulário de cadastro público. Vou marcar como aceito no scan de segurança com justificativa.
+| # | Titulo | Fonte | Categoria | Setor | Destaque |
+|---|--------|-------|-----------|-------|----------|
+| 1 | Lumine atinge 96% de ocupacao em seu portfolio | Terra | Mercado | Shoppings | Nao |
+| 2 | Lojas fisicas respondem por 80% das compras em 2026 | Terra | Tendencias | Omnichannel | Nao |
+| 3 | Mega Polo Moda projeta alta com IA e vacancia zero | GBL Jeans | Tecnologia | Moda | Nao |
+| 4 | Prioridades e desafios para o varejo de shopping em 2026 | Central do Varejo | Estrategia | Shoppings | Nao |
+| 5 | XP projeta recuperacao do setor de shoppings para o 2o semestre | XP Investimentos | Mercado | Shoppings | Nao |
 
 ---
 
-### 4. [MEDIO] Proteção contra senhas vazadas desativada
+### Detalhes tecnicos
 
-**Problema**: A verificação de senhas comprometidas (leaked password protection) está desativada no sistema de autenticação.
+**Migration SQL**: Um unico INSERT com os 5 registros na tabela `news_articles`, usando as colunas: `slug`, `title`, `excerpt`, `source`, `source_url`, `published_date`, `category`, `sector`, `featured`.
 
-**Solução**: Ativar via configuração de autenticação para que senhas conhecidamente vazadas sejam rejeitadas no cadastro/login.
-
----
-
-### 5. [MEDIO] Tabela user_roles sem políticas explícitas de escrita
-
-**Problema**: A tabela `user_roles` não tem políticas de INSERT/UPDATE/DELETE. Embora o comportamento padrão (negar tudo) proteja, é frágil.
-
-**Solução**: Criar políticas explícitas para que apenas admins possam gerenciar roles via migration SQL.
-
----
-
-### Resumo das alterações
-
-| Tipo | Arquivo/Recurso | Ação |
-|---|---|---|
-| Migration SQL | RLS policies | Remover policy pública de contatos; adicionar policies de escrita em user_roles |
-| Código | useApprovedAssociates.ts | Remover busca de contatos |
-| Código | AssociadoPerfil.tsx | Mostrar apenas links públicos como contato |
-| Código | CadastroAssociado.tsx | Proteger console.error com DEV check |
-| Código | NotFound.tsx | Proteger console.error com DEV check |
-| Config | Auth settings | Ativar leaked password protection |
-| Scan | Findings | Marcar INSERT policy pública como aceita |
+- As datas serao definidas como **2026-02-20** (hoje), ja que os artigos sao de clipping recente.
+- Nenhum artigo sera marcado como destaque (featured = false), a menos que voce queira destacar algum.
+- Categorias e setores seguem o padrao existente no banco, com ajustes para "Mercado" e "Shoppings" que sao novas categorias/setores relevantes ao conteudo.
+- Nenhuma alteracao de codigo frontend e necessaria -- a pagina de noticias ja consome os dados do banco dinamicamente.
 
