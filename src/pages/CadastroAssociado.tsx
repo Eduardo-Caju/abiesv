@@ -19,8 +19,36 @@ import {
 } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { CheckCircle, Plus, Trash2, Upload, X } from "lucide-react";
+import { CheckCircle, Plus, Trash2 } from "lucide-react";
 import { categories } from "@/data/associates";
+
+function validateCpf(digits: string): boolean {
+  if (/^(\d)\1+$/.test(digits)) return false;
+  const calcDigit = (slice: string, factor: number) =>
+    slice.split("").reduce((acc, d, i) => acc + parseInt(d) * (factor - i), 0) % 11;
+  const r1 = calcDigit(digits.slice(0, 9), 10);
+  const r2 = calcDigit(digits.slice(0, 10), 11);
+  return parseInt(digits[9]) === (r1 < 2 ? 0 : 11 - r1) &&
+         parseInt(digits[10]) === (r2 < 2 ? 0 : 11 - r2);
+}
+
+function validateCnpj(digits: string): boolean {
+  if (/^(\d)\1+$/.test(digits)) return false;
+  const calc = (slice: string, weights: number[]) => {
+    const rem = slice.split("").reduce((acc, d, i) => acc + parseInt(d) * weights[i], 0) % 11;
+    return rem < 2 ? 0 : 11 - rem;
+  };
+  const d1 = calc(digits.slice(0, 12), [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]);
+  const d2 = calc(digits.slice(0, 13), [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]);
+  return parseInt(digits[12]) === d1 && parseInt(digits[13]) === d2;
+}
+
+function validateCnpjCpf(value: string): boolean {
+  const digits = value.replace(/\D/g, "");
+  if (digits.length === 11) return validateCpf(digits);
+  if (digits.length === 14) return validateCnpj(digits);
+  return false;
+}
 
 const contactSchema = z.object({
   nome: z.string().min(2, "Nome obrigatório"),
@@ -33,7 +61,7 @@ const contactSchema = z.object({
 const formSchema = z.object({
   razao_social: z.string().min(3, "Razão social obrigatória"),
   nome_fantasia: z.string().min(2, "Nome fantasia obrigatório"),
-  cnpj: z.string().min(11, "CNPJ/CPF obrigatório"),
+  cnpj: z.string().refine(validateCnpjCpf, "CNPJ ou CPF inválido"),
   categoria: z.string().min(1, "Selecione uma categoria"),
   descricao_curta: z.string().min(10, "Mínimo 10 caracteres").max(200, "Máximo 200 caracteres"),
   descricao_completa: z.string().max(800, "Máximo 800 caracteres").optional(),
@@ -71,8 +99,6 @@ const CadastroAssociado = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [selectedSolucoes, setSelectedSolucoes] = useState<string[]>([]);
   const [selectedSetores, setSelectedSetores] = useState<string[]>([]);
-  const [logoFile, setLogoFile] = useState<File | null>(null);
-  const [logoPreview, setLogoPreview] = useState<string | null>(null);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -105,46 +131,9 @@ const CadastroAssociado = () => {
     }
   };
 
-  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    if (file.size > 2 * 1024 * 1024) {
-      toast({ title: "Arquivo muito grande", description: "O logo deve ter no máximo 2MB.", variant: "destructive" });
-      return;
-    }
-    if (file.type !== "image/png") {
-      toast({ title: "Formato inválido", description: "Apenas PNG com fundo transparente.", variant: "destructive" });
-      return;
-    }
-    // Revoga a URL anterior para evitar memory leak
-    if (logoPreview) URL.revokeObjectURL(logoPreview);
-    setLogoFile(file);
-    setLogoPreview(URL.createObjectURL(file));
-  };
-
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
     try {
-      let logo_url: string | null = null;
-
-      if (logoFile) {
-        const formData = new FormData();
-        formData.append("file", logoFile);
-
-        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-        const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
-
-        const uploadRes = await fetch(`${supabaseUrl}/functions/v1/upload-logo`, {
-          method: "POST",
-          headers: { apikey: supabaseKey },
-          body: formData,
-        });
-
-        const uploadData = await uploadRes.json();
-        if (!uploadRes.ok) throw new Error(uploadData.error || "Erro no upload");
-        logo_url = uploadData.url;
-      }
-
       const submissionId = crypto.randomUUID();
       const { error: subError } = await supabase
         .from("associate_submissions")
@@ -163,7 +152,7 @@ const CadastroAssociado = () => {
           instagram: data.instagram || null,
           solucoes: selectedSolucoes,
           setores: selectedSetores,
-          logo_url,
+          logo_url: null,
         });
 
       if (subError) throw subError;
@@ -358,39 +347,6 @@ const CadastroAssociado = () => {
                     rows={5}
                     placeholder="Descrição detalhada da empresa..."
                   />
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Logo */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Logotipo</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-start gap-6">
-                  {logoPreview ? (
-                    <div className="relative w-24 h-24 rounded-xl border border-border overflow-hidden bg-muted">
-                      <img src={logoPreview} alt="Preview" className="w-full h-full object-contain" />
-                      <button
-                        type="button"
-                        onClick={() => { if (logoPreview) URL.revokeObjectURL(logoPreview); setLogoFile(null); setLogoPreview(null); }}
-                        className="absolute top-1 right-1 bg-destructive text-destructive-foreground rounded-full p-0.5"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </div>
-                  ) : (
-                    <label className="w-24 h-24 rounded-xl border-2 border-dashed border-border flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-colors">
-                      <Upload className="h-6 w-6 text-muted-foreground mb-1" />
-                      <span className="text-xs text-muted-foreground">Upload</span>
-                      <input type="file" accept=".png" className="hidden" onChange={handleLogoChange} />
-                    </label>
-                  )}
-                  <div className="text-sm text-muted-foreground">
-                    <p>PNG com fundo transparente</p>
-                    <p>Mínimo 400×400px, máximo 2MB</p>
-                  </div>
                 </div>
               </CardContent>
             </Card>

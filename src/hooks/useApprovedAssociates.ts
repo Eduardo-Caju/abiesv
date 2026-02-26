@@ -41,7 +41,6 @@ export function useApprovedAssociates() {
           city: s.cidade,
           state: s.estado,
           joinedDate: s.created_at,
-          contacts: [],
       }));
     },
   });

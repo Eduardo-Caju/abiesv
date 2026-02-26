@@ -1,14 +1,21 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+const ALLOWED_ORIGIN = Deno.env.get("ALLOWED_ORIGIN") ?? "";
+
+function corsHeaders(origin: string | null) {
+  const allowed = origin === ALLOWED_ORIGIN ? origin : ALLOWED_ORIGIN;
+  return {
+    "Access-Control-Allow-Origin": allowed,
+    "Access-Control-Allow-Headers":
+      "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
+  };
+}
 
 Deno.serve(async (req) => {
+  const origin = req.headers.get("origin");
+
   if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { headers: corsHeaders(origin) });
   }
 
   try {
@@ -17,7 +24,7 @@ Deno.serve(async (req) => {
     if (!authHeader?.startsWith("Bearer ")) {
       return new Response(JSON.stringify({ error: "Não autorizado" }), {
         status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeaders(origin), "Content-Type": "application/json" },
       });
     }
 
@@ -31,7 +38,7 @@ Deno.serve(async (req) => {
     if (userError || !user) {
       return new Response(JSON.stringify({ error: "Token inválido" }), {
         status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeaders(origin), "Content-Type": "application/json" },
       });
     }
 
@@ -52,7 +59,7 @@ Deno.serve(async (req) => {
     if (!roles || roles.length === 0) {
       return new Response(JSON.stringify({ error: "Acesso negado. Apenas admins podem convidar." }), {
         status: 403,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeaders(origin), "Content-Type": "application/json" },
       });
     }
 
@@ -61,7 +68,7 @@ Deno.serve(async (req) => {
     if (!email || typeof email !== "string") {
       return new Response(JSON.stringify({ error: "E-mail é obrigatório" }), {
         status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeaders(origin), "Content-Type": "application/json" },
       });
     }
 
@@ -71,7 +78,7 @@ Deno.serve(async (req) => {
     if (inviteError) {
       return new Response(JSON.stringify({ error: inviteError.message }), {
         status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeaders(origin), "Content-Type": "application/json" },
       });
     }
 
@@ -85,18 +92,18 @@ Deno.serve(async (req) => {
       console.error("invite-admin role assignment error:", roleError);
       return new Response(JSON.stringify({ error: "Usuário convidado, mas houve um erro ao atribuir permissões. Contate o suporte." }), {
         status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeaders(origin), "Content-Type": "application/json" },
       });
     }
 
     return new Response(JSON.stringify({ success: true, email }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...corsHeaders(origin), "Content-Type": "application/json" },
     });
   } catch (err) {
     console.error("invite-admin error:", err);
     return new Response(JSON.stringify({ error: "Erro interno ao processar convite." }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...corsHeaders(origin), "Content-Type": "application/json" },
     });
   }
 });

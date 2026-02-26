@@ -1,4 +1,5 @@
 // Dados dos associados ABIESV (extraídos da base oficial)
+// Contatos são gerenciados no banco de dados (restritos a admins) e não expostos no bundle.
 
 export interface Associate {
   slug: string;
@@ -6,13 +7,6 @@ export interface Associate {
   tradingName: string;
   cnpj: string;
   category: string;
-  contacts: {
-    name: string;
-    role: string;
-    phone?: string;
-    mobile?: string;
-    email?: string;
-  }[];
   joinedDate: string;
   // Campos para preenchimento pelo associado
   shortDescription?: string; // 150-200 caracteres
@@ -35,9 +29,6 @@ export const associates: Associate[] = [
     cnpj: "12.970.897/0001-65",
     category: "Iluminação",
     joinedDate: "2025-06-06",
-    contacts: [
-      { name: "Rafael Cunha", role: "Gerente de Marketing", phone: "11 5666-4857", mobile: "85 9713-5126", email: "marketing@alfalux.com.br" }
-    ],
     shortDescription: "Soluções em iluminação LED para ambientes comerciais e varejo, com foco em eficiência energética e valorização de produtos.",
     website: "https://alfalux.com.br/",
     instagram: "https://www.instagram.com/alfalux_luminarias/",
@@ -53,9 +44,6 @@ export const associates: Associate[] = [
     cnpj: "180.626.928-76",
     category: "Especificadora",
     joinedDate: "2018-09-08",
-    contacts: [
-      { name: "Amarilis Formigoni", role: "Especificadora", mobile: "11-98410-9414", email: "amarilis.oliveira@tarkett.com" }
-    ],
     shortDescription: "Consultoria especializada em especificação de materiais e soluções para projetos de varejo e ambientes comerciais.",
     instagram: "https://www.instagram.com/lizformigoni/",
     linkedin: "https://www.instagram.com/lizformigoni/",
@@ -70,10 +58,6 @@ export const associates: Associate[] = [
     cnpj: "28.997.850/0001-25",
     category: "Conteúdo Digital",
     joinedDate: "2023-03-31",
-    contacts: [
-      { name: "Marcos Xavier", role: "CEO", phone: "11 5171-7600", mobile: "11 98414-8118", email: "marcos.xavier@arvore-digital.com" },
-      { name: "Diego Aguiar", role: "Gerente de atendimento", phone: "11 5171-7600" }
-    ],
     shortDescription: "Produção de conteúdo digital e soluções multimídia para comunicação visual no ponto de venda e ambientes comerciais.",
     website: "https://arvoredigital.com.br/",
     instagram: "https://www.instagram.com/arvoredigital.oficial/",
@@ -89,11 +73,6 @@ export const associates: Associate[] = [
     cnpj: "02.175.187/0001-90",
     category: "Mobiliário e Equipamentos",
     joinedDate: "2019-08-15",
-    contacts: [
-      { name: "Andreia Taba", role: "Diretora", phone: "11-4646-7500", mobile: "11-99255-8787", email: "andreia@creativedisplay.com.br" },
-      { name: "Sérgio Shimada", role: "Diretor Comercial", phone: "11-4646-7500", mobile: "11 98837-1297", email: "shimada@creativedisplay.com.br" },
-      { name: "Álvaro Taba", role: "Diretor", phone: "11-4646-7500", mobile: "11-99988-7500", email: "alvaro@creativedisplay.com.br" }
-    ],
     shortDescription: "Indústria especializada em mobiliário, displays e equipamentos para PDV, com soluções personalizadas para grandes redes varejistas.",
     website: "https://www.creativedisplay.com.br/",
     instagram: "https://www.instagram.com/grupocreativebr/",
@@ -109,10 +88,6 @@ export const associates: Associate[] = [
     cnpj: "02.499.405/0001-41",
     category: "Gráfica Digital",
     joinedDate: "2015-04-28",
-    contacts: [
-      { name: "Alexandre Abreu", role: "Gestor", phone: "19-3325-9169", mobile: "19-99368-9783", email: "alexandre@cyberdoc.com.br" },
-      { name: "Israel Geraldi", role: "CEO", email: "israel@cyberdoc.com.br" }
-    ],
     shortDescription: "Gráfica digital especializada em comunicação visual, impressão de grande formato e soluções gráficas para PDV.",
     website: "https://www.cyberdoc.com.br/",
     instagram: "https://www.instagram.com/cyberdoc_oficial/",
@@ -129,9 +104,6 @@ export const associates: Associate[] = [
     cnpj: "309.323.098-52",
     category: "Visual Merchandising",
     joinedDate: "2020-07-20",
-    contacts: [
-      { name: "Douglas de Souza", role: "CEO", mobile: "11 98359-2057", email: "estudiosoudoug@gmail.com" }
-    ],
     shortDescription: "Consultoria e projetos de visual merchandising para varejo de moda, lifestyle e experiências de marca no PDV.",
     instagram: "https://www.instagram.com/soudoug/",
     linkedin: "https://www.linkedin.com/in/soudoug/",
@@ -146,10 +118,6 @@ export const associates: Associate[] = [
     cnpj: "62.412.564/0001-99",
     category: "Fabricação de Manequins e Displays",
     joinedDate: "2003-08-19",
-    contacts: [
-      { name: "Marcos Andrade", role: "Diretor de Marketing", phone: "11-3887-3205", mobile: "11-99290-4412", email: "marcos@expor.com" },
-      { name: "Octaviano Andrade", role: "", phone: "11-3887-3205", mobile: "11-99300-9135", email: "octaviano@expor.com" }
-    ],
     shortDescription: "Fabricante de manequins, displays e acessórios para visual merchandising, atendendo grandes redes há mais de 20 anos.",
     website: "https://expormanequins.com.br/site/",
     instagram: "https://www.instagram.com/expormanequins/",
@@ -165,10 +133,6 @@ export const associates: Associate[] = [
     cnpj: "11.276.915/0001-40",
     category: "Construção Civil",
     joinedDate: "2011-08-15",
-    contacts: [
-      { name: "Eduardo Aguiar", role: "Diretor", phone: "11-3034-3210", mobile: "11-98475-0205", email: "eduardo@fastconstrutora.com.br" },
-      { name: "Leonardo Pimenta", role: "Comercial", phone: "11-3034-3210", mobile: "11-97632-4378", email: "leonardo@fastconstrutora.com.br" }
-    ],
     shortDescription: "Especialista em obras rápidas para varejo e corporativo, a FAST entrega soluções end‑to‑end — do projeto à inauguração — com transparência, pontualidade e cobertura nacional.",
     fullDescription: "A FAST Construtora é referência em obras rápidas para varejo e ambientes corporativos, com 15+ anos de mercado, 1.100+ obras entregues e mais de 1 milhão de m² construídos em todo o Brasil. Atuamos no modelo turnkey, integrando todo o ciclo do projeto à inauguração: projetos técnicos, obra civil completa, instalações elétricas, hidráulicas, HVAC e PCI, mezaninos, acabamentos, mobiliário, comunicação visual e luminárias. Nossa metodologia de transparência garante orçamento detalhado, cronograma realista, relatórios fotográficos semanais, termo de entrega e guia de uso. Entregamos padrão, previsibilidade e velocidade — reduzindo riscos, evitando retrabalhos e preservando o capital de giro do cliente (com opção de parcelamento em até 36x via parceiro financeiro).",
     website: "https://www.fastconstrutora.com.br",
@@ -186,9 +150,6 @@ export const associates: Associate[] = [
     cnpj: "61.181.285/0001-07",
     category: "Escritório de Advocacia",
     joinedDate: "2003-08-19",
-    contacts: [
-      { name: "Fernando José Fernandes Junior", role: "Sócio Diretor - Advogado", phone: "11-3032-2144", mobile: "11-99983-3676", email: "fj.fernandes@fjf.com.br" }
-    ],
     shortDescription: "Escritório de advocacia especializado em direito empresarial, contratos comerciais e assessoria jurídica para o setor varejista.",
     linkedin: "https://www.linkedin.com/in/fernando-jose-fernandes-52748b/",
     state: "SP",
@@ -202,9 +163,6 @@ export const associates: Associate[] = [
     cnpj: "26.831.249/0001-32",
     category: "Fabricação de Móveis",
     joinedDate: "2025-12-04",
-    contacts: [
-      { name: "Gustavo Motta", role: "Diretor Executivo", mobile: "17 98111-1368", email: "gustavo.motta@atualpdv.com.br" }
-    ],
     shortDescription: "Fabricação de móveis e instalações comerciais para PDV, com soluções sob medida para lojas e ambientes de varejo.",
     website: "https://atualpdv.com.br/",
     instagram: "https://www.instagram.com/atual.pdv",
@@ -220,9 +178,6 @@ export const associates: Associate[] = [
     cnpj: "28.157.120/0001-16",
     category: "Tecnologia para Varejo",
     joinedDate: "2023-05-17",
-    contacts: [
-      { name: "Sérgio Gouveia", role: "CEO", mobile: "11 -99587-7373", email: "sergio@globalledexperience.com" }
-    ],
     shortDescription: "Comercialização e instalação de painéis LED e soluções de digital signage para comunicação visual em ambientes comerciais.",
     website: "https://www.globalledexperience.com/",
     instagram: "https://www.instagram.com/globalledexperience/",
@@ -238,9 +193,6 @@ export const associates: Associate[] = [
     cnpj: "06.257.933/0001-45",
     category: "Consultoria",
     joinedDate: "2019-11-06",
-    contacts: [
-      { name: "Giovanni Maddaloni", role: "Diretor", phone: "19-3251-4742", mobile: "19 98132-7777", email: "gm@gm7.com.br" }
-    ],
     shortDescription: "Consultoria especializada em trade marketing, estratégias de PDV e ativação de marca no ambiente de varejo.",
     website: "https://www.gm7.com.br/",
     instagram: "https://www.facebook.com/gm7club",
@@ -257,10 +209,6 @@ export const associates: Associate[] = [
     cnpj: "69.095.248/0001-80",
     category: "Escritório de Arquitetura",
     joinedDate: "2003-11-04",
-    contacts: [
-      { name: "Julio Takano", role: "Sócio Diretor-Arquiteto", phone: "11-5694-1043", mobile: "11-98122-8059", email: "julio.takano@kt.com.br" },
-      { name: "Rosely Kawahara", role: "Sócia Diretora-Arquiteta", phone: "11-5694-1043", mobile: "11-98122-8054", email: "rosely.kawahara@kt.com.br" }
-    ],
     shortDescription: "Escritório de arquitetura especializado em projetos de varejo, store design e ambientes comerciais há mais de 20 anos.",
     website: "https://kt.com.br/",
     instagram: "https://www.instagram.com/kt.kawaharatakano/",
@@ -276,10 +224,6 @@ export const associates: Associate[] = [
     cnpj: "13.045.186/0001-47",
     category: "Tecnologia para Varejo",
     joinedDate: "2023-10-10",
-    contacts: [
-      { name: "Alessandro Batista", role: "Vice Presidente", phone: "0800 943 7800" },
-      { name: "Bruno Cardia", role: "Diretor Comercial", phone: "0800 943 7800", email: "bruno.cardia@ledwave.com.br" }
-    ],
     shortDescription: "Fabricante de painéis eletrônicos e soluções de LED para comunicação visual e digital signage no varejo.",
     website: "https://ledwave.com.br/",
     instagram: "https://www.instagram.com/ledwave",
@@ -295,10 +239,6 @@ export const associates: Associate[] = [
     cnpj: "60.089.919/0001-25",
     category: "Iluminação",
     joinedDate: "2013-01-08",
-    contacts: [
-      { name: "João Carlos Gaya", role: "Diretor", phone: "11-2827-0656", email: "gaya@lemca.com.br" },
-      { name: "Carlos Pacheco", role: "Gerente de Vendas", phone: "11-2827-0656", mobile: "11-97329-5011", email: "pacheco@lemca.com.br" }
-    ],
     shortDescription: "Especialista em iluminação comercial e industrial, com soluções em LED e projetos luminotécnicos para varejo.",
     website: "https://www.lemca.com.br/",
     instagram: "https://www.instagram.com/lemcailuminacao/",
@@ -314,10 +254,6 @@ export const associates: Associate[] = [
     cnpj: "20.596.494/0001-26",
     category: "Tecnologia para Varejo",
     joinedDate: "2023-05-17",
-    contacts: [
-      { name: "Odair Tremante", role: "CEO", phone: "41 3059-5100", mobile: "11 98114-0246", email: "odair.tremante@leyardgroup.com" },
-      { name: "Thayna Valeriano", role: "Marketing", phone: "41 3059-5100", mobile: "11 95823-0113", email: "thayna.valeriano@leyardgroup.com" }
-    ],
     shortDescription: "Líder global em displays LED e soluções de visualização para ambientes comerciais, eventos e espaços públicos.",
     website: "https://leyard.com.br/",
     instagram: "https://www.instagram.com/leyardbrasil/",
@@ -334,10 +270,6 @@ export const associates: Associate[] = [
     cnpj: "01.933.903/0001-98",
     category: "Comunicação Visual, Mobiliário e Expositores",
     joinedDate: "2009-09-25",
-    contacts: [
-      { name: "Sérgio Carvalho", role: "CEO", phone: "41-3122-7540", mobile: "41-98402-7225", email: "sergio@maocolorida.com.br" },
-      { name: "Marcos Fernando Vargas", role: "Diretor", phone: "41-3122-7540", mobile: "41-99153-0161", email: "marcos@maocolorida.com.br" }
-    ],
     shortDescription: "Soluções integradas em comunicação visual, mobiliário e expositores para PDV, com atuação nacional e projetos turnkey.",
     website: "https://maocolorida.com/",
     instagram: "https://www.instagram.com/maocoloridacv/",
@@ -354,10 +286,6 @@ export const associates: Associate[] = [
     cnpj: "01.640.086/0001-80",
     category: "Iluminação",
     joinedDate: "2004-07-23",
-    contacts: [
-      { name: "Fábio Keiti Nagata", role: "Diretor de Marketing", phone: "11-4055-5455", mobile: "11-99908-9147", email: "fabio.nagata@omegalight.com.br" },
-      { name: "Fernando Akira Nagata", role: "Diretor Comercial", phone: "11-5034.1233", mobile: "11-99452-9796", email: "akira@omegalight.com.br" }
-    ],
     shortDescription: "Indústria de iluminação com mais de 20 anos, especializada em soluções LED para varejo, arquitetura e projetos especiais.",
     website: "https://www.omegalight.com.br/pt/",
     instagram: "https://www.instagram.com/omega_light/",
@@ -373,9 +301,6 @@ export const associates: Associate[] = [
     cnpj: "02.754.795/0001-59",
     category: "Visual Merchandising",
     joinedDate: "2024-11-22",
-    contacts: [
-      { name: "Sonia Paloschi", role: "Diretora", phone: "11-3231-1710", mobile: "11-99930-7008", email: "sonia.paloschi@purchase.com.br" }
-    ],
     shortDescription: "Consultoria em visual merchandising e marketing de varejo, com foco em estratégias de PDV e experiência do consumidor.",
     instagram: "https://www.instagram.com/soniapaloschi/",
     linkedin: "https://www.linkedin.com/in/sonia-paloschi-30291823/",
@@ -390,10 +315,6 @@ export const associates: Associate[] = [
     cnpj: "52.605.821/0001-55",
     category: "Automatizadores de Portas e Portões",
     joinedDate: "2003-12-04",
-    contacts: [
-      { name: "Samuel Peres", role: "Diretor Administrativo", phone: "14-3407-1004", email: "samuel@ppa.com.br" },
-      { name: "Reinaldo Junior", role: "Gerente Comercial", phone: "14-3407-1004", email: "reinaldo.junior@ppa.com.br" }
-    ],
     shortDescription: "Fabricante líder em automatizadores de portas e portões, com soluções para segurança e controle de acesso comercial.",
     website: "https://www.ppa.com.br/brasil",
     instagram: "https://www.instagram.com/ppa_brasil/",
@@ -410,9 +331,6 @@ export const associates: Associate[] = [
     cnpj: "01.393.712/0001-80",
     category: "Engenharia",
     joinedDate: "2017-08-16",
-    contacts: [
-      { name: "Renan Moraes", role: "Diretor", phone: "11-2028-0816", mobile: "11-94717-1787", email: "renan@renabian.com.br" }
-    ],
     shortDescription: "Engenharia especializada em projetos comerciais, instalações elétricas e infraestrutura para ambientes de varejo.",
     website: "https://www.renabian.com.br/",
     instagram: "https://www.instagram.com/RENABIAN_PROJ_COMPLEMENTARES",
@@ -428,10 +346,6 @@ export const associates: Associate[] = [
     cnpj: "04.676.871/0001-80",
     category: "Prevenção de Perdas",
     joinedDate: "2010-12-06",
-    contacts: [
-      { name: "Luiz Fernando Sambugaro", role: "Diretor", phone: "11-3732-6626", mobile: "11-98326-8506", email: "luiz.sambugaro@gunnebo.com" },
-      { name: "Marta Alcarde", role: "Gerente de Atendimento", phone: "11-3732-6626", mobile: "11-98200-9833", email: "marta.alcarde@gunnebo.com" }
-    ],
     shortDescription: "Soluções em gestão de numerário e prevenção de perdas para varejo, com tecnologia de ponta em cash management.",
     website: "https://www.sesami.io/pt-br",
     instagram: "https://www.instagram.com/sesamibrasil/",
@@ -447,10 +361,6 @@ export const associates: Associate[] = [
     cnpj: "12.647.827/0001-70",
     category: "Painéis Eletrônicos",
     joinedDate: "2019-04-16",
-    contacts: [
-      { name: "Bruno Marmo", role: "Diretor Executivo", phone: "11-2604-9090", mobile: "11-99114-3849", email: "bruno.marmo@theled.com.br" },
-      { name: "Elaine Dias", role: "Diretora de Marketing", phone: "11-2604-9090", mobile: "11-98929-8759", email: "elaine.dias@theled.com.br" }
-    ],
     shortDescription: "Especializada em painéis eletrônicos e soluções LED para comunicação visual, fachadas e digital signage no varejo.",
     website: "https://theled.com.br/",
     instagram: "https://www.instagram.com/theledoficial/",

@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Search, MessageCircle, Mail, MapPin, Building } from "lucide-react";
+import { Search, MapPin, Building } from "lucide-react";
 import { associates as staticAssociates, categories, states, getLogoInitials } from "@/data/associates";
 
 const Associados = () => {
@@ -197,29 +197,9 @@ const Associados = () => {
                     <Button asChild variant="outline" size="sm" className="flex-1">
                       <Link to={`/associados/${associate.slug}`}>
                         <Building className="h-4 w-4 mr-1" />
-                        Perfil
+                        Ver Perfil
                       </Link>
                     </Button>
-                    {associate.contacts[0]?.email && (
-                      <Button asChild variant="outline" size="sm" className="flex-1">
-                        <a href={`mailto:${associate.contacts[0].email}`}>
-                          <Mail className="h-4 w-4 mr-1" />
-                          E-mail
-                        </a>
-                      </Button>
-                    )}
-                    {associate.contacts[0]?.mobile && (
-                      <Button asChild variant="default" size="sm" className="flex-1">
-                        <a 
-                          href={`https://wa.me/55${associate.contacts[0].mobile.replace(/\D/g, '')}`} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                        >
-                          <MessageCircle className="h-4 w-4 mr-1" />
-                          WhatsApp
-                        </a>
-                      </Button>
-                    )}
                   </div>
                 </CardContent>
               </Card>
