@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -43,27 +44,11 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  useAdminAuth();
+
   useEffect(() => {
-    checkAuth();
     fetchSubmissions();
   }, []);
-
-  const checkAuth = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      navigate("/admin/login");
-      return;
-    }
-    const { data: roles } = await supabase
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", user.id)
-      .eq("role", "admin");
-    if (!roles || roles.length === 0) {
-      await supabase.auth.signOut();
-      navigate("/admin/login");
-    }
-  };
 
   const fetchSubmissions = async () => {
     const { data, error } = await supabase
@@ -84,12 +69,16 @@ const AdminDashboard = () => {
     ? submissions
     : submissions.filter(s => s.status === filterStatus);
 
-  const counts = {
-    todos: submissions.length,
-    pendente: submissions.filter(s => s.status === "pendente").length,
-    aprovado: submissions.filter(s => s.status === "aprovado").length,
-    rejeitado: submissions.filter(s => s.status === "rejeitado").length,
-  };
+  const counts = submissions.reduce(
+    (acc, s) => {
+      acc.todos++;
+      if (s.status === "pendente") acc.pendente++;
+      else if (s.status === "aprovado") acc.aprovado++;
+      else if (s.status === "rejeitado") acc.rejeitado++;
+      return acc;
+    },
+    { todos: 0, pendente: 0, aprovado: 0, rejeitado: 0 }
+  );
 
   return (
     <div className="min-h-screen bg-muted/30">

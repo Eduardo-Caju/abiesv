@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -74,24 +75,11 @@ const AdminNews = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  useAdminAuth();
+
   useEffect(() => {
-    checkAuth();
     fetchArticles();
   }, []);
-
-  const checkAuth = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { navigate("/admin/login"); return; }
-    const { data: roles } = await supabase
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", user.id)
-      .eq("role", "admin");
-    if (!roles || roles.length === 0) {
-      await supabase.auth.signOut();
-      navigate("/admin/login");
-    }
-  };
 
   const fetchArticles = async () => {
     const { data, error } = await supabase
@@ -131,6 +119,10 @@ const AdminNews = () => {
   const handleSave = async () => {
     if (!form.title || !form.excerpt || !form.source || !form.source_url || !form.category || !form.sector) {
       toast({ title: "Preencha todos os campos obrigatórios", variant: "destructive" });
+      return;
+    }
+    if (!/^https?:\/\//i.test(form.source_url)) {
+      toast({ title: "URL inválida", description: "A URL da matéria deve começar com http:// ou https://", variant: "destructive" });
       return;
     }
     setSaving(true);

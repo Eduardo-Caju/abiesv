@@ -14,6 +14,7 @@ function toSlug(name: string): string {
 export function useApprovedAssociates() {
   return useQuery({
     queryKey: ["approved-associates"],
+    staleTime: 5 * 60 * 1000, // 5 minutos — dados raramente mudam
     queryFn: async (): Promise<Associate[]> => {
       const { data: submissions, error } = await supabase
         .from("associate_submissions")

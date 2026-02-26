@@ -18,25 +18,11 @@ export interface NewsArticle {
 export function useNewsArticles() {
   return useQuery({
     queryKey: ["news-articles"],
+    staleTime: 5 * 60 * 1000, // 5 minutos
     queryFn: async () => {
       const { data, error } = await supabase
         .from("news_articles")
         .select("*")
-        .order("published_date", { ascending: false });
-      if (error) throw error;
-      return data as NewsArticle[];
-    },
-  });
-}
-
-export function useFeaturedNews() {
-  return useQuery({
-    queryKey: ["news-articles", "featured"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("news_articles")
-        .select("*")
-        .eq("featured", true)
         .order("published_date", { ascending: false });
       if (error) throw error;
       return data as NewsArticle[];

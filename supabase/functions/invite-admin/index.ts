@@ -27,16 +27,15 @@ Deno.serve(async (req) => {
       { global: { headers: { Authorization: authHeader } } }
     );
 
-    const token = authHeader.replace("Bearer ", "");
-    const { data: claimsData, error: claimsError } = await supabaseAuth.auth.getClaims(token);
-    if (claimsError || !claimsData?.claims) {
+    const { data: { user }, error: userError } = await supabaseAuth.auth.getUser();
+    if (userError || !user) {
       return new Response(JSON.stringify({ error: "Token inválido" }), {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    const callerId = claimsData.claims.sub;
+    const callerId = user.id;
 
     // Check admin role using service role client (bypasses RLS, no circular dependency)
     const supabaseAdmin = createClient(
@@ -83,7 +82,8 @@ Deno.serve(async (req) => {
       .upsert({ user_id: userId, role: "admin" }, { onConflict: "user_id,role" });
 
     if (roleError) {
-      return new Response(JSON.stringify({ error: "Usuário convidado, mas erro ao atribuir role: " + roleError.message }), {
+      console.error("invite-admin role assignment error:", roleError);
+      return new Response(JSON.stringify({ error: "Usuário convidado, mas houve um erro ao atribuir permissões. Contate o suporte." }), {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });

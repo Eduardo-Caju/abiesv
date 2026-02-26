@@ -2,9 +2,9 @@ import { useState, useMemo } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { SEOHead, createBreadcrumbSchema } from "@/components/seo/SEOHead";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, ExternalLink, Newspaper, TrendingUp, Filter } from "lucide-react";
+import { Newspaper, TrendingUp, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useNewsArticles, useFeaturedNews } from "@/hooks/useNewsArticles";
+import { useNewsArticles } from "@/hooks/useNewsArticles";
 import { FeaturedCard } from "@/components/news/FeaturedCard";
 import { NewsCard } from "@/components/news/NewsCard";
 
@@ -13,7 +13,8 @@ const Noticias = () => {
   const [selectedSector, setSelectedSector] = useState<string>("all");
 
   const { data: allArticles = [], isLoading } = useNewsArticles();
-  const { data: featuredNews = [] } = useFeaturedNews();
+  // Derivado do cache já carregado — sem query extra ao banco
+  const featuredNews = useMemo(() => allArticles.filter((a) => a.featured), [allArticles]);
 
   const categories = useMemo(
     () => [...new Set(allArticles.map((a) => a.category))].sort(),

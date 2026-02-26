@@ -2,18 +2,22 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, ExternalLink } from "lucide-react";
 import type { NewsArticle } from "@/hooks/useNewsArticles";
+import { formatNewsDate } from "./NewsCard";
 
-function formatDate(dateStr: string) {
-  return new Date(dateStr + "T12:00:00").toLocaleDateString("pt-BR", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  });
+/** Garante que apenas URLs http/https sejam usadas como href, prevenindo javascript: XSS */
+function safeUrl(url: string): string {
+  try {
+    const parsed = new URL(url);
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") return "#";
+    return url;
+  } catch {
+    return "#";
+  }
 }
 
 export const FeaturedCard = ({ article }: { article: NewsArticle }) => (
   <a
-    href={article.source_url}
+    href={safeUrl(article.source_url)}
     target="_blank"
     rel="noopener noreferrer"
     className="group block"
@@ -31,7 +35,7 @@ export const FeaturedCard = ({ article }: { article: NewsArticle }) => (
         <div className="flex items-center justify-between text-xs text-muted-foreground">
           <span className="flex items-center gap-1">
             <Calendar className="h-3 w-3" />
-            {formatDate(article.published_date)}
+            {formatNewsDate(article.published_date)}
           </span>
           <span className="flex items-center gap-1 text-primary group-hover:underline">
             {article.source}

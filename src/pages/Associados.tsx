@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Search, ExternalLink, MessageCircle, Mail, MapPin, Building } from "lucide-react";
+import { Search, MessageCircle, Mail, MapPin, Building } from "lucide-react";
 import { associates as staticAssociates, categories, states, getLogoInitials } from "@/data/associates";
 
 const Associados = () => {
@@ -31,7 +31,7 @@ const Associados = () => {
     );
   }, [dbAssociates]);
 
-  const filteredAssociates = associates.filter((associate) => {
+  const filteredAssociates = useMemo(() => associates.filter((associate) => {
     const searchLower = searchTerm.toLowerCase();
     const matchesSearch = associate.name.toLowerCase().includes(searchLower) ||
                          (associate.shortDescription?.toLowerCase().includes(searchLower) ?? false) ||
@@ -39,7 +39,7 @@ const Associados = () => {
     const matchesCategory = selectedCategory === "Todas" || associate.category === selectedCategory;
     const matchesState = selectedState === "Todos" || associate.state === selectedState;
     return matchesSearch && matchesCategory && matchesState;
-  });
+  }), [associates, searchTerm, selectedCategory, selectedState]);
 
   const pageSchema = [
     createBreadcrumbSchema([

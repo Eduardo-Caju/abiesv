@@ -3,12 +3,23 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar, ExternalLink } from "lucide-react";
 import type { NewsArticle } from "@/hooks/useNewsArticles";
 
-function formatDate(dateStr: string) {
+export function formatNewsDate(dateStr: string) {
   return new Date(dateStr + "T12:00:00").toLocaleDateString("pt-BR", {
     day: "2-digit",
     month: "long",
     year: "numeric",
   });
+}
+
+/** Garante que apenas URLs http/https sejam usadas como href, prevenindo javascript: XSS */
+function safeUrl(url: string): string {
+  try {
+    const parsed = new URL(url);
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") return "#";
+    return url;
+  } catch {
+    return "#";
+  }
 }
 
 export const NewsCard = ({
@@ -19,7 +30,7 @@ export const NewsCard = ({
   featured?: boolean;
 }) => (
   <a
-    href={article.source_url}
+    href={safeUrl(article.source_url)}
     target="_blank"
     rel="noopener noreferrer"
     className="group block"
@@ -35,7 +46,7 @@ export const NewsCard = ({
           <Badge variant="outline">{article.sector}</Badge>
           <span className="text-sm text-muted-foreground flex items-center gap-1">
             <Calendar className="h-3 w-3" />
-            {formatDate(article.published_date)}
+            {formatNewsDate(article.published_date)}
           </span>
         </div>
         <h2

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,24 +24,11 @@ const AdminTeam = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  useAdminAuth();
+
   useEffect(() => {
-    checkAuth();
     fetchAdmins();
   }, []);
-
-  const checkAuth = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { navigate("/admin/login"); return; }
-    const { data: roles } = await supabase
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", user.id)
-      .eq("role", "admin");
-    if (!roles || roles.length === 0) {
-      await supabase.auth.signOut();
-      navigate("/admin/login");
-    }
-  };
 
   const fetchAdmins = async () => {
     const { data } = await supabase

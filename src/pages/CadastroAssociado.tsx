@@ -116,6 +116,8 @@ const CadastroAssociado = () => {
       toast({ title: "Formato inválido", description: "Apenas PNG com fundo transparente.", variant: "destructive" });
       return;
     }
+    // Revoga a URL anterior para evitar memory leak
+    if (logoPreview) URL.revokeObjectURL(logoPreview);
     setLogoFile(file);
     setLogoPreview(URL.createObjectURL(file));
   };
@@ -372,7 +374,7 @@ const CadastroAssociado = () => {
                       <img src={logoPreview} alt="Preview" className="w-full h-full object-contain" />
                       <button
                         type="button"
-                        onClick={() => { setLogoFile(null); setLogoPreview(null); }}
+                        onClick={() => { if (logoPreview) URL.revokeObjectURL(logoPreview); setLogoFile(null); setLogoPreview(null); }}
                         className="absolute top-1 right-1 bg-destructive text-destructive-foreground rounded-full p-0.5"
                       >
                         <X className="h-3 w-3" />

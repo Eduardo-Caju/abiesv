@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
@@ -9,6 +10,16 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { sanitizeDbError } from "@/lib/sanitizeError";
 import { ArrowLeft, CheckCircle, XCircle, ExternalLink } from "lucide-react";
+
+function safeUrl(url: string): string {
+  try {
+    const parsed = new URL(url);
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") return "#";
+    return url;
+  } catch {
+    return "#";
+  }
+}
 
 type Submission = {
   id: string;
@@ -48,6 +59,8 @@ const AdminSubmissionDetail = () => {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [observacao, setObservacao] = useState("");
   const [updating, setUpdating] = useState(false);
+
+  useAdminAuth();
 
   useEffect(() => {
     if (id) {
@@ -128,17 +141,17 @@ const AdminSubmissionDetail = () => {
             <div><span className="text-muted-foreground">Local:</span> {submission.cidade}, {submission.estado}</div>
             <div><span className="text-muted-foreground">Data:</span> {new Date(submission.created_at).toLocaleDateString("pt-BR")}</div>
             {submission.website && (
-              <a href={submission.website} target="_blank" rel="noopener noreferrer" className="text-primary flex items-center gap-1">
+              <a href={safeUrl(submission.website)} target="_blank" rel="noopener noreferrer" className="text-primary flex items-center gap-1">
                 <ExternalLink className="h-3 w-3" /> Website
               </a>
             )}
             {submission.linkedin && (
-              <a href={submission.linkedin} target="_blank" rel="noopener noreferrer" className="text-primary flex items-center gap-1">
+              <a href={safeUrl(submission.linkedin)} target="_blank" rel="noopener noreferrer" className="text-primary flex items-center gap-1">
                 <ExternalLink className="h-3 w-3" /> LinkedIn
               </a>
             )}
             {submission.instagram && (
-              <a href={submission.instagram} target="_blank" rel="noopener noreferrer" className="text-primary flex items-center gap-1">
+              <a href={safeUrl(submission.instagram)} target="_blank" rel="noopener noreferrer" className="text-primary flex items-center gap-1">
                 <ExternalLink className="h-3 w-3" /> Instagram
               </a>
             )}
