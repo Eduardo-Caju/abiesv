@@ -1,29 +1,43 @@
 
 
-## Atualizar Seção de Notícias -- 5 novos artigos
+## Gerar Design System como JSON/CSS Tokens
 
-Inserir 5 novas notícias no banco de dados via migration SQL.
+Criar um script que extrai todos os tokens de design do projeto e gera dois arquivos exportaveis em `/mnt/documents/`:
 
----
-
-### Artigos a inserir
-
-| # | Titulo | Fonte | Categoria | Setor | Destaque |
-|---|--------|-------|-----------|-------|----------|
-| 1 | Lumine atinge 96% de ocupacao em seu portfolio | Terra | Mercado | Shoppings | Nao |
-| 2 | Lojas fisicas respondem por 80% das compras em 2026 | Terra | Tendencias | Omnichannel | Nao |
-| 3 | Mega Polo Moda projeta alta com IA e vacancia zero | GBL Jeans | Tecnologia | Moda | Nao |
-| 4 | Prioridades e desafios para o varejo de shopping em 2026 | Central do Varejo | Estrategia | Shoppings | Nao |
-| 5 | XP projeta recuperacao do setor de shoppings para o 2o semestre | XP Investimentos | Mercado | Shoppings | Nao |
+1. **`design-tokens.json`** — Todos os tokens estruturados em JSON
+2. **`design-tokens.css`** — Variaveis CSS prontas para importar
 
 ---
 
-### Detalhes tecnicos
+### Conteudo dos tokens
 
-**Migration SQL**: Um unico INSERT com os 5 registros na tabela `news_articles`, usando as colunas: `slug`, `title`, `excerpt`, `source`, `source_url`, `published_date`, `category`, `sector`, `featured`.
+**Cores (Light + Dark)**
+- primary, secondary, accent, muted, destructive, background, foreground, card, popover, border, input, ring
+- Sidebar tokens
+- Gradientes (primary, hero, subtle)
+- Sombras (card, card-hover, button)
 
-- As datas serao definidas como **2026-02-20** (hoje), ja que os artigos sao de clipping recente.
-- Nenhum artigo sera marcado como destaque (featured = false), a menos que voce queira destacar algum.
-- Categorias e setores seguem o padrao existente no banco, com ajustes para "Mercado" e "Shoppings" que sao novas categorias/setores relevantes ao conteudo.
-- Nenhuma alteracao de codigo frontend e necessaria -- a pagina de noticias ja consome os dados do banco dinamicamente.
+**Tipografia**
+- Font families: Inter (sans), Montserrat (heading), Playfair Display (impact)
+- Pesos usados por familia
+- Google Fonts import URL
+
+**Espacamento e Layout**
+- Border radius (lg, md, sm)
+- Container max-width e padding
+
+**Animacoes**
+- Keyframes: float, pulse-soft, fadeIn, fadeInUp, slideInLeft, scaleIn
+- Duracoes e easing
+
+**Componentes (referencia)**
+- Button variants e sizes (do CVA config)
+- Badge variants
+- Classes utilitarias customizadas (gradient-primary, shadow-card, text-gradient, link-underline)
+
+---
+
+### Implementacao
+
+Um script Python que le `src/index.css`, `tailwind.config.ts` e `src/components/ui/button.tsx`, parseia os tokens e gera os dois arquivos.
 
