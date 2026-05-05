@@ -66,7 +66,13 @@ const AdminTeam = () => {
     if (error || (data as any)?.error) {
       toast({ title: "Erro", description: (data as any)?.error || error?.message || "Erro ao convidar", variant: "destructive" });
     } else {
-      toast({ title: "Convite enviado!", description: `E-mail enviado para ${email}` });
+      const reactivated = (data as any)?.reactivated;
+      toast({
+        title: reactivated ? "Permissões reatribuídas!" : "Convite enviado!",
+        description: reactivated
+          ? `Link de acesso enviado para ${email}.`
+          : `E-mail enviado para ${email}`,
+      });
       setEmail("");
       setNewPerms(new Set(["news"]));
       fetchAdmins();
