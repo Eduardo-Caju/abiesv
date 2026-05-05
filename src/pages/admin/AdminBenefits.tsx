@@ -45,7 +45,7 @@ const empty: Omit<Benefit, "id"> = {
 };
 
 const AdminBenefits = () => {
-  useAdminAuth();
+  useAdminAuth("benefits");
   const { toast } = useToast();
   const [items, setItems] = useState<Benefit[]>([]);
   const [loading, setLoading] = useState(true);

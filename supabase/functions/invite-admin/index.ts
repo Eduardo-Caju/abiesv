@@ -44,35 +44,45 @@ Deno.serve(async (req) => {
 
     const callerId = user.id;
 
-    // Check admin role using service role client (bypasses RLS, no circular dependency)
+    // Check team permission via service role (bypasses RLS)
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    const { data: roles } = await supabaseAdmin
-      .from("user_roles")
-      .select("role")
+    const { data: teamPerm } = await supabaseAdmin
+      .from("admin_permissions")
+      .select("permission")
       .eq("user_id", callerId)
-      .eq("role", "admin");
+      .eq("permission", "team");
 
-    if (!roles || roles.length === 0) {
-      return new Response(JSON.stringify({ error: "Acesso negado. Apenas admins podem convidar." }), {
+    if (!teamPerm || teamPerm.length === 0) {
+      return new Response(JSON.stringify({ error: "Acesso negado. Apenas admins de equipe podem convidar." }), {
         status: 403,
         headers: { ...corsHeaders(origin), "Content-Type": "application/json" },
       });
     }
 
-    // Get email from body
-    const { email } = await req.json();
+    // Get email + permissions from body
+    const body = await req.json();
+    const email: string | undefined = body?.email;
+    const permissions: string[] = Array.isArray(body?.permissions) ? body.permissions : [];
+    const VALID = new Set(["news", "submissions", "benefits", "team"]);
+    const cleanPerms = permissions.filter(p => VALID.has(p));
+
     if (!email || typeof email !== "string") {
       return new Response(JSON.stringify({ error: "E-mail é obrigatório" }), {
         status: 400,
         headers: { ...corsHeaders(origin), "Content-Type": "application/json" },
       });
     }
+    if (cleanPerms.length === 0) {
+      return new Response(JSON.stringify({ error: "Selecione pelo menos uma permissão." }), {
+        status: 400,
+        headers: { ...corsHeaders(origin), "Content-Type": "application/json" },
+      });
+    }
 
-    // Invite user (supabaseAdmin already created above with service role)
     const { data: inviteData, error: inviteError } = await supabaseAdmin.auth.admin.inviteUserByEmail(email);
 
     if (inviteError) {
@@ -82,7 +92,6 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Assign admin role
     const userId = inviteData.user.id;
     const { error: roleError } = await supabaseAdmin
       .from("user_roles")
@@ -94,6 +103,15 @@ Deno.serve(async (req) => {
         status: 500,
         headers: { ...corsHeaders(origin), "Content-Type": "application/json" },
       });
+    }
+
+    const permRows = cleanPerms.map(p => ({ user_id: userId, permission: p }));
+    const { error: permError } = await supabaseAdmin
+      .from("admin_permissions")
+      .upsert(permRows, { onConflict: "user_id,permission" });
+
+    if (permError) {
+      console.error("invite-admin permission insert error:", permError);
     }
 
     return new Response(JSON.stringify({ success: true, email }), {
