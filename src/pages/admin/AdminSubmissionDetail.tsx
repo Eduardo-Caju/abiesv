@@ -97,10 +97,38 @@ const AdminSubmissionDetail = () => {
 
     if (error) {
       toast({ title: "Erro", description: sanitizeDbError(error), variant: "destructive" });
-    } else {
-      toast({ title: newStatus === "aprovado" ? "Aprovado!" : "Rejeitado", description: `Cadastro ${newStatus} com sucesso.` });
-      fetchData();
+      setUpdating(false);
+      return;
     }
+
+    if (newStatus === "aprovado") {
+      const emails = contacts.map(c => c.email).filter(Boolean);
+      if (emails.length > 0) {
+        try {
+          const { data: invRes, error: invErr } = await supabase.functions.invoke("invite-associate", {
+            body: { submission_id: id, emails },
+          });
+          if (invErr) throw invErr;
+          const okCount = (invRes?.results || []).filter((r: any) => r.status === "ok").length;
+          toast({
+            title: "Aprovado e convites enviados!",
+            description: `${okCount}/${emails.length} contato(s) receberão acesso ao Hub por e-mail.`,
+          });
+        } catch (e: any) {
+          toast({
+            title: "Aprovado, mas houve erro nos convites",
+            description: e?.message ?? "Tente reenviar manualmente.",
+            variant: "destructive",
+          });
+        }
+      } else {
+        toast({ title: "Aprovado!", description: "Sem contatos cadastrados para enviar convite." });
+      }
+    } else {
+      toast({ title: "Rejeitado", description: "Cadastro rejeitado." });
+    }
+
+    fetchData();
     setUpdating(false);
   };
 

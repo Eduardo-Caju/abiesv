@@ -14,6 +14,35 @@ export type Database = {
   }
   public: {
     Tables: {
+      associate_members: {
+        Row: {
+          created_at: string
+          id: string
+          submission_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          submission_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          submission_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "associate_members_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "associate_submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       associate_submission_contacts: {
         Row: {
           cargo: string | null
@@ -121,6 +150,57 @@ export type Database = {
         }
         Relationships: []
       }
+      member_benefits: {
+        Row: {
+          active: boolean
+          benefit_type: string
+          category: string
+          created_at: string
+          description: string
+          featured: boolean
+          id: string
+          link_url: string | null
+          partner_logo_url: string | null
+          partner_name: string
+          promo_code: string | null
+          title: string
+          updated_at: string
+          valid_until: string | null
+        }
+        Insert: {
+          active?: boolean
+          benefit_type?: string
+          category: string
+          created_at?: string
+          description: string
+          featured?: boolean
+          id?: string
+          link_url?: string | null
+          partner_logo_url?: string | null
+          partner_name: string
+          promo_code?: string | null
+          title: string
+          updated_at?: string
+          valid_until?: string | null
+        }
+        Update: {
+          active?: boolean
+          benefit_type?: string
+          category?: string
+          created_at?: string
+          description?: string
+          featured?: boolean
+          id?: string
+          link_url?: string | null
+          partner_logo_url?: string | null
+          partner_name?: string
+          promo_code?: string | null
+          title?: string
+          updated_at?: string
+          valid_until?: string | null
+        }
+        Relationships: []
+      }
       news_articles: {
         Row: {
           category: string
@@ -196,9 +276,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_associate: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
-      app_role: "admin" | "user"
+      app_role: "admin" | "user" | "associado"
       submission_status: "pendente" | "aprovado" | "rejeitado"
     }
     CompositeTypes: {
@@ -327,7 +408,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "user"],
+      app_role: ["admin", "user", "associado"],
       submission_status: ["pendente", "aprovado", "rejeitado"],
     },
   },
