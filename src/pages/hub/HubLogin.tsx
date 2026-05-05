@@ -54,7 +54,7 @@ const HubLogin = () => {
       return;
     }
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/hub/login`,
+      redirectTo: `${window.location.origin}/hub/reset-password`,
     });
     if (error) {
       toast({ title: "Erro", description: error.message, variant: "destructive" });

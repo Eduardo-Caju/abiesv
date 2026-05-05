@@ -15,6 +15,21 @@ const AdminLogin = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  const handleResetPassword = async () => {
+    if (!email) {
+      toast({ title: "Informe o e-mail", description: "Digite seu e-mail antes de pedir a redefinição.", variant: "destructive" });
+      return;
+    }
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/admin/reset-password`,
+    });
+    if (error) {
+      toast({ title: "Erro", description: error.message, variant: "destructive" });
+    } else {
+      toast({ title: "Pronto!", description: "Enviamos um e-mail com instruções." });
+    }
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -63,7 +78,12 @@ const AdminLogin = () => {
               <Input id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} required />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Senha</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="password">Senha</Label>
+                <button type="button" onClick={handleResetPassword} className="text-xs text-primary hover:underline">
+                  Esqueci minha senha
+                </button>
+              </div>
               <Input id="password" type="password" value={password} onChange={e => setPassword(e.target.value)} required />
             </div>
             <Button type="submit" className="w-full" disabled={loading}>
