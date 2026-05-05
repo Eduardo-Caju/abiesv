@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { LogOut, Eye, CheckCircle, XCircle, Clock, Newspaper, Users, Image, Gift } from "lucide-react";
+import { LogOut, Eye, CheckCircle, XCircle, Clock, Newspaper, Users, Image, Gift, Plus } from "lucide-react";
 import logoAbiesv from "@/assets/logo-abiesv.png";
 
 type Submission = {
