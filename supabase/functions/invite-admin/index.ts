@@ -99,16 +99,57 @@ Deno.serve(async (req) => {
       });
     }
 
+    let userId: string | null = null;
+    let reactivated = false;
+
     const { data: inviteData, error: inviteError } = await supabaseAdmin.auth.admin.inviteUserByEmail(email);
 
     if (inviteError) {
-      return new Response(JSON.stringify({ error: inviteError.message }), {
-        status: 400,
-        headers: { ...corsHeaders(origin), "Content-Type": "application/json" },
-      });
-    }
+      const code = (inviteError as any).code;
+      const status = (inviteError as any).status;
+      const msg = inviteError.message || "";
+      const alreadyExists =
+        code === "email_exists" ||
+        status === 422 ||
+        /already been registered|already exists/i.test(msg);
 
-    const userId = inviteData.user.id;
+      if (!alreadyExists) {
+        return new Response(JSON.stringify({ error: inviteError.message }), {
+          status: 400,
+          headers: { ...corsHeaders(origin), "Content-Type": "application/json" },
+        });
+      }
+
+      // Find existing user
+      let page = 1;
+      while (page <= 10 && !userId) {
+        const { data: list, error: listErr } = await supabaseAdmin.auth.admin.listUsers({ page, perPage: 200 });
+        if (listErr) break;
+        const found = list.users.find(u => (u.email || "").toLowerCase() === email.toLowerCase());
+        if (found) userId = found.id;
+        if (list.users.length < 200) break;
+        page++;
+      }
+
+      if (!userId) {
+        return new Response(JSON.stringify({ error: "E-mail já registrado, mas não foi possível localizar o usuário." }), {
+          status: 500,
+          headers: { ...corsHeaders(origin), "Content-Type": "application/json" },
+        });
+      }
+
+      // Send recovery link so the user can (re)set password
+      const { error: linkErr } = await supabaseAdmin.auth.admin.generateLink({
+        type: "recovery",
+        email,
+      });
+      if (linkErr) {
+        console.error("invite-admin recovery link error:", linkErr);
+      }
+      reactivated = true;
+    } else {
+      userId = inviteData.user.id;
+    }
     const { error: roleError } = await supabaseAdmin
       .from("user_roles")
       .upsert({ user_id: userId, role: "admin" }, { onConflict: "user_id,role" });
