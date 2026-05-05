@@ -44,7 +44,7 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  useAdminAuth("submissions");
+  const { can } = useAdminAuth("submissions");
 
   useEffect(() => {
     fetchSubmissions();
