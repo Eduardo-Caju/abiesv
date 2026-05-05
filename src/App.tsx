@@ -37,6 +37,7 @@ import HubResetPassword from "./pages/hub/HubResetPassword";
 import HubDashboard from "./pages/hub/HubDashboard";
 import HubBenefits from "./pages/hub/HubBenefits";
 import HubTools from "./pages/hub/HubTools";
+import HubToolDetail from "./pages/hub/HubToolDetail";
 import HubProfile from "./pages/hub/HubProfile";
 import NotFound from "./pages/NotFound";
 
@@ -80,6 +81,7 @@ const App = () => (
           <Route path="/hub" element={<HubDashboard />} />
           <Route path="/hub/beneficios" element={<HubBenefits />} />
           <Route path="/hub/ferramentas" element={<HubTools />} />
+          <Route path="/hub/ferramentas/:slug" element={<HubToolDetail />} />
           <Route path="/hub/perfil" element={<HubProfile />} />
 
           {/* Eventos */}
