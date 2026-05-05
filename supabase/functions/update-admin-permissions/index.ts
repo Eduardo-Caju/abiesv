@@ -2,12 +2,28 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const ALLOWED_ORIGIN = Deno.env.get("ALLOWED_ORIGIN") ?? "";
 
+function isAllowedOrigin(origin: string | null): boolean {
+  if (!origin) return false;
+  if (ALLOWED_ORIGIN && origin === ALLOWED_ORIGIN) return true;
+  try {
+    const u = new URL(origin);
+    if (u.hostname === "localhost" || u.hostname === "127.0.0.1") return true;
+    if (u.hostname.endsWith(".lovable.app")) return true;
+    if (u.hostname.endsWith(".lovableproject.com")) return true;
+    if (u.hostname.endsWith(".lovable.dev")) return true;
+  } catch (_) {}
+  return false;
+}
+
 function corsHeaders(origin: string | null) {
-  const allowed = origin === ALLOWED_ORIGIN ? origin : ALLOWED_ORIGIN;
+  const allowed = isAllowedOrigin(origin) ? origin! : (ALLOWED_ORIGIN || "*");
   return {
     "Access-Control-Allow-Origin": allowed,
     "Access-Control-Allow-Headers":
       "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Max-Age": "86400",
+    "Vary": "Origin",
   };
 }
 

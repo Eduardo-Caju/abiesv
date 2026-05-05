@@ -5,12 +5,27 @@ const MAX_SIZE = 2 * 1024 * 1024; // 2MB
 const PNG_MAGIC = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
 const ALLOWED_ORIGIN = Deno.env.get("ALLOWED_ORIGIN") ?? "";
 
+function isAllowedOrigin(origin: string | null): boolean {
+  if (!origin) return false;
+  if (ALLOWED_ORIGIN && origin === ALLOWED_ORIGIN) return true;
+  try {
+    const u = new URL(origin);
+    if (u.hostname === "localhost" || u.hostname === "127.0.0.1") return true;
+    if (u.hostname.endsWith(".lovable.app")) return true;
+    if (u.hostname.endsWith(".lovableproject.com")) return true;
+    if (u.hostname.endsWith(".lovable.dev")) return true;
+  } catch (_) {}
+  return false;
+}
+
 function corsHeaders(origin: string | null) {
-  const allowed = origin === ALLOWED_ORIGIN ? origin : ALLOWED_ORIGIN;
+  const allowed = isAllowedOrigin(origin) ? origin! : (ALLOWED_ORIGIN || "*");
   return {
     "Access-Control-Allow-Origin": allowed,
     "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Max-Age": "86400",
+    "Vary": "Origin",
   };
 }
 
