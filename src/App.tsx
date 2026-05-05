@@ -30,6 +30,12 @@ import AdminSubmissionDetail from "./pages/admin/AdminSubmissionDetail";
 import AdminNews from "./pages/admin/AdminNews";
 import AdminTeam from "./pages/admin/AdminTeam";
 import AdminSocialCards from "./pages/admin/AdminSocialCards";
+import AdminBenefits from "./pages/admin/AdminBenefits";
+import HubLogin from "./pages/hub/HubLogin";
+import HubDashboard from "./pages/hub/HubDashboard";
+import HubBenefits from "./pages/hub/HubBenefits";
+import HubTools from "./pages/hub/HubTools";
+import HubProfile from "./pages/hub/HubProfile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -63,7 +69,15 @@ const App = () => (
           <Route path="/admin/noticias" element={<AdminNews />} />
           <Route path="/admin/equipe" element={<AdminTeam />} />
           <Route path="/admin/social-cards" element={<AdminSocialCards />} />
-          
+          <Route path="/admin/beneficios" element={<AdminBenefits />} />
+
+          {/* Hub do Associado */}
+          <Route path="/hub/login" element={<HubLogin />} />
+          <Route path="/hub" element={<HubDashboard />} />
+          <Route path="/hub/beneficios" element={<HubBenefits />} />
+          <Route path="/hub/ferramentas" element={<HubTools />} />
+          <Route path="/hub/perfil" element={<HubProfile />} />
+
           {/* Eventos */}
           <Route path="/eventos" element={<Eventos />} />
           <Route path="/eventos/backstage-do-varejo" element={<BackstageDoVarejo />} />
