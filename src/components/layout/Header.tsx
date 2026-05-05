@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, LogIn } from "lucide-react";
 import logoAbiesv from "@/assets/logo-abiesv.png";
 import {
   NavigationMenu,
@@ -113,7 +113,10 @@ export function Header() {
           </div>
 
           {/* CTA Button */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <Button asChild variant="ghost" size="sm" className="hidden md:inline-flex">
+              <Link to="/hub/login"><LogIn className="h-4 w-4 mr-1" /> Hub</Link>
+            </Button>
             <Button asChild variant="cta" size="default" className="hidden sm:flex">
               <Link to="/associe-se">Associe-se</Link>
             </Button>
