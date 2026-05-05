@@ -70,6 +70,7 @@ const App = () => (
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin/reset-password" element={<AdminResetPassword />} />
           <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/cadastros/novo" element={<AdminSubmissionNew />} />
           <Route path="/admin/cadastros/:id" element={<AdminSubmissionDetail />} />
           <Route path="/admin/noticias" element={<AdminNews />} />
           <Route path="/admin/equipe" element={<AdminTeam />} />
