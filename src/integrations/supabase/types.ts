@@ -14,6 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_permissions: {
+        Row: {
+          created_at: string
+          id: string
+          permission: Database["public"]["Enums"]["admin_permission"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          permission: Database["public"]["Enums"]["admin_permission"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          permission?: Database["public"]["Enums"]["admin_permission"]
+          user_id?: string
+        }
+        Relationships: []
+      }
       associate_members: {
         Row: {
           created_at: string
@@ -269,6 +290,22 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_admin_users: {
+        Args: never
+        Returns: {
+          created_at: string
+          email: string
+          permissions: Database["public"]["Enums"]["admin_permission"][]
+          user_id: string
+        }[]
+      }
+      has_permission: {
+        Args: {
+          _permission: Database["public"]["Enums"]["admin_permission"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -279,6 +316,7 @@ export type Database = {
       is_associate: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
+      admin_permission: "news" | "submissions" | "benefits" | "team"
       app_role: "admin" | "user" | "associado"
       submission_status: "pendente" | "aprovado" | "rejeitado"
     }
@@ -408,6 +446,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      admin_permission: ["news", "submissions", "benefits", "team"],
       app_role: ["admin", "user", "associado"],
       submission_status: ["pendente", "aprovado", "rejeitado"],
     },
