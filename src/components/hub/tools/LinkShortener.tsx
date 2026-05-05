@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import { Copy } from "lucide-react";
 
 const LinkShortener = () => {
@@ -15,10 +16,10 @@ const LinkShortener = () => {
     if (!url) return;
     setBusy(true);
     try {
-      const res = await fetch(`https://is.gd/create.php?format=simple&url=${encodeURIComponent(url)}`);
-      const text = await res.text();
-      if (!res.ok || !text.startsWith("http")) throw new Error(text);
-      setShort(text);
+      const { data, error } = await supabase.functions.invoke("shorten-url", { body: { url } });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+      setShort((data as any).short);
     } catch (e: any) {
       toast({ title: "Erro ao encurtar", description: e.message, variant: "destructive" });
     }
