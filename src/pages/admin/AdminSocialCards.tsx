@@ -17,7 +17,7 @@ const AdminSocialCards = () => {
   const { data: articles, isLoading } = useNewsArticles();
   const cardRefs = useRef<Map<string, HTMLDivElement>>(new Map());
 
-  useAdminAuth();
+  useAdminAuth("news");
 
   const filtered = articles?.filter(a =>
     !search || a.title.toLowerCase().includes(search.toLowerCase()) ||

@@ -60,7 +60,7 @@ const AdminSubmissionDetail = () => {
   const [observacao, setObservacao] = useState("");
   const [updating, setUpdating] = useState(false);
 
-  useAdminAuth();
+  useAdminAuth("submissions");
 
   useEffect(() => {
     if (id) {

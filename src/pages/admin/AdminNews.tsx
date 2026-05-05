@@ -75,7 +75,7 @@ const AdminNews = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  useAdminAuth();
+  useAdminAuth("news");
 
   useEffect(() => {
     fetchArticles();

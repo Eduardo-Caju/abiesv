@@ -24,7 +24,7 @@ const AdminTeam = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  useAdminAuth();
+  useAdminAuth("team");
 
   useEffect(() => {
     fetchAdmins();
