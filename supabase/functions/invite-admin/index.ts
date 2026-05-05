@@ -171,7 +171,7 @@ Deno.serve(async (req) => {
       console.error("invite-admin permission insert error:", permError);
     }
 
-    return new Response(JSON.stringify({ success: true, email }), {
+    return new Response(JSON.stringify({ success: true, email, reactivated }), {
       headers: { ...corsHeaders(origin), "Content-Type": "application/json" },
     });
   } catch (err) {
