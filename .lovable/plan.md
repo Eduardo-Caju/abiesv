@@ -1,33 +1,27 @@
-## Fluxo de recuperação de senha
+## Ajuste no Hub Dashboard
 
-Implementar recuperação de senha self-service para o painel administrativo, espelhando o que já existe em `/hub/login`.
+O card "Ferramentas" e a seção "O que vem por aí" ainda mostram "Em breve", apesar de as 9 ferramentas já estarem implementadas em `/hub/ferramentas`.
 
-### 1. Atualizar `/admin/login`
-- Adicionar link "Esqueci minha senha" ao lado do label da senha
-- Ao clicar: validar email preenchido, chamar `supabase.auth.resetPasswordForEmail(email, { redirectTo: ${origin}/admin/reset-password })`
-- Mostrar toast de sucesso/erro
+### Mudanças em `src/pages/hub/HubDashboard.tsx`
 
-### 2. Criar página `/admin/reset-password`
-- Rota pública (sem `useAdminAuth`)
-- Detectar sessão de recovery (Supabase cria sessão temporária via hash `type=recovery`)
-- Formulário com nova senha + confirmação (mínimo 8 caracteres, validação de match)
-- Submit: `supabase.auth.updateUser({ password })`
-- Após sucesso: validar que o usuário tem role `admin`; se sim → `/admin`, senão → signOut + `/admin/login`
-- Mensagem de erro se o link estiver expirado/inválido
+1. **Card "Ferramentas"**
+   - Trocar a descrição de "Em breve: utilitários para o dia a dia do varejo" por algo como "9 utilitários prontos para o dia a dia do varejo"
+   - Substituir o botão `disabled` "Em breve" por um botão ativo "Abrir ferramentas" linkando para `/hub/ferramentas` (mesmo padrão do card de Benefícios)
 
-### 3. Espelhar o mesmo fluxo no Hub
-- Criar `/hub/reset-password` (mesma lógica, aceita roles `admin` ou `associado`)
-- Atualizar o `redirectTo` em `HubLogin.tsx` para apontar para `/hub/reset-password` (hoje aponta para `/hub/login`, o que faz o usuário ser autologado sem trocar a senha)
+2. **Seção "O que vem por aí"**
+   - Renomear para "Ferramentas disponíveis" (ou remover a seção e substituir por uma lista clicável)
+   - Transformar os bullets em links rápidos para cada ferramenta:
+     - Compressor de imagem → `/hub/ferramentas/compressor-imagem`
+     - Conversor de imagem → `/hub/ferramentas/conversor-imagem`
+     - Compressor de PDF → `/hub/ferramentas/compressor-pdf`
+     - Gerador de QR Code → `/hub/ferramentas/qr-code`
+     - UTM Builder → `/hub/ferramentas/utm-builder`
+     - Encurtador de link → `/hub/ferramentas/encurtador`
+     - Paleta de cores → `/hub/ferramentas/paleta`
+     - Removedor de fundo → `/hub/ferramentas/remover-fundo`
+     - Extrator de texto (OCR) → `/hub/ferramentas/ocr`
 
-### 4. Registrar rotas em `src/App.tsx`
-- `/admin/reset-password` → `AdminResetPassword`
-- `/hub/reset-password` → `HubResetPassword`
+3. **Limpeza**
+   - Remover o import `Sparkles` que deixa de ser usado.
 
-### Detalhes técnicos
-- Usar `supabase.auth.onAuthStateChange` para capturar evento `PASSWORD_RECOVERY` antes de renderizar o form
-- Componentes existentes: `Card`, `Input`, `Label`, `Button`, `useToast`
-- Os e-mails de recuperação já são enviados pelo Supabase com template padrão (sem necessidade de configurar domínio customizado agora)
-
-### Fora do escopo
-- Customização de templates de email com domínio próprio (pode ser feito depois)
-- Alterar a senha do `eduardo@fastconstrutora.com.br` — após implantar, basta clicar em "Esqueci minha senha" em `/admin/login`
+Sem alterações de schema, rotas ou outros arquivos.
