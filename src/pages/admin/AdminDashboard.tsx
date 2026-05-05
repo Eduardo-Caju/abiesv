@@ -141,6 +141,13 @@ const AdminDashboard = () => {
               <SelectItem value="rejeitado">Rejeitados ({counts.rejeitado})</SelectItem>
             </SelectContent>
           </Select>
+          {can("submissions") && (
+            <Button asChild size="sm">
+              <Link to="/admin/cadastros/novo">
+                <Plus className="h-4 w-4 mr-1" /> Novo cadastro
+              </Link>
+            </Button>
+          )}
         </div>
 
         {loading ? (
