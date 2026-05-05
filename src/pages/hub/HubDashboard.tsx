@@ -3,8 +3,23 @@ import { Link } from "react-router-dom";
 import { HubLayout } from "@/components/hub/HubLayout";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Gift, Wrench, ArrowRight, Sparkles } from "lucide-react";
+import {
+  Gift, Wrench, ArrowRight, ImageDown, FileImage, FileArchive,
+  QrCode, Link2, Scissors, Palette, Eraser, ScanText,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+
+const tools = [
+  { slug: "compressor-imagem", title: "Compressor de imagem", icon: ImageDown },
+  { slug: "conversor-imagem", title: "Conversor de imagem", icon: FileImage },
+  { slug: "compressor-pdf", title: "Compressor de PDF", icon: FileArchive },
+  { slug: "qr-code", title: "Gerador de QR Code", icon: QrCode },
+  { slug: "utm-builder", title: "UTM Builder", icon: Link2 },
+  { slug: "encurtador", title: "Encurtador de link", icon: Scissors },
+  { slug: "paleta", title: "Paleta de cores", icon: Palette },
+  { slug: "remover-fundo", title: "Removedor de fundo", icon: Eraser },
+  { slug: "ocr", title: "Extrator de texto (OCR)", icon: ScanText },
+];
 
 const HubDashboard = () => {
   const [benefitsCount, setBenefitsCount] = useState<number | null>(null);
@@ -55,13 +70,13 @@ const HubDashboard = () => {
                 </div>
                 <div>
                   <CardTitle className="text-lg">Ferramentas</CardTitle>
-                  <CardDescription>Em breve: utilitários para o dia a dia do varejo</CardDescription>
+                  <CardDescription>{tools.length} utilitários prontos para o dia a dia do varejo</CardDescription>
                 </div>
               </div>
             </CardHeader>
             <CardContent>
-              <Button variant="outline" size="sm" disabled>
-                <Sparkles className="mr-1 h-4 w-4" /> Em breve
+              <Button asChild variant="outline" size="sm">
+                <Link to="/hub/ferramentas">Abrir ferramentas <ArrowRight className="ml-1 h-4 w-4" /></Link>
               </Button>
             </CardContent>
           </Card>
@@ -69,14 +84,22 @@ const HubDashboard = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">O que vem por aí</CardTitle>
+            <CardTitle className="text-lg">Ferramentas disponíveis</CardTitle>
+            <CardDescription>Acesso rápido — tudo roda no seu navegador.</CardDescription>
           </CardHeader>
-          <CardContent className="text-sm text-muted-foreground space-y-2">
-            <p>• Compressor e conversor de imagens</p>
-            <p>• Gerador de QR Code e UTM Builder</p>
-            <p>• Encurtador de links com analytics</p>
-            <p>• Removedor de fundo de imagem e extrator de texto (OCR)</p>
-            <p>• Gerador de paleta de cores</p>
+          <CardContent>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2">
+              {tools.map(t => (
+                <Link
+                  key={t.slug}
+                  to={`/hub/ferramentas/${t.slug}`}
+                  className="flex items-center gap-2 p-2 rounded-md border bg-muted/30 hover:border-primary/60 hover:bg-muted/60 transition-colors text-sm"
+                >
+                  <t.icon className="h-4 w-4 text-primary shrink-0" />
+                  <span className="truncate">{t.title}</span>
+                </Link>
+              ))}
+            </div>
           </CardContent>
         </Card>
       </div>
