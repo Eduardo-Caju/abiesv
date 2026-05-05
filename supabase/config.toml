@@ -3,5 +3,8 @@ project_id = "dysbndmxjncqorhsakja"
 [functions.invite-admin]
 verify_jwt = false
 
+[functions.update-admin-permissions]
+verify_jwt = false
+
 [functions.upload-logo]
 verify_jwt = false
