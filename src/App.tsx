@@ -25,6 +25,7 @@ import Privacidade from "./pages/Privacidade";
 import Termos from "./pages/Termos";
 import CadastroAssociado from "./pages/CadastroAssociado";
 import AdminLogin from "./pages/admin/AdminLogin";
+import AdminResetPassword from "./pages/admin/AdminResetPassword";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminSubmissionDetail from "./pages/admin/AdminSubmissionDetail";
 import AdminNews from "./pages/admin/AdminNews";
@@ -32,6 +33,7 @@ import AdminTeam from "./pages/admin/AdminTeam";
 import AdminSocialCards from "./pages/admin/AdminSocialCards";
 import AdminBenefits from "./pages/admin/AdminBenefits";
 import HubLogin from "./pages/hub/HubLogin";
+import HubResetPassword from "./pages/hub/HubResetPassword";
 import HubDashboard from "./pages/hub/HubDashboard";
 import HubBenefits from "./pages/hub/HubBenefits";
 import HubTools from "./pages/hub/HubTools";
@@ -64,6 +66,7 @@ const App = () => (
           
           {/* Admin */}
           <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin/reset-password" element={<AdminResetPassword />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/cadastros/:id" element={<AdminSubmissionDetail />} />
           <Route path="/admin/noticias" element={<AdminNews />} />
@@ -73,6 +76,7 @@ const App = () => (
 
           {/* Hub do Associado */}
           <Route path="/hub/login" element={<HubLogin />} />
+          <Route path="/hub/reset-password" element={<HubResetPassword />} />
           <Route path="/hub" element={<HubDashboard />} />
           <Route path="/hub/beneficios" element={<HubBenefits />} />
           <Route path="/hub/ferramentas" element={<HubTools />} />
