@@ -28,6 +28,7 @@ import AdminLogin from "./pages/admin/AdminLogin";
 import AdminResetPassword from "./pages/admin/AdminResetPassword";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminSubmissionDetail from "./pages/admin/AdminSubmissionDetail";
+import AdminSubmissionNew from "./pages/admin/AdminSubmissionNew";
 import AdminNews from "./pages/admin/AdminNews";
 import AdminTeam from "./pages/admin/AdminTeam";
 import AdminSocialCards from "./pages/admin/AdminSocialCards";
@@ -69,6 +70,7 @@ const App = () => (
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin/reset-password" element={<AdminResetPassword />} />
           <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/cadastros/novo" element={<AdminSubmissionNew />} />
           <Route path="/admin/cadastros/:id" element={<AdminSubmissionDetail />} />
           <Route path="/admin/noticias" element={<AdminNews />} />
           <Route path="/admin/equipe" element={<AdminTeam />} />

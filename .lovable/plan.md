@@ -1,14 +1,46 @@
-## Publicar 4 notícias na seção Notícias do Varejo
+## Cadastro manual de associados pelo admin
 
-Inserir os 4 itens enviados diretamente na tabela `news_articles` (mesma tabela usada pelo admin `/admin/noticias`), com os metadados abaixo. Slug gerado automaticamente a partir do título.
+Adicionar fluxo no `/admin` para cadastrar associados manualmente, sem passar pelo formulário público.
 
-| # | Título | Categoria | Setor | Data | Destaque |
-|---|--------|-----------|-------|------|----------|
-| 1 | Milky Moo projeta liderança no mercado nacional de sorvetes | Expansão | Alimentar | 2026-05-04 | Não |
-| 2 | Saint-Gobain vende Telhanorte para Tauá Partners | M&A | Construção | 2026-05-04 | Sim |
-| 3 | Supermercado em SC investe R$ 30 milhões em nova unidade | Expansão | Supermercados | 2026-05-04 | Não |
-| 4 | Bistek Supermercados lança campanha de fidelidade com a Marvel | Marketing | Supermercados | 2026-05-04 | Não |
+### O que será criado
 
-Resumos e URLs exatamente como enviados. Após inserir, as notícias aparecem automaticamente em `/noticias` e em `/admin/noticias` (ordenadas por data).
+**1. Botão "+ Novo cadastro"** no topo do `/admin` (AdminDashboard), ao lado do filtro de status. Visível apenas para quem tem permissão `submissions`.
 
-Confirma que as categorias/setores acima estão ok? Se sim, aprovo e insiro.
+**2. Nova página `/admin/cadastros/novo`** (AdminSubmissionNew.tsx) com formulário enxuto:
+
+Campos obrigatórios:
+- Razão Social
+- Nome Fantasia
+- CNPJ (sem máscara estrita — aceita formatos variados)
+- Categoria (mesmo select do formulário público)
+- Descrição curta (até 200 caracteres)
+- Estado / Cidade
+
+Campos opcionais:
+- Descrição completa
+- Website, LinkedIn, Instagram
+- Soluções e Setores (multi-select)
+- Logo (upload PNG, opcional — se não enviar, fica sem logo)
+- Contato principal (nome, email, cargo, celular) — opcional
+
+Status: dropdown com **"Aprovado"** pré-selecionado (admin pode escolher pendente/rejeitado também).
+
+**3. Comportamento:**
+- Insere direto em `associate_submissions` com o status escolhido.
+- Se status = aprovado, aparece imediatamente em `/associados`.
+- Logo é opcional (diferente do formulário público).
+- Reaproveita a edge function `upload-logo` existente.
+- Após salvar, redireciona para `/admin/cadastros/:id` (página de detalhe já existente).
+
+### Fora de escopo
+
+- Importação em lote via CSV (continua manual, um a um).
+- Edição inline no dashboard (já existe via página de detalhe).
+
+### Detalhes técnicos
+
+- Nova rota em `App.tsx`: `/admin/cadastros/novo` → `AdminSubmissionNew`.
+- Reusa componentes do `CadastroAssociado.tsx` (selects de categoria/estado/setores) extraindo opções para um arquivo compartilhado se necessário, ou duplicando inline.
+- Validação com zod, igual ao formulário público mas com logo opcional.
+- Insert em `associate_submissions` + opcionalmente `associate_submission_contacts` se preencher contato.
+- Proteção: `useAdminAuth("submissions")` redireciona se não tiver permissão.

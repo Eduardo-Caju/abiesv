@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { LogOut, Eye, CheckCircle, XCircle, Clock, Newspaper, Users, Image, Gift } from "lucide-react";
+import { LogOut, Eye, CheckCircle, XCircle, Clock, Newspaper, Users, Image, Gift, Plus } from "lucide-react";
 import logoAbiesv from "@/assets/logo-abiesv.png";
 
 type Submission = {
@@ -130,17 +130,26 @@ const AdminDashboard = () => {
             <h1 className="font-heading text-2xl font-bold text-foreground">Cadastros de Associados</h1>
             <p className="text-muted-foreground">{counts.pendente} pendente(s)</p>
           </div>
-          <Select value={filterStatus} onValueChange={setFilterStatus}>
-            <SelectTrigger className="w-44">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="todos">Todos ({counts.todos})</SelectItem>
-              <SelectItem value="pendente">Pendentes ({counts.pendente})</SelectItem>
-              <SelectItem value="aprovado">Aprovados ({counts.aprovado})</SelectItem>
-              <SelectItem value="rejeitado">Rejeitados ({counts.rejeitado})</SelectItem>
-            </SelectContent>
-          </Select>
+          <div className="flex items-center gap-2">
+            <Select value={filterStatus} onValueChange={setFilterStatus}>
+              <SelectTrigger className="w-44">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="todos">Todos ({counts.todos})</SelectItem>
+                <SelectItem value="pendente">Pendentes ({counts.pendente})</SelectItem>
+                <SelectItem value="aprovado">Aprovados ({counts.aprovado})</SelectItem>
+                <SelectItem value="rejeitado">Rejeitados ({counts.rejeitado})</SelectItem>
+              </SelectContent>
+            </Select>
+            {can("submissions") && (
+              <Button asChild size="sm">
+                <Link to="/admin/cadastros/novo">
+                  <Plus className="h-4 w-4 mr-1" /> Novo cadastro
+                </Link>
+              </Button>
+            )}
+          </div>
         </div>
 
         {loading ? (
