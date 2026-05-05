@@ -1,27 +1,23 @@
-## Ajuste no Hub Dashboard
+## Corrigir o Removedor de fundo
 
-O card "Ferramentas" e a seção "O que vem por aí" ainda mostram "Em breve", apesar de as 9 ferramentas já estarem implementadas em `/hub/ferramentas`.
+### Problema
+O componente chama `pipeline("background-removal", "briaai/RMBG-1.4")`, mas a task `"background-removal"` não existe na versão atual do `@huggingface/transformers`. O modelo RMBG-1.4 é um SegFormer e precisa ser carregado via task `"image-segmentation"`, depois aplicamos a máscara manualmente sobre a imagem para gerar o PNG transparente.
 
-### Mudanças em `src/pages/hub/HubDashboard.tsx`
+### Mudanças em `src/components/hub/tools/BackgroundRemover.tsx`
+1. Trocar a chamada por:
+   ```ts
+   const segmenter = await pipeline("image-segmentation", "briaai/RMBG-1.4", { device: "webgpu" })
+     .catch(() => pipeline("image-segmentation", "briaai/RMBG-1.4"));
+   ```
+2. Carregar a imagem original em um `<canvas>` (com limite de ~1024px no maior lado para evitar travar a aba).
+3. Rodar `segmenter(imageUrl)` → recebe array de segmentos com `mask` (`RawImage`).
+4. Pegar o primeiro segmento, ler `mask.data` e aplicar como canal alpha:
+   ```ts
+   const imageData = ctx.getImageData(0,0,w,h);
+   for (let i=0; i<mask.data.length; i++) imageData.data[i*4+3] = mask.data[i];
+   ctx.putImageData(imageData, 0, 0);
+   ```
+5. Exportar via `canvas.toBlob(..., "image/png")` e mostrar/baixar.
+6. Adicionar mensagens de progresso (carregando modelo / segmentando / finalizando) e tratamento de erro com toast já existente.
 
-1. **Card "Ferramentas"**
-   - Trocar a descrição de "Em breve: utilitários para o dia a dia do varejo" por algo como "9 utilitários prontos para o dia a dia do varejo"
-   - Substituir o botão `disabled` "Em breve" por um botão ativo "Abrir ferramentas" linkando para `/hub/ferramentas` (mesmo padrão do card de Benefícios)
-
-2. **Seção "O que vem por aí"**
-   - Renomear para "Ferramentas disponíveis" (ou remover a seção e substituir por uma lista clicável)
-   - Transformar os bullets em links rápidos para cada ferramenta:
-     - Compressor de imagem → `/hub/ferramentas/compressor-imagem`
-     - Conversor de imagem → `/hub/ferramentas/conversor-imagem`
-     - Compressor de PDF → `/hub/ferramentas/compressor-pdf`
-     - Gerador de QR Code → `/hub/ferramentas/qr-code`
-     - UTM Builder → `/hub/ferramentas/utm-builder`
-     - Encurtador de link → `/hub/ferramentas/encurtador`
-     - Paleta de cores → `/hub/ferramentas/paleta`
-     - Removedor de fundo → `/hub/ferramentas/remover-fundo`
-     - Extrator de texto (OCR) → `/hub/ferramentas/ocr`
-
-3. **Limpeza**
-   - Remover o import `Sparkles` que deixa de ser usado.
-
-Sem alterações de schema, rotas ou outros arquivos.
+Sem alterações em outras ferramentas, dependências ou backend.
