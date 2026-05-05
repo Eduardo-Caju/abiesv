@@ -1,26 +1,14 @@
-## Problema
+## Publicar 4 notícias na seção Notícias do Varejo
 
-O erro "Failed to send a request to the Edge Function" ao convidar admin acontece porque a função `invite-admin` (e as outras) só aceita requisições da origem definida em `ALLOWED_ORIGIN`. Quando o painel é acessado de outra origem (preview do Lovable, domínio diferente, etc.), o navegador bloqueia o preflight CORS antes mesmo da requisição chegar à função — daí o "Failed to send".
+Inserir os 4 itens enviados diretamente na tabela `news_articles` (mesma tabela usada pelo admin `/admin/noticias`), com os metadados abaixo. Slug gerado automaticamente a partir do título.
 
-A função `update-admin-permissions` que acabei de criar tem o mesmo problema.
+| # | Título | Categoria | Setor | Data | Destaque |
+|---|--------|-----------|-------|------|----------|
+| 1 | Milky Moo projeta liderança no mercado nacional de sorvetes | Expansão | Alimentar | 2026-05-04 | Não |
+| 2 | Saint-Gobain vende Telhanorte para Tauá Partners | M&A | Construção | 2026-05-04 | Sim |
+| 3 | Supermercado em SC investe R$ 30 milhões em nova unidade | Expansão | Supermercados | 2026-05-04 | Não |
+| 4 | Bistek Supermercados lança campanha de fidelidade com a Marvel | Marketing | Supermercados | 2026-05-04 | Não |
 
-## Correção
+Resumos e URLs exatamente como enviados. Após inserir, as notícias aparecem automaticamente em `/noticias` e em `/admin/noticias` (ordenadas por data).
 
-Permitir múltiplas origens conhecidas nas Edge Functions, refletindo a `Origin` da requisição quando ela bater em uma allowlist:
-
-- Aceitar qualquer subdomínio `*.lovable.app` e `*.lovableproject.com` (preview/published do Lovable)
-- Aceitar a origem definida em `ALLOWED_ORIGIN` (domínio customizado / produção), se houver
-- Aceitar `localhost` para desenvolvimento
-
-Aplicar a mesma helper de CORS em:
-- `supabase/functions/invite-admin/index.ts`
-- `supabase/functions/update-admin-permissions/index.ts`
-- `supabase/functions/invite-associate/index.ts`
-- `supabase/functions/upload-logo/index.ts`
-
-Adicionar também o header `Access-Control-Allow-Methods: POST, OPTIONS` e `Access-Control-Max-Age` para reduzir preflights.
-
-## Fora de escopo
-
-- Não mexer no `shorten-url` (não usa essa restrição).
-- Sem mudanças no banco ou no frontend.
+Confirma que as categorias/setores acima estão ok? Se sim, aprovo e insiro.
