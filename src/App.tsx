@@ -28,6 +28,7 @@ import AdminLogin from "./pages/admin/AdminLogin";
 import AdminResetPassword from "./pages/admin/AdminResetPassword";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminSubmissionDetail from "./pages/admin/AdminSubmissionDetail";
+import AdminSubmissionNew from "./pages/admin/AdminSubmissionNew";
 import AdminNews from "./pages/admin/AdminNews";
 import AdminTeam from "./pages/admin/AdminTeam";
 import AdminSocialCards from "./pages/admin/AdminSocialCards";
