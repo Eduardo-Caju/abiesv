@@ -89,26 +89,34 @@ const AdminDashboard = () => {
             <span className="font-heading font-bold text-foreground">Admin</span>
           </div>
           <div className="flex items-center gap-2">
-            <Button asChild variant="outline" size="sm">
-              <Link to="/admin/noticias">
-                <Newspaper className="h-4 w-4 mr-1" /> Notícias
-              </Link>
-            </Button>
-            <Button asChild variant="outline" size="sm">
-              <Link to="/admin/equipe">
-                <Users className="h-4 w-4 mr-1" /> Equipe
-              </Link>
-            </Button>
-            <Button asChild variant="outline" size="sm">
-              <Link to="/admin/social-cards">
-                <Image className="h-4 w-4 mr-1" /> Social Cards
-              </Link>
-            </Button>
-            <Button asChild variant="outline" size="sm">
-              <Link to="/admin/beneficios">
-                <Gift className="h-4 w-4 mr-1" /> Benefícios
-              </Link>
-            </Button>
+            {can("news") && (
+              <Button asChild variant="outline" size="sm">
+                <Link to="/admin/noticias">
+                  <Newspaper className="h-4 w-4 mr-1" /> Notícias
+                </Link>
+              </Button>
+            )}
+            {can("team") && (
+              <Button asChild variant="outline" size="sm">
+                <Link to="/admin/equipe">
+                  <Users className="h-4 w-4 mr-1" /> Equipe
+                </Link>
+              </Button>
+            )}
+            {can("news") && (
+              <Button asChild variant="outline" size="sm">
+                <Link to="/admin/social-cards">
+                  <Image className="h-4 w-4 mr-1" /> Social Cards
+                </Link>
+              </Button>
+            )}
+            {can("benefits") && (
+              <Button asChild variant="outline" size="sm">
+                <Link to="/admin/beneficios">
+                  <Gift className="h-4 w-4 mr-1" /> Benefícios
+                </Link>
+              </Button>
+            )}
             <Button variant="ghost" size="sm" onClick={handleLogout}>
               <LogOut className="h-4 w-4 mr-1" /> Sair
             </Button>
