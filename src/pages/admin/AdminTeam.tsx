@@ -1,61 +1,111 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { useAdminAuth } from "@/hooks/useAdminAuth";
+import { useAdminAuth, type AdminPermission } from "@/hooks/useAdminAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { LogOut, ArrowLeft, UserPlus, Loader2 } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { LogOut, ArrowLeft, UserPlus, Loader2, Pencil, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import logoAbiesv from "@/assets/logo-abiesv.png";
 
 type AdminUser = {
   user_id: string;
-  email?: string;
-  created_at?: string;
+  email: string;
+  created_at: string;
+  permissions: AdminPermission[];
 };
 
+const PERMISSIONS: { id: AdminPermission; label: string; desc: string }[] = [
+  { id: "submissions", label: "Cadastros de Associados", desc: "Aprovar/rejeitar/editar cadastros" },
+  { id: "news", label: "Notícias e Social Cards", desc: "Publicar e editar notícias" },
+  { id: "benefits", label: "Benefícios", desc: "Gerenciar benefícios para associados" },
+  { id: "team", label: "Equipe (Super-admin)", desc: "Convidar e gerenciar outros admins" },
+];
+
 const AdminTeam = () => {
+  const { userId } = useAdminAuth("team");
   const [admins, setAdmins] = useState<AdminUser[]>([]);
   const [email, setEmail] = useState("");
+  const [newPerms, setNewPerms] = useState<Set<AdminPermission>>(new Set(["news"]));
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
+  const [editing, setEditing] = useState<AdminUser | null>(null);
+  const [editPerms, setEditPerms] = useState<Set<AdminPermission>>(new Set());
+  const [savingEdit, setSavingEdit] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  useAdminAuth("team");
-
-  useEffect(() => {
-    fetchAdmins();
-  }, []);
+  useEffect(() => { fetchAdmins(); }, []);
 
   const fetchAdmins = async () => {
-    const { data } = await supabase
-      .from("user_roles")
-      .select("user_id")
-      .eq("role", "admin");
-    if (data) setAdmins(data.map(r => ({ user_id: r.user_id })));
+    setFetching(true);
+    const { data, error } = await supabase.rpc("get_admin_users");
+    if (!error && data) setAdmins(data as AdminUser[]);
     setFetching(false);
+  };
+
+  const togglePerm = (set: Set<AdminPermission>, p: AdminPermission, setSetter: (s: Set<AdminPermission>) => void) => {
+    const next = new Set(set);
+    if (next.has(p)) next.delete(p); else next.add(p);
+    setSetter(next);
   };
 
   const handleInvite = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim()) return;
+    if (!email.trim() || newPerms.size === 0) return;
     setLoading(true);
-
     const { data, error } = await supabase.functions.invoke("invite-admin", {
-      body: { email: email.trim() },
+      body: { email: email.trim(), permissions: Array.from(newPerms) },
     });
-
-    if (error || data?.error) {
-      toast({ title: "Erro", description: data?.error || error?.message || "Erro ao convidar", variant: "destructive" });
+    if (error || (data as any)?.error) {
+      toast({ title: "Erro", description: (data as any)?.error || error?.message || "Erro ao convidar", variant: "destructive" });
     } else {
-      toast({ title: "Convite enviado!", description: `E-mail de convite enviado para ${email}` });
+      toast({ title: "Convite enviado!", description: `E-mail enviado para ${email}` });
       setEmail("");
+      setNewPerms(new Set(["news"]));
       fetchAdmins();
     }
     setLoading(false);
+  };
+
+  const openEdit = (admin: AdminUser) => {
+    setEditing(admin);
+    setEditPerms(new Set(admin.permissions));
+  };
+
+  const saveEdit = async () => {
+    if (!editing) return;
+    setSavingEdit(true);
+    const { data, error } = await supabase.functions.invoke("update-admin-permissions", {
+      body: { action: "update", user_id: editing.user_id, permissions: Array.from(editPerms) },
+    });
+    if (error || (data as any)?.error) {
+      toast({ title: "Erro", description: (data as any)?.error || error?.message, variant: "destructive" });
+    } else {
+      toast({ title: "Permissões atualizadas" });
+      setEditing(null);
+      fetchAdmins();
+    }
+    setSavingEdit(false);
+  };
+
+  const revokeAccess = async (admin: AdminUser) => {
+    if (!confirm(`Revogar acesso de ${admin.email}?`)) return;
+    const { data, error } = await supabase.functions.invoke("update-admin-permissions", {
+      body: { action: "revoke", user_id: admin.user_id },
+    });
+    if (error || (data as any)?.error) {
+      toast({ title: "Erro", description: (data as any)?.error || error?.message, variant: "destructive" });
+    } else {
+      toast({ title: "Acesso revogado" });
+      fetchAdmins();
+    }
   };
 
   const handleLogout = async () => {
@@ -82,7 +132,7 @@ const AdminTeam = () => {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-2xl">
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-4xl">
         <h1 className="font-heading text-2xl font-bold text-foreground mb-6">Equipe Administrativa</h1>
 
         <Card className="mb-8">
@@ -92,22 +142,44 @@ const AdminTeam = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleInvite} className="flex gap-3">
-              <Input
-                type="email"
-                placeholder="email@exemplo.com"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                required
-                className="flex-1"
-              />
-              <Button type="submit" disabled={loading}>
-                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Convidar"}
+            <form onSubmit={handleInvite} className="space-y-4">
+              <div>
+                <Label htmlFor="invite-email">E-mail</Label>
+                <Input
+                  id="invite-email"
+                  type="email"
+                  placeholder="email@exemplo.com"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+              <div>
+                <Label>Permissões</Label>
+                <div className="grid sm:grid-cols-2 gap-3 mt-2">
+                  {PERMISSIONS.map(p => (
+                    <label key={p.id} className="flex items-start gap-2 p-3 border border-border rounded-md cursor-pointer hover:bg-muted/50">
+                      <Checkbox
+                        checked={newPerms.has(p.id)}
+                        onCheckedChange={() => togglePerm(newPerms, p.id, setNewPerms)}
+                        className="mt-0.5"
+                      />
+                      <div className="text-sm">
+                        <div className="font-medium">{p.label}</div>
+                        <div className="text-muted-foreground text-xs">{p.desc}</div>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              </div>
+              <Button type="submit" disabled={loading || newPerms.size === 0}>
+                {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <UserPlus className="h-4 w-4 mr-2" />}
+                Enviar convite
               </Button>
+              <p className="text-sm text-muted-foreground">
+                A pessoa receberá um e-mail com link para definir a senha.
+              </p>
             </form>
-            <p className="text-sm text-muted-foreground mt-2">
-              A pessoa receberá um e-mail com link para definir a senha e acessar o painel.
-            </p>
           </CardContent>
         </Card>
 
@@ -124,13 +196,43 @@ const AdminTeam = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>ID do Usuário</TableHead>
+                    <TableHead>E-mail</TableHead>
+                    <TableHead>Permissões</TableHead>
+                    <TableHead className="text-right">Ações</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {admins.map(admin => (
                     <TableRow key={admin.user_id}>
-                      <TableCell className="font-mono text-sm">{admin.user_id}</TableCell>
+                      <TableCell className="text-sm">
+                        {admin.email}
+                        {admin.user_id === userId && (
+                          <Badge variant="outline" className="ml-2 text-xs">você</Badge>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex flex-wrap gap-1">
+                          {admin.permissions.length === 0 ? (
+                            <span className="text-xs text-muted-foreground">nenhuma</span>
+                          ) : (
+                            admin.permissions.map(p => (
+                              <Badge key={p} variant="secondary" className="text-xs">
+                                {PERMISSIONS.find(x => x.id === p)?.label ?? p}
+                              </Badge>
+                            ))
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Button variant="ghost" size="sm" onClick={() => openEdit(admin)}>
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        {admin.user_id !== userId && (
+                          <Button variant="ghost" size="sm" onClick={() => revokeAccess(admin)}>
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                          </Button>
+                        )}
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -139,6 +241,37 @@ const AdminTeam = () => {
           </CardContent>
         </Card>
       </main>
+
+      <Dialog open={!!editing} onOpenChange={(o) => !o && setEditing(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Editar permissões</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">{editing?.email}</p>
+          <div className="grid gap-3 mt-2">
+            {PERMISSIONS.map(p => (
+              <label key={p.id} className="flex items-start gap-2 p-3 border border-border rounded-md cursor-pointer hover:bg-muted/50">
+                <Checkbox
+                  checked={editPerms.has(p.id)}
+                  onCheckedChange={() => togglePerm(editPerms, p.id, setEditPerms)}
+                  className="mt-0.5"
+                />
+                <div className="text-sm">
+                  <div className="font-medium">{p.label}</div>
+                  <div className="text-muted-foreground text-xs">{p.desc}</div>
+                </div>
+              </label>
+            ))}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditing(null)}>Cancelar</Button>
+            <Button onClick={saveEdit} disabled={savingEdit || editPerms.size === 0}>
+              {savingEdit && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+              Salvar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
