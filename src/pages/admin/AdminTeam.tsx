@@ -38,6 +38,7 @@ const AdminTeam = () => {
   const [editing, setEditing] = useState<AdminUser | null>(null);
   const [editPerms, setEditPerms] = useState<Set<AdminPermission>>(new Set());
   const [savingEdit, setSavingEdit] = useState(false);
+  const [tempPasswordInfo, setTempPasswordInfo] = useState<{ email: string; password: string } | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -73,6 +74,32 @@ const AdminTeam = () => {
           ? `Link de acesso enviado para ${email}.`
           : `E-mail enviado para ${email}`,
       });
+      setEmail("");
+      setNewPerms(new Set(["news"]));
+      fetchAdmins();
+    }
+    setLoading(false);
+  };
+
+  const generatePassword = () => {
+    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#$%";
+    const arr = new Uint32Array(16);
+    crypto.getRandomValues(arr);
+    return Array.from(arr, n => chars[n % chars.length]).join("");
+  };
+
+  const handleCreateDirect = async () => {
+    if (!email.trim() || newPerms.size === 0) return;
+    if (!confirm(`Criar admin ${email} com senha temporária? A senha será mostrada apenas uma vez.`)) return;
+    setLoading(true);
+    const password = generatePassword();
+    const { data, error } = await supabase.functions.invoke("invite-admin", {
+      body: { email: email.trim(), permissions: Array.from(newPerms), mode: "direct", password },
+    });
+    if (error || (data as any)?.error) {
+      toast({ title: "Erro", description: (data as any)?.error || error?.message || "Erro ao criar", variant: "destructive" });
+    } else {
+      setTempPasswordInfo({ email: email.trim(), password });
       setEmail("");
       setNewPerms(new Set(["news"]));
       fetchAdmins();
@@ -178,12 +205,23 @@ const AdminTeam = () => {
                   ))}
                 </div>
               </div>
-              <Button type="submit" disabled={loading || newPerms.size === 0}>
-                {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <UserPlus className="h-4 w-4 mr-2" />}
-                Enviar convite
-              </Button>
+              <div className="flex flex-wrap gap-2">
+                <Button type="submit" disabled={loading || newPerms.size === 0}>
+                  {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <UserPlus className="h-4 w-4 mr-2" />}
+                  Enviar convite por e-mail
+                </Button>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  disabled={loading || newPerms.size === 0 || !email.trim()}
+                  onClick={handleCreateDirect}
+                >
+                  Criar com senha temporária
+                </Button>
+              </div>
               <p className="text-sm text-muted-foreground">
-                A pessoa receberá um e-mail com link para definir a senha.
+                <strong>Convite por e-mail:</strong> a pessoa recebe um link para definir a senha.<br />
+                <strong>Senha temporária:</strong> cria a conta na hora — você copia a senha e envia por outro canal (WhatsApp, etc.).
               </p>
             </form>
           </CardContent>
@@ -275,6 +313,42 @@ const AdminTeam = () => {
               {savingEdit && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
               Salvar
             </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!tempPasswordInfo} onOpenChange={(o) => !o && setTempPasswordInfo(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Senha temporária criada</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3 text-sm">
+            <p>
+              Conta criada para <strong>{tempPasswordInfo?.email}</strong>. Copie a senha
+              abaixo e envie pela sua via preferida (WhatsApp, e-mail próprio, etc).
+            </p>
+            <div className="rounded-md border border-border bg-muted p-3 font-mono text-base break-all select-all">
+              {tempPasswordInfo?.password}
+            </div>
+            <p className="text-destructive font-medium">
+              Esta senha não será mostrada novamente. Salve agora.
+            </p>
+            <p className="text-muted-foreground text-xs">
+              O usuário pode entrar em /admin/login com este e-mail e senha. Recomende
+              que troque a senha em "Esqueci minha senha" depois.
+            </p>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                if (tempPasswordInfo) navigator.clipboard.writeText(tempPasswordInfo.password);
+                toast({ title: "Senha copiada" });
+              }}
+            >
+              Copiar senha
+            </Button>
+            <Button onClick={() => setTempPasswordInfo(null)}>Fechar</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
