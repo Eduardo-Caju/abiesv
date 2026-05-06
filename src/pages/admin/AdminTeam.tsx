@@ -81,6 +81,32 @@ const AdminTeam = () => {
     setLoading(false);
   };
 
+  const generatePassword = () => {
+    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#$%";
+    const arr = new Uint32Array(16);
+    crypto.getRandomValues(arr);
+    return Array.from(arr, n => chars[n % chars.length]).join("");
+  };
+
+  const handleCreateDirect = async () => {
+    if (!email.trim() || newPerms.size === 0) return;
+    if (!confirm(`Criar admin ${email} com senha temporária? A senha será mostrada apenas uma vez.`)) return;
+    setLoading(true);
+    const password = generatePassword();
+    const { data, error } = await supabase.functions.invoke("invite-admin", {
+      body: { email: email.trim(), permissions: Array.from(newPerms), mode: "direct", password },
+    });
+    if (error || (data as any)?.error) {
+      toast({ title: "Erro", description: (data as any)?.error || error?.message || "Erro ao criar", variant: "destructive" });
+    } else {
+      setTempPasswordInfo({ email: email.trim(), password });
+      setEmail("");
+      setNewPerms(new Set(["news"]));
+      fetchAdmins();
+    }
+    setLoading(false);
+  };
+
   const openEdit = (admin: AdminUser) => {
     setEditing(admin);
     setEditPerms(new Set(admin.permissions));
