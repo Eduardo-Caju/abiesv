@@ -316,6 +316,42 @@ const AdminTeam = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <Dialog open={!!tempPasswordInfo} onOpenChange={(o) => !o && setTempPasswordInfo(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Senha temporária criada</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3 text-sm">
+            <p>
+              Conta criada para <strong>{tempPasswordInfo?.email}</strong>. Copie a senha
+              abaixo e envie pela sua via preferida (WhatsApp, e-mail próprio, etc).
+            </p>
+            <div className="rounded-md border border-border bg-muted p-3 font-mono text-base break-all select-all">
+              {tempPasswordInfo?.password}
+            </div>
+            <p className="text-destructive font-medium">
+              Esta senha não será mostrada novamente. Salve agora.
+            </p>
+            <p className="text-muted-foreground text-xs">
+              O usuário pode entrar em /admin/login com este e-mail e senha. Recomende
+              que troque a senha em "Esqueci minha senha" depois.
+            </p>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                if (tempPasswordInfo) navigator.clipboard.writeText(tempPasswordInfo.password);
+                toast({ title: "Senha copiada" });
+              }}
+            >
+              Copiar senha
+            </Button>
+            <Button onClick={() => setTempPasswordInfo(null)}>Fechar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
