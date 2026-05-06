@@ -103,54 +103,115 @@ Deno.serve(async (req) => {
 
     let userId: string | null = null;
     let reactivated = false;
+    let createdWithPassword = false;
 
-    const { data: inviteData, error: inviteError } = await supabaseAdmin.auth.admin.inviteUserByEmail(email);
-
-    if (inviteError) {
-      const code = (inviteError as any).code;
-      const status = (inviteError as any).status;
-      const msg = inviteError.message || "";
-      const alreadyExists =
-        code === "email_exists" ||
-        status === 422 ||
-        /already been registered|already exists/i.test(msg);
-
-      if (!alreadyExists) {
-        return new Response(JSON.stringify({ error: inviteError.message }), {
+    if (mode === "direct") {
+      if (!directPassword || directPassword.length < 8) {
+        return new Response(JSON.stringify({ error: "Senha temporária deve ter pelo menos 8 caracteres." }), {
           status: 400,
           headers: { ...corsHeaders(origin), "Content-Type": "application/json" },
         });
       }
 
-      // Find existing user
-      let page = 1;
-      while (page <= 10 && !userId) {
-        const { data: list, error: listErr } = await supabaseAdmin.auth.admin.listUsers({ page, perPage: 200 });
-        if (listErr) break;
-        const found = list.users.find(u => (u.email || "").toLowerCase() === email.toLowerCase());
-        if (found) userId = found.id;
-        if (list.users.length < 200) break;
-        page++;
-      }
-
-      if (!userId) {
-        return new Response(JSON.stringify({ error: "E-mail já registrado, mas não foi possível localizar o usuário." }), {
-          status: 500,
-          headers: { ...corsHeaders(origin), "Content-Type": "application/json" },
-        });
-      }
-
-      // Send recovery link so the user can (re)set password
-      const { error: linkErr } = await supabaseAdmin.auth.admin.generateLink({
-        type: "recovery",
+      const { data: createData, error: createError } = await supabaseAdmin.auth.admin.createUser({
         email,
+        password: directPassword,
+        email_confirm: true,
       });
-      if (linkErr) {
-        console.error("invite-admin recovery link error:", linkErr);
+
+      if (createError) {
+        const code = (createError as any).code;
+        const status = (createError as any).status;
+        const msg = createError.message || "";
+        const alreadyExists =
+          code === "email_exists" ||
+          status === 422 ||
+          /already been registered|already exists/i.test(msg);
+
+        if (!alreadyExists) {
+          return new Response(JSON.stringify({ error: createError.message }), {
+            status: 400,
+            headers: { ...corsHeaders(origin), "Content-Type": "application/json" },
+          });
+        }
+
+        let page = 1;
+        while (page <= 10 && !userId) {
+          const { data: list, error: listErr } = await supabaseAdmin.auth.admin.listUsers({ page, perPage: 200 });
+          if (listErr) break;
+          const found = list.users.find(u => (u.email || "").toLowerCase() === email.toLowerCase());
+          if (found) userId = found.id;
+          if (list.users.length < 200) break;
+          page++;
+        }
+        if (!userId) {
+          return new Response(JSON.stringify({ error: "Não foi possível localizar usuário existente." }), {
+            status: 500,
+            headers: { ...corsHeaders(origin), "Content-Type": "application/json" },
+          });
+        }
+        const { error: updErr } = await supabaseAdmin.auth.admin.updateUserById(userId, {
+          password: directPassword,
+          email_confirm: true,
+        });
+        if (updErr) {
+          return new Response(JSON.stringify({ error: updErr.message }), {
+            status: 400,
+            headers: { ...corsHeaders(origin), "Content-Type": "application/json" },
+          });
+        }
+        reactivated = true;
+      } else {
+        userId = createData.user.id;
       }
-      reactivated = true;
+      createdWithPassword = true;
     } else {
-      userId = inviteData.user.id;
+      const { data: inviteData, error: inviteError } = await supabaseAdmin.auth.admin.inviteUserByEmail(email);
+
+      if (inviteError) {
+        const code = (inviteError as any).code;
+        const status = (inviteError as any).status;
+        const msg = inviteError.message || "";
+        const alreadyExists =
+          code === "email_exists" ||
+          status === 422 ||
+          /already been registered|already exists/i.test(msg);
+
+        if (!alreadyExists) {
+          return new Response(JSON.stringify({ error: inviteError.message }), {
+            status: 400,
+            headers: { ...corsHeaders(origin), "Content-Type": "application/json" },
+          });
+        }
+
+        let page = 1;
+        while (page <= 10 && !userId) {
+          const { data: list, error: listErr } = await supabaseAdmin.auth.admin.listUsers({ page, perPage: 200 });
+          if (listErr) break;
+          const found = list.users.find(u => (u.email || "").toLowerCase() === email.toLowerCase());
+          if (found) userId = found.id;
+          if (list.users.length < 200) break;
+          page++;
+        }
+
+        if (!userId) {
+          return new Response(JSON.stringify({ error: "E-mail já registrado, mas não foi possível localizar o usuário." }), {
+            status: 500,
+            headers: { ...corsHeaders(origin), "Content-Type": "application/json" },
+          });
+        }
+
+        const { error: linkErr } = await supabaseAdmin.auth.admin.generateLink({
+          type: "recovery",
+          email,
+        });
+        if (linkErr) {
+          console.error("invite-admin recovery link error:", linkErr);
+        }
+        reactivated = true;
+      } else {
+        userId = inviteData.user.id;
+      }
     }
     const { error: roleError } = await supabaseAdmin
       .from("user_roles")
