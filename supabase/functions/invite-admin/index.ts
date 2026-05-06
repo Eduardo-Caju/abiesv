@@ -83,6 +83,8 @@ Deno.serve(async (req) => {
     const body = await req.json();
     const email: string | undefined = body?.email;
     const permissions: string[] = Array.isArray(body?.permissions) ? body.permissions : [];
+    const mode: "invite" | "direct" = body?.mode === "direct" ? "direct" : "invite";
+    const directPassword: string | undefined = body?.password;
     const VALID = new Set(["news", "submissions", "benefits", "team"]);
     const cleanPerms = permissions.filter(p => VALID.has(p));
 

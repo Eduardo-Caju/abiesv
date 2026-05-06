@@ -1,29 +1,43 @@
-## Corrigir convite quando o e-mail já existe em auth.users
+## Por que o convite não está chegando
 
-### Causa do erro
+Hoje o projeto usa o SMTP padrão do Lovable Cloud (sem domínio de e-mail próprio configurado). Esse SMTP tem **limite muito baixo** (~3-4 e-mails/hora) e prioriza entregabilidade fraca — invites e recovery links frequentemente:
 
-O endpoint `auth.admin.inviteUserByEmail` retorna **422 "A user with this email address has already been registered"** quando o e-mail já existe em `auth.users`. Hoje, ao deletar um admin pela tela `/admin/equipe`, a função `update-admin-permissions` (action `revoke`) remove apenas `admin_permissions` e `user_roles` — **não remove o registro em `auth.users`**. Resultado: ao tentar reconvidar o mesmo e-mail, o invite falha.
+1. Caem em spam/lixeira (verificar lá primeiro em `secretaria@abiesv.org.br`).
+2. São bloqueados por rate-limit silencioso (várias tentativas seguidas no mesmo e-mail = nada chega).
+3. Demoram alguns minutos.
 
-### Solução
+Como o e-mail já existia em `auth.users`, a função agora dispara um link de **recovery** (não invite). Se o servidor de e-mail do destinatário rejeitou ou marcou como spam, o usuário não vê nada.
 
-Ajustar a edge function `invite-admin` para tratar o caso "usuário já existe" como um fluxo válido:
+## Solução proposta: cadastrar admin diretamente, sem depender de e-mail
 
-1. Tentar `inviteUserByEmail(email)` normalmente.
-2. Se vier erro com código `email_exists` (ou status 422 / mensagem "already been registered"):
-   - Buscar o usuário existente via `supabaseAdmin.auth.admin.listUsers()` filtrando pelo e-mail (ou via query em `auth.users`).
-   - Reaplicar `user_roles` (admin) e as permissões selecionadas (`admin_permissions`) com `upsert`.
-   - Disparar `auth.admin.generateLink({ type: 'recovery', email })` para enviar um link de redefinição de senha — assim a pessoa recebe um e-mail e consegue acessar mesmo sem o invite original.
-   - Retornar `{ success: true, email, reactivated: true }`.
-3. Se o erro for outro, manter o comportamento atual (retornar mensagem de erro).
+Vou criar um fluxo "Adicionar admin manualmente" na tela `/admin/equipe` que:
 
-### Detalhes técnicos
+1. Cria o usuário no `auth.users` já com **senha temporária definida pelo super-admin** (ou gerada automaticamente e exibida 1x na tela).
+2. Marca o e-mail como já confirmado (`email_confirm: true`) — não precisa clicar em link.
+3. Atribui role `admin` + permissões selecionadas.
+4. Mostra a senha temporária na tela para o super-admin copiar e enviar manualmente (WhatsApp, e-mail próprio, etc.).
+5. O novo admin entra em `/admin/login` com e-mail + senha temporária e pode trocar depois em "Esqueci minha senha" se quiser.
 
-- Arquivo: `supabase/functions/invite-admin/index.ts`.
-- Detectar e-mail existente: checar `inviteError.code === 'email_exists'` ou `inviteError.status === 422`.
-- Buscar user_id: `supabaseAdmin.auth.admin.listUsers({ page: 1, perPage: 200 })` e filtrar por `email`. (Lista pequena no projeto — aceitável.)
-- Mensagem de toast no front (`AdminTeam.tsx`): se `data.reactivated`, mostrar "Permissões reatribuídas. Enviado link de acesso para {email}." em vez de "Convite enviado".
+Se o e-mail já existir em `auth.users` (caso de `secretaria@abiesv.org.br`), a função apenas:
+- Atualiza/define uma nova senha via `auth.admin.updateUserById`.
+- Reaplica role + permissões.
+- Devolve a senha para o super-admin.
+
+### Mudanças técnicas
+
+- **Edge function**: nova `create-admin-direct` (ou estender `invite-admin` com flag `mode: "direct"`).
+  - Usa `supabaseAdmin.auth.admin.createUser({ email, password, email_confirm: true })`.
+  - Se já existe: localiza `userId` via `listUsers`, chama `updateUserById({ password })`.
+  - Upsert em `user_roles` e `admin_permissions`.
+  - Retorna `{ success, email, password, alreadyExisted }`.
+- **UI em `AdminTeam.tsx`**: 
+  - Adicionar dois botões no card de convite: **"Enviar convite por e-mail"** (atual) e **"Criar com senha temporária"** (novo).
+  - Ao criar com senha: gerar uma senha forte aleatória (ex: 16 chars) no front, enviar para a função, exibir em modal copiável após sucesso com aviso "Salve esta senha — não será mostrada novamente".
 
 ### Fora de escopo
 
-- Remover de fato o usuário de `auth.users` ao revogar acesso (mudaria o comportamento de revogação — pode deixar para depois se você quiser).
-- Mudanças visuais em `/admin/equipe` além da mensagem do toast.
+- Configurar domínio de e-mail próprio (resolveria o problema de entregabilidade de forma definitiva, mas exige DNS — pode ficar para depois).
+
+### Pergunta rápida
+
+Para o caso atual de `secretaria@abiesv.org.br`, posso já usar essa nova função para definir uma senha agora e te entregar para repassar à secretaria, certo?
