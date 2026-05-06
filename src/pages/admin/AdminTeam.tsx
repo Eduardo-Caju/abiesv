@@ -205,12 +205,23 @@ const AdminTeam = () => {
                   ))}
                 </div>
               </div>
-              <Button type="submit" disabled={loading || newPerms.size === 0}>
-                {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <UserPlus className="h-4 w-4 mr-2" />}
-                Enviar convite
-              </Button>
+              <div className="flex flex-wrap gap-2">
+                <Button type="submit" disabled={loading || newPerms.size === 0}>
+                  {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <UserPlus className="h-4 w-4 mr-2" />}
+                  Enviar convite por e-mail
+                </Button>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  disabled={loading || newPerms.size === 0 || !email.trim()}
+                  onClick={handleCreateDirect}
+                >
+                  Criar com senha temporária
+                </Button>
+              </div>
               <p className="text-sm text-muted-foreground">
-                A pessoa receberá um e-mail com link para definir a senha.
+                <strong>Convite por e-mail:</strong> a pessoa recebe um link para definir a senha.<br />
+                <strong>Senha temporária:</strong> cria a conta na hora — você copia a senha e envia por outro canal (WhatsApp, etc.).
               </p>
             </form>
           </CardContent>
