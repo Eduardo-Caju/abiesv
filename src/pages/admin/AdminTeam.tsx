@@ -38,6 +38,7 @@ const AdminTeam = () => {
   const [editing, setEditing] = useState<AdminUser | null>(null);
   const [editPerms, setEditPerms] = useState<Set<AdminPermission>>(new Set());
   const [savingEdit, setSavingEdit] = useState(false);
+  const [tempPasswordInfo, setTempPasswordInfo] = useState<{ email: string; password: string } | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
 
