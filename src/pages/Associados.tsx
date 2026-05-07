@@ -15,7 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Search, MapPin, Building } from "lucide-react";
-import { associates as staticAssociates, categories, states, getLogoInitials } from "@/data/associates";
+import { categories, states, getLogoInitials } from "@/data/associates";
 
 const Associados = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -23,13 +23,10 @@ const Associados = () => {
   const [selectedState, setSelectedState] = useState("Todos");
   const { data: dbAssociates = [] } = useApprovedAssociates();
 
-  const associates = useMemo(() => {
-    const dbSlugs = new Set(dbAssociates.map((a) => a.slug));
-    const staticOnly = staticAssociates.filter((a) => !dbSlugs.has(a.slug));
-    return [...dbAssociates, ...staticOnly].sort((a, b) =>
-      a.name.localeCompare(b.name, "pt-BR")
-    );
-  }, [dbAssociates]);
+  const associates = useMemo(
+    () => [...dbAssociates].sort((a, b) => a.name.localeCompare(b.name, "pt-BR")),
+    [dbAssociates]
+  );
 
   const filteredAssociates = useMemo(() => associates.filter((associate) => {
     const searchLower = searchTerm.toLowerCase();

@@ -15,16 +15,14 @@ import {
   Users,
   Briefcase
 } from "lucide-react";
-import { getAssociateBySlug, getLogoInitials } from "@/data/associates";
+import { getLogoInitials } from "@/data/associates";
 import { useApprovedAssociates } from "@/hooks/useApprovedAssociates";
 
 const AssociadoPerfil = () => {
   const { slug } = useParams<{ slug: string }>();
   const { data: dbAssociates = [] } = useApprovedAssociates();
-  
-  const dbMatch = slug ? dbAssociates.find((a) => a.slug === slug) : undefined;
-  const staticMatch = slug ? getAssociateBySlug(slug) : undefined;
-  const associate = dbMatch ?? staticMatch;
+
+  const associate = slug ? dbAssociates.find((a) => a.slug === slug) : undefined;
 
   if (!associate) {
     return (

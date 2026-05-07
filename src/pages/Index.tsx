@@ -71,13 +71,13 @@ const upcomingEvents = events
   })
   .slice(0, 3);
 
-// Importar associados reais
-import { associates, getLogoInitials } from "@/data/associates";
-
-// Selecionar alguns associados para exibir na Home
-const featuredAssociates = associates.slice(0, 12);
+// Importar associados reais (do banco)
+import { getLogoInitials } from "@/data/associates";
+import { useApprovedAssociates } from "@/hooks/useApprovedAssociates";
 
 const Index = () => {
+  const { data: dbAssociates = [] } = useApprovedAssociates();
+  const featuredAssociates = dbAssociates.slice(0, 12);
   const pageSchema = [
     organizationSchema,
     websiteSchema,
@@ -340,6 +340,7 @@ const Index = () => {
           </div>
 
           {/* Associate Logos */}
+          {featuredAssociates.length > 0 && (
           <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-16">
             {featuredAssociates.map((associate) => (
               <Link
@@ -366,11 +367,12 @@ const Index = () => {
               </Link>
             ))}
           </div>
+          )}
 
           <div className="text-center mb-12">
             <Button asChild variant="outline">
               <Link to="/associados">
-                Ver todos os {associates.length} associados
+                Ver todos os associados
                 <ChevronRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
