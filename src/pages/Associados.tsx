@@ -128,10 +128,6 @@ const Associados = () => {
       {/* Results */}
       <section className="py-12">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-muted-foreground mb-8">
-            {filteredAssociates.length} {filteredAssociates.length === 1 ? "empresa encontrada" : "empresas encontradas"}
-          </p>
-          
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredAssociates.map((associate) => (
               <Card 
