@@ -1,53 +1,41 @@
 ## Objetivo
 
-Permitir que admins editem qualquer dado de um cadastro de associado (pendente, aprovado ou rejeitado) sem precisar rejeitar e refazer.
+Fazer com que as páginas públicas exibam **apenas** as empresas cadastradas e aprovadas no painel admin "Cadastro de Associados". Remover a lista estática de empresas do site.
 
 ## Mudanças
 
-### 1. Tela de detalhe do cadastro (`/admin/cadastros/:id`)
+### 1. `src/pages/Associados.tsx` (Guia de Associados)
+- Remover o merge com `staticAssociates`.
+- Lista passa a ser exclusivamente `useApprovedAssociates()` (banco).
+- Manter `categories`, `states` e `getLogoInitials` vindos de `data/associates.ts` (são constantes/util, não dados de empresa).
+- Ajustar o JSON-LD `ItemList` para refletir só os associados do banco.
 
-Transformar em tela **visualizar + editar**:
+### 2. `src/pages/AssociadoPerfil.tsx` (perfil individual `/associados/:slug`)
+- Hoje usa `getAssociateBySlug` (lista estática). Trocar por busca no banco via Supabase (`associate_submissions` filtrando por `status = 'aprovado'` e slug derivado de `nome_fantasia`).
+- Se o slug não existir no banco → 404 (NotFound). Empresas estáticas antigas deixam de ter perfil.
+- Manter `getLogoInitials` como utilitário.
 
-- Adicionar botão **"Editar"** no topo (ao lado de Voltar).
-- Ao clicar, todos os campos viram editáveis em modo de formulário:
-  - Dados da empresa: razão social, nome fantasia, CNPJ, categoria, cidade, estado, website, LinkedIn, Instagram
-  - Descrições: curta e completa
-  - Soluções e setores (multi-select / chips)
-  - Logo (upload novo, substitui o atual via bucket `associate-logos`)
-  - Contatos (adicionar/editar/remover linhas — nome, cargo, e-mail, celular, telefone fixo)
-- Botões **"Salvar alterações"** e **"Cancelar"** durante a edição.
-- Fora do modo edição, mantém o layout atual de leitura + ações Aprovar/Rejeitar.
+### 3. `src/pages/Index.tsx` (Home — seção de associados em destaque)
+- Trocar import de `associates` (estático) por `useApprovedAssociates()`.
+- Exibir os primeiros N aprovados (ex.: 8) ordenados por nome ou data.
+- Se não houver associados aprovados ainda, ocultar a seção (ou mostrar estado vazio discreto).
 
-### 2. Novo cadastro pelo admin (`/admin/cadastros/novo`)
+### 4. `src/data/associates.ts`
+- **Manter**: `categories`, `states`, `getLogoInitials`, tipo `Associate`.
+- **Remover**: o array `associates` (lista estática de empresas) e `getAssociateBySlug`.
+- Admin (`AdminSubmissionNew`, `AdminSubmissionDetail`, `CadastroAssociado`) continua usando `categories` normalmente.
 
-Reaproveitar o mesmo formulário (componente compartilhado), garantindo consistência entre criar e editar.
+### 5. SEO/sitemap
+- Não há sitemap dinâmico de associados hoje; nada extra a fazer.
 
-### 3. Comportamento e UX
+## Comportamento resultante
 
-- Edição funciona em qualquer status (pendente, aprovado, rejeitado).
-- Editar um cadastro **aprovado** atualiza imediatamente o que aparece no site público (ex.: página de Associados), pois usa a mesma tabela.
-- Validações iguais às do formulário público (CNPJ, e-mail, campos obrigatórios).
-- Toast de confirmação ao salvar; tratamento de erro com `sanitizeDbError`.
-- Permissão: só admins com `submissions` podem editar (já coberto pelas RLS existentes via `has_permission`).
-
-## Detalhes técnicos
-
-- **Sem mudança de schema** — as tabelas `associate_submissions` e `associate_submission_contacts` já têm policies de UPDATE/INSERT/DELETE para quem tem `submissions`.
-- Extrair o formulário de `CadastroAssociado.tsx` para um componente reutilizável (`AssociateForm`) consumido por:
-  - `CadastroAssociado.tsx` (público)
-  - `AdminSubmissionNew.tsx` (admin cria)
-  - `AdminSubmissionDetail.tsx` (admin edita, modo "edit")
-- Contatos: comparar lista original vs. nova → INSERT novos, UPDATE alterados, DELETE removidos.
-- Cache: invalidar `useApprovedAssociates` (React Query) após salvar para refletir no site público.
-
-## Arquivos afetados
-
-- `src/components/admin/AssociateForm.tsx` (novo, extraído)
-- `src/pages/admin/AdminSubmissionDetail.tsx` (adicionar modo edição)
-- `src/pages/admin/AdminSubmissionNew.tsx` (passa a usar o form compartilhado)
-- `src/pages/CadastroAssociado.tsx` (passa a usar o form compartilhado)
+- Página `/associados`: só empresas aprovadas no admin.
+- Página `/associados/:slug`: só funciona para empresas aprovadas; demais retornam 404.
+- Home: destaque vem só do banco.
+- Se você quiser que alguma das empresas estáticas continue aparecendo, basta cadastrá-la no admin e aprovar.
 
 ## Fora do escopo
 
-- Histórico/auditoria de alterações.
-- Notificar associado por e-mail quando admin editar dados dele.
+- Migrar automaticamente as empresas estáticas para o banco (você optou por remover).
+- Criar redirects 301 dos slugs antigos.
