@@ -1,43 +1,53 @@
-## Por que o convite não está chegando
+## Objetivo
 
-Hoje o projeto usa o SMTP padrão do Lovable Cloud (sem domínio de e-mail próprio configurado). Esse SMTP tem **limite muito baixo** (~3-4 e-mails/hora) e prioriza entregabilidade fraca — invites e recovery links frequentemente:
+Permitir que admins editem qualquer dado de um cadastro de associado (pendente, aprovado ou rejeitado) sem precisar rejeitar e refazer.
 
-1. Caem em spam/lixeira (verificar lá primeiro em `secretaria@abiesv.org.br`).
-2. São bloqueados por rate-limit silencioso (várias tentativas seguidas no mesmo e-mail = nada chega).
-3. Demoram alguns minutos.
+## Mudanças
 
-Como o e-mail já existia em `auth.users`, a função agora dispara um link de **recovery** (não invite). Se o servidor de e-mail do destinatário rejeitou ou marcou como spam, o usuário não vê nada.
+### 1. Tela de detalhe do cadastro (`/admin/cadastros/:id`)
 
-## Solução proposta: cadastrar admin diretamente, sem depender de e-mail
+Transformar em tela **visualizar + editar**:
 
-Vou criar um fluxo "Adicionar admin manualmente" na tela `/admin/equipe` que:
+- Adicionar botão **"Editar"** no topo (ao lado de Voltar).
+- Ao clicar, todos os campos viram editáveis em modo de formulário:
+  - Dados da empresa: razão social, nome fantasia, CNPJ, categoria, cidade, estado, website, LinkedIn, Instagram
+  - Descrições: curta e completa
+  - Soluções e setores (multi-select / chips)
+  - Logo (upload novo, substitui o atual via bucket `associate-logos`)
+  - Contatos (adicionar/editar/remover linhas — nome, cargo, e-mail, celular, telefone fixo)
+- Botões **"Salvar alterações"** e **"Cancelar"** durante a edição.
+- Fora do modo edição, mantém o layout atual de leitura + ações Aprovar/Rejeitar.
 
-1. Cria o usuário no `auth.users` já com **senha temporária definida pelo super-admin** (ou gerada automaticamente e exibida 1x na tela).
-2. Marca o e-mail como já confirmado (`email_confirm: true`) — não precisa clicar em link.
-3. Atribui role `admin` + permissões selecionadas.
-4. Mostra a senha temporária na tela para o super-admin copiar e enviar manualmente (WhatsApp, e-mail próprio, etc.).
-5. O novo admin entra em `/admin/login` com e-mail + senha temporária e pode trocar depois em "Esqueci minha senha" se quiser.
+### 2. Novo cadastro pelo admin (`/admin/cadastros/novo`)
 
-Se o e-mail já existir em `auth.users` (caso de `secretaria@abiesv.org.br`), a função apenas:
-- Atualiza/define uma nova senha via `auth.admin.updateUserById`.
-- Reaplica role + permissões.
-- Devolve a senha para o super-admin.
+Reaproveitar o mesmo formulário (componente compartilhado), garantindo consistência entre criar e editar.
 
-### Mudanças técnicas
+### 3. Comportamento e UX
 
-- **Edge function**: nova `create-admin-direct` (ou estender `invite-admin` com flag `mode: "direct"`).
-  - Usa `supabaseAdmin.auth.admin.createUser({ email, password, email_confirm: true })`.
-  - Se já existe: localiza `userId` via `listUsers`, chama `updateUserById({ password })`.
-  - Upsert em `user_roles` e `admin_permissions`.
-  - Retorna `{ success, email, password, alreadyExisted }`.
-- **UI em `AdminTeam.tsx`**: 
-  - Adicionar dois botões no card de convite: **"Enviar convite por e-mail"** (atual) e **"Criar com senha temporária"** (novo).
-  - Ao criar com senha: gerar uma senha forte aleatória (ex: 16 chars) no front, enviar para a função, exibir em modal copiável após sucesso com aviso "Salve esta senha — não será mostrada novamente".
+- Edição funciona em qualquer status (pendente, aprovado, rejeitado).
+- Editar um cadastro **aprovado** atualiza imediatamente o que aparece no site público (ex.: página de Associados), pois usa a mesma tabela.
+- Validações iguais às do formulário público (CNPJ, e-mail, campos obrigatórios).
+- Toast de confirmação ao salvar; tratamento de erro com `sanitizeDbError`.
+- Permissão: só admins com `submissions` podem editar (já coberto pelas RLS existentes via `has_permission`).
 
-### Fora de escopo
+## Detalhes técnicos
 
-- Configurar domínio de e-mail próprio (resolveria o problema de entregabilidade de forma definitiva, mas exige DNS — pode ficar para depois).
+- **Sem mudança de schema** — as tabelas `associate_submissions` e `associate_submission_contacts` já têm policies de UPDATE/INSERT/DELETE para quem tem `submissions`.
+- Extrair o formulário de `CadastroAssociado.tsx` para um componente reutilizável (`AssociateForm`) consumido por:
+  - `CadastroAssociado.tsx` (público)
+  - `AdminSubmissionNew.tsx` (admin cria)
+  - `AdminSubmissionDetail.tsx` (admin edita, modo "edit")
+- Contatos: comparar lista original vs. nova → INSERT novos, UPDATE alterados, DELETE removidos.
+- Cache: invalidar `useApprovedAssociates` (React Query) após salvar para refletir no site público.
 
-### Pergunta rápida
+## Arquivos afetados
 
-Para o caso atual de `secretaria@abiesv.org.br`, posso já usar essa nova função para definir uma senha agora e te entregar para repassar à secretaria, certo?
+- `src/components/admin/AssociateForm.tsx` (novo, extraído)
+- `src/pages/admin/AdminSubmissionDetail.tsx` (adicionar modo edição)
+- `src/pages/admin/AdminSubmissionNew.tsx` (passa a usar o form compartilhado)
+- `src/pages/CadastroAssociado.tsx` (passa a usar o form compartilhado)
+
+## Fora do escopo
+
+- Histórico/auditoria de alterações.
+- Notificar associado por e-mail quando admin editar dados dele.
