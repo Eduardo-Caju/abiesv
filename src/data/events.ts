@@ -122,6 +122,16 @@ export const events: RetailEvent[] = [
     registrationUrl: "https://www.expoconstrucaooffsite.com.br/",
   },
   {
+    id: "eat-innovation-2026",
+    name: "EAT Innovation",
+    startDate: "2026-06-19",
+    city: "São Paulo, SP",
+    type: "Congresso",
+    sector: "Varejo",
+    description: "Imersão de um dia que conecta executivos do foodservice às tendências capturadas pela delegação Tanjerin em Nova York, Chicago e na NRA Show 2026, com aplicações práticas para o mercado brasileiro.",
+    registrationUrl: "https://www.sympla.com.br/evento/eat-innovation/3364825?d=FASTCONSTRUTORANOEAT",
+  },
+  {
     id: "interior-lifestyle-2026",
     name: "Interior Lifestyle South America",
     startDate: "2026-06-22",
