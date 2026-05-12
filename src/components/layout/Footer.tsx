@@ -174,11 +174,11 @@ export function Footer() {
               </li>
               <li>
                 <a
-                  href="mailto:secretaria@abiesv.com.br"
+                  href="mailto:secretaria@abiesv.org.br"
                   className="flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors"
                 >
                   <Mail className="h-4 w-4 shrink-0" />
-                  <span>secretaria@abiesv.com.br</span>
+                  <span>secretaria@abiesv.org.br</span>
                 </a>
               </li>
               <li>
