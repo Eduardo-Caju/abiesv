@@ -35,14 +35,14 @@ const Privacidade = () => {
 
               <h2 className="font-heading text-foreground">1. Dados que coletamos</h2>
               <p>
-                [PLACEHOLDER] Coletamos dados pessoais fornecidos voluntariamente através de formulários, 
+                Coletamos dados pessoais fornecidos voluntariamente através de formulários, 
                 como nome, e-mail, telefone e empresa. Também coletamos dados de navegação automaticamente, 
                 como endereço IP, tipo de navegador e páginas visitadas.
               </p>
 
               <h2 className="font-heading text-foreground">2. Como utilizamos seus dados</h2>
               <p>
-                [PLACEHOLDER] Utilizamos os dados coletados para:
+                Utilizamos os dados coletados para:
               </p>
               <ul>
                 <li>Processar solicitações de associação</li>
@@ -53,14 +53,14 @@ const Privacidade = () => {
 
               <h2 className="font-heading text-foreground">3. Compartilhamento de dados</h2>
               <p>
-                [PLACEHOLDER] Não vendemos ou compartilhamos seus dados pessoais com terceiros para 
+                Não vendemos ou compartilhamos seus dados pessoais com terceiros para 
                 fins de marketing. Podemos compartilhar dados com prestadores de serviços que nos 
                 auxiliam em nossas operações, sempre sob contratos de confidencialidade.
               </p>
 
               <h2 className="font-heading text-foreground">4. Seus direitos</h2>
               <p>
-                [PLACEHOLDER] Conforme a LGPD, você tem direito a:
+                Conforme a LGPD, você tem direito a:
               </p>
               <ul>
                 <li>Acessar seus dados pessoais</li>
@@ -73,13 +73,13 @@ const Privacidade = () => {
               <p>
                 Para exercer seus direitos ou esclarecer dúvidas sobre esta política, entre em contato 
                 através do e-mail{" "}
-                <a href="mailto:privacidade@abiesv.org.br" className="text-primary hover:underline">
-                  privacidade@abiesv.org.br
+                <a href="mailto:secretaria@abiesv.org.br" className="text-primary hover:underline">
+                  secretaria@abiesv.org.br
                 </a>.
               </p>
 
               <p className="text-sm mt-8">
-                Última atualização: [PLACEHOLDER DATA]
+                Última atualização: 12/05/2026
               </p>
             </div>
           </div>

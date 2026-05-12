@@ -1,22 +1,14 @@
-## Adicionar evento "EAT Innovation" à agenda 2026
+## Alterações
 
-Acrescentar uma entrada em `src/data/events.ts` no array `events`, mantendo a ordem cronológica (entre Expo Construção Offsite — 16/06 e Interior Lifestyle — 22/06).
+### 1. `src/pages/Privacidade.tsx`
+- Remover o prefixo `[PLACEHOLDER]` no início dos parágrafos das seções 1, 2, 3 e 4 (mantendo o restante do texto).
+- Substituir `[PLACEHOLDER DATA]` da "Última atualização" por uma data atual (12/05/2026).
+- Corrigir o e-mail da seção "5. Contato": trocar `privacidade@abiesv.org.br` por `secretaria@abiesv.org.br` (no texto e no `href`).
 
-### Dados mapeados
+### 2. `src/components/layout/Footer.tsx`
+- Verificar e ajustar o e-mail do rodapé. Atualmente já consta `secretaria@abiesv.com.br`, mas o usuário quer `secretaria@abiesv.org.br` — atualizar o texto exibido e o `href="mailto:..."` para `secretaria@abiesv.org.br`.
 
-- `id`: `eat-innovation-2026`
-- `name`: `EAT Innovation`
-- `startDate`: `2026-06-19` (sem `endDate` — evento de um dia)
-- `location`: a definir (não informado)
-- `city`: `São Paulo, SP` (assumido — Sympla nacional; pode ser ajustado se houver outra cidade)
-- `type`: `Congresso`
-- `sector`: `Varejo` (foodservice é o subsetor mais próximo dos disponíveis; alternativa seria `Multisetorial`)
-- `description` (resumida, ~200 caracteres): "Imersão de um dia que conecta executivos do foodservice às tendências capturadas pela delegação Tanjerin em Nova York, Chicago e na NRA Show 2026, com aplicações práticas para o mercado brasileiro."
-- `registrationUrl`: `https://www.sympla.com.br/evento/eat-innovation/3364825?d=FASTCONSTRUTORANOEAT`
+### 3. Observação
+- Em `src/pages/Contato.tsx` o e-mail também aparece como `secretaria@abiesv.com.br`. Posso atualizar junto para manter consistência, se desejar — confirme se devo incluir.
 
-### Pontos abertos
-
-- **Cidade**: confirmo São Paulo? Se for outra, me avise.
-- **Setor**: usar `Varejo` (foodservice cabe melhor lá) ou `Multisetorial`? Padrão proposto: `Varejo`.
-
-Sem outras mudanças — a página `/eventos` já lista eventos automaticamente a partir desse arquivo.
+Nenhuma outra mudança de layout, estilo ou conteúdo.
