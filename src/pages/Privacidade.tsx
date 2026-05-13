@@ -79,7 +79,7 @@ const Privacidade = () => {
               </p>
 
               <p className="text-sm mt-8">
-                Última atualização: 12/05/2026
+                Última atualização: Maio de 2026
               </p>
             </div>
           </div>

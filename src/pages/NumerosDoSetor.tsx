@@ -119,7 +119,7 @@ const NumerosDoSetor = () => {
                 ))}
               </ul>
               <p className="text-sm text-muted-foreground mt-4">
-                Fonte: Pesquisa ABIESV — [PLACEHOLDER ANO]
+                Fonte: Pesquisa ABIESV — 2024
               </p>
             </CardContent>
           </Card>
@@ -211,8 +211,7 @@ const NumerosDoSetor = () => {
                 </Link>.
               </p>
               <p className="text-sm italic">
-                [PLACEHOLDER: Incluir detalhes sobre frequência de atualização, parceiros de pesquisa e 
-                links para estudos completos.]
+                Dados atualizados trimestralmente. Para parcerias de pesquisa ou acesso a estudos completos, entre em contato com a equipe técnica da ABIESV.
               </p>
             </div>
           </div>

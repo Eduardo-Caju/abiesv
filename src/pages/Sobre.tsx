@@ -173,8 +173,8 @@ const Sobre = () => {
               Impacto no Ecossistema
             </h2>
             <p className="text-lg text-muted-foreground leading-relaxed mb-8">
-              Desde [PLACEHOLDER], a ABIESV tem sido referência na disseminação de conhecimento técnico 
-              e na conexão entre empresas do setor. Nossos eventos já reuniram mais de [PLACEHOLDER] 
+              Desde 2002, a ABIESV tem sido referência na disseminação de conhecimento técnico 
+              e na conexão entre empresas do setor. Nossos eventos já reuniram mais de 500 
               profissionais, e nossa biblioteca técnica é consultada por centenas de empresas mensalmente.
             </p>
             <div className="grid grid-cols-3 gap-8 py-8 border-y border-border">

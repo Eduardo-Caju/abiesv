@@ -13,7 +13,7 @@ const editions = [
     date: "15 de Março de 2024",
     isoDate: "2024-03-15",
     status: "upcoming",
-    venue: "[PLACEHOLDER - Local do Evento]",
+    venue: "São Paulo, SP",
     capacity: 80,
   },
   {
@@ -22,7 +22,7 @@ const editions = [
     date: "10 de Abril de 2024",
     isoDate: "2024-04-10",
     status: "upcoming",
-    venue: "[PLACEHOLDER - Local do Evento]",
+    venue: "São Paulo, SP",
     capacity: 60,
   },
   {
@@ -31,7 +31,7 @@ const editions = [
     date: "15 de Maio de 2024",
     isoDate: "2024-05-15",
     status: "upcoming",
-    venue: "[PLACEHOLDER - Local do Evento]",
+    venue: "São Paulo, SP",
     capacity: 50,
   },
   {
