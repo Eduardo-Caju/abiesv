@@ -34,44 +34,44 @@ const Termos = () => {
 
               <h2 className="font-heading text-foreground">1. Uso do site</h2>
               <p>
-                [PLACEHOLDER] O conteúdo deste site é disponibilizado para fins informativos e 
+                O conteúdo deste site é disponibilizado para fins informativos e 
                 educacionais. É proibido copiar, reproduzir ou distribuir o conteúdo sem 
                 autorização prévia.
               </p>
 
               <h2 className="font-heading text-foreground">2. Propriedade intelectual</h2>
               <p>
-                [PLACEHOLDER] Todo o conteúdo do site, incluindo textos, imagens, logotipos e 
+                Todo o conteúdo do site, incluindo textos, imagens, logotipos e 
                 materiais técnicos, é de propriedade da ABIESV ou licenciado para uso da associação.
               </p>
 
               <h2 className="font-heading text-foreground">3. Associação</h2>
               <p>
-                [PLACEHOLDER] A associação à ABIESV está sujeita à aprovação da diretoria e ao 
+                A associação à ABIESV está sujeita à aprovação da diretoria e ao 
                 pagamento das anuidades conforme o perfil da empresa. Os benefícios são válidos 
                 durante o período de vigência da associação.
               </p>
 
               <h2 className="font-heading text-foreground">4. Eventos</h2>
               <p>
-                [PLACEHOLDER] A participação em eventos da ABIESV está sujeita à disponibilidade 
+                A participação em eventos da ABIESV está sujeita à disponibilidade 
                 de vagas e ao cumprimento das políticas específicas de cada evento.
               </p>
 
               <h2 className="font-heading text-foreground">5. Limitação de responsabilidade</h2>
               <p>
-                [PLACEHOLDER] A ABIESV não se responsabiliza por danos decorrentes do uso das 
+                A ABIESV não se responsabiliza por danos decorrentes do uso das 
                 informações disponibilizadas no site ou por interrupções no serviço.
               </p>
 
               <h2 className="font-heading text-foreground">6. Alterações</h2>
               <p>
-                [PLACEHOLDER] A ABIESV reserva-se o direito de alterar estes termos a qualquer 
+                A ABIESV reserva-se o direito de alterar estes termos a qualquer 
                 momento. As alterações entram em vigor imediatamente após a publicação no site.
               </p>
 
               <p className="text-sm mt-8">
-                Última atualização: [PLACEHOLDER DATA]
+                Última atualização: Maio de 2026
               </p>
             </div>
           </div>
