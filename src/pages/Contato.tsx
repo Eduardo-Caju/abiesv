@@ -15,7 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Mail, Phone, MapPin, Linkedin, Instagram, Youtube, ArrowRight } from "lucide-react";
+import { Mail, Phone, Linkedin, Instagram, Youtube, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 
 const subjects = [
