@@ -14,7 +14,7 @@ const workshops = [
     isoDate: "2024-03-22",
     location: "Online",
     duration: "4 horas",
-    instructor: "[Nome do Instrutor]",
+    instructor: "A confirmar",
     status: "upcoming",
   },
   {
@@ -24,7 +24,7 @@ const workshops = [
     isoDate: "2024-04-05",
     location: "Online",
     duration: "8 horas (2 dias)",
-    instructor: "[Nome do Instrutor]",
+    instructor: "A confirmar",
     status: "upcoming",
   },
   {
@@ -34,7 +34,7 @@ const workshops = [
     isoDate: "2024-05-10",
     location: "Online",
     duration: "3 horas",
-    instructor: "[Nome do Instrutor]",
+    instructor: "A confirmar",
     status: "upcoming",
   },
 ];

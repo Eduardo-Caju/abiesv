@@ -379,6 +379,7 @@ const Index = () => {
           </div>
 
           {/* Testimonial */}
+          {false && (
           <div className="max-w-3xl mx-auto text-center">
             <blockquote className="relative">
               <div className="text-6xl text-primary/20 font-impact absolute -top-4 -left-4">"</div>
@@ -401,6 +402,7 @@ const Index = () => {
               </footer>
             </blockquote>
           </div>
+          )}
         </div>
       </section>
 

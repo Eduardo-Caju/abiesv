@@ -15,7 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Mail, Phone, MapPin, Linkedin, Instagram, Youtube, ArrowRight } from "lucide-react";
+import { Mail, Phone, Linkedin, Instagram, Youtube, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 
 const subjects = [
@@ -198,29 +198,15 @@ const Contato = () => {
               <div className="space-y-6 mb-12">
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 rounded-xl gradient-primary flex items-center justify-center shrink-0">
-                    <MapPin className="h-6 w-6 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="font-heading font-semibold text-foreground mb-1">Endereço</h3>
-                    <p className="text-muted-foreground">
-                      [PLACEHOLDER - Endereço completo]<br />
-                      São Paulo, SP - Brasil<br />
-                      CEP: [PLACEHOLDER]
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-xl gradient-primary flex items-center justify-center shrink-0">
                     <Mail className="h-6 w-6 text-white" />
                   </div>
                   <div>
                     <h3 className="font-heading font-semibold text-foreground mb-1">E-mail</h3>
                     <a 
-                      href="mailto:secretaria@abiesv.com.br"
+                      href="mailto:secretaria@abiesv.org.br"
                       className="text-primary hover:underline"
                     >
-                      secretaria@abiesv.com.br
+                      secretaria@abiesv.org.br
                     </a>
                   </div>
                 </div>
